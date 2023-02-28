@@ -1,11 +1,16 @@
 import type { Token } from "../tokenizer.ts";
-import compile, { compileFilters } from "../compiler.ts";
+import type Environment from "../environment.ts";
 
 export default function forTag(
+  env: Environment,
   code: string,
   output: string,
   tokens: Token[],
-): string {
+): string | undefined {
+  if (!code.startsWith("for ")) {
+    return;
+  }
+
   const compiled: string[] = [];
   const match = code?.match(/^for (\w+)(?:,\s*(\w+))?\s+of\s+(.*)$/);
 
@@ -26,8 +31,8 @@ export default function forTag(
     );
   }
 
-  compiled.push(`${variable} = ${compileFilters(tokens, variable)};`);
-  compiled.push(...compile(tokens, output, ["/for"]));
+  compiled.push(`${variable} = ${env.compileFilters(tokens, variable)};`);
+  compiled.push(...env.compile(tokens, output, ["/for"]));
   tokens.shift();
   compiled.push("}");
   compiled.push("}");

@@ -1,4 +1,4 @@
-import Environment from "../src/mod.ts";
+import Environment from "../mod.ts";
 
 const env = new Environment();
 

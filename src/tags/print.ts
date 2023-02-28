@@ -1,11 +1,18 @@
 import type { Token } from "../tokenizer.ts";
-import { compileFilters } from "../compiler.ts";
+import type Environment from "../environment.ts";
 
 export default function printTag(
+  env: Environment,
   code: string,
   output: string,
   tokens: Token[],
-): string {
-  code = compileFilters(tokens, code.replace(/^=/, "").trim());
+): string | undefined {
+  if (!code.startsWith("=")) {
+    return;
+  }
+
+  const expression = code.replace(/^=\s*/, "");
+
+  code = env.compileFilters(tokens, expression);
   return `${output} += ${code};`;
 }

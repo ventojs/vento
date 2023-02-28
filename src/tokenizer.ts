@@ -1,4 +1,4 @@
-export type TokenType = "string" | "block" | "filter";
+export type TokenType = "string" | "tag" | "filter";
 export type Token = [TokenType, string, string?];
 
 const KEYWORDS = {
@@ -22,16 +22,16 @@ export default function tokenize(source: string): Token[] {
 
       tokens.push([type, source.slice(0, index)]);
       source = source.slice(index);
-      type = "block";
+      type = "tag";
       continue;
     }
 
-    if (type === "block") {
+    if (type === "tag") {
       const index = source.indexOf(KEYWORDS.end);
 
       if (index === -1) {
         console.log(tokens);
-        throw new Error(`Unclosed block: ${source}`);
+        throw new Error(`Unclosed tag: ${source}`);
       }
 
       // Save code and detect filters
