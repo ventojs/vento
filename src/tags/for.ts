@@ -23,19 +23,22 @@ export default function forTag(
 
   if (key) {
     compiled.push(
-      `for await (let [${key}, ${variable}] of __env.utils.toIterator(${collection}, true)) {`,
+      `for await (let [${key}, ${variable}] of __env.utils.toIterator(${
+        env.compileFilters(tokens, collection)
+      }, true)) {`,
     );
   } else {
     compiled.push(
-      `for await (let ${variable} of __env.utils.toIterator(${collection})) {`,
+      `for await (let ${variable} of __env.utils.toIterator(${
+        env.compileFilters(tokens, collection)
+      })) {`,
     );
   }
 
-  compiled.push(`${variable} = ${env.compileFilters(tokens, variable)};`);
-  compiled.push(...env.compile(tokens, output, ["/for"]));
+  compiled.push(...env.compileTokens(tokens, output, ["/for"]));
   tokens.shift();
   compiled.push("}");
   compiled.push("}");
-
+  console.log(compiled);
   return compiled.join("\n");
 }

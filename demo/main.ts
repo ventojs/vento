@@ -2,14 +2,14 @@ import Environment from "../mod.ts";
 
 const env = new Environment();
 
-const data = {
+const template = await env.load("./main.tmpl");
+
+const result = await template({
   title: "This is an example",
   tags: [
     "template",
     "HTML",
   ],
-};
-
-const result = await env.run("./main.tmpl", data);
+});
 
 console.log(result);

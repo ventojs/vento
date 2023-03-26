@@ -8,9 +8,9 @@ import setTag from "./tags/set.ts";
 import printTag from "./tags/print.ts";
 
 export interface Template {
-  file: string;
+  (data: Record<string, unknown>): Promise<string>;
   code: string;
-  fn: (data: Record<string, unknown>) => Promise<string>;
+  file?: string;
 }
 
 export interface Options {
@@ -31,12 +31,7 @@ export default class Environment {
   cache = new Map<string, Template>();
   loader: Loader;
   tags: Tag[] = [forTag, ifTag, includeTag, setTag, printTag];
-  filters: Record<string, Filter> = {
-    upper: (value: string) => value.toUpperCase(),
-    lower: (value: string) => value.toLowerCase(),
-    capitalize: (value: string) =>
-      Promise.resolve(value.charAt(0).toUpperCase() + value.slice(1)),
-  };
+  filters: Record<string, Filter> = {};
   utils = {
     toIterator,
     isEmpty,
@@ -51,22 +46,20 @@ export default class Environment {
     data: Record<string, unknown>,
     from?: string,
   ): Promise<string> {
-    const template = await this.getTemplate(file, from);
-    return await template.fn(data);
+    const template = await this.load(file, from);
+    return await template(data);
   }
 
-  async getTemplate(file: string, from?: string): Promise<Template> {
-    const path = from ? this.loader.resolve(from, file) : file;
-
-    if (!this.cache.has(path)) {
-      const source = await this.loader.load(path);
-      const tokens = tokenize(source);
-      const code = this.compile(tokens).join("\n");
-
-      const constructor = new Function(
-        "__file",
-        "__env",
-        `
+  compile(
+    source: string,
+    path?: string,
+  ): Template {
+    const tokens = tokenize(source);
+    const code = this.compileTokens(tokens).join("\n");
+    const constructor = new Function(
+      "__file",
+      "__env",
+      `
           return async function (__data = {}) {
             let __output = "";
             with (__data) {
@@ -75,21 +68,27 @@ export default class Environment {
             return __output;
           }
         `,
-      );
+    );
 
-      const template: Template = {
-        file,
-        code,
-        fn: constructor(file, this),
-      };
+    const template: Template = constructor(path, this);
+    template.file = path;
+    template.code = code;
+    return template;
+  }
 
+  async load(file: string, from?: string): Promise<Template> {
+    const path = from ? this.loader.resolve(from, file) : file;
+
+    if (!this.cache.has(path)) {
+      const source = await this.loader.load(path);
+      const template = this.compile(source, path);
       this.cache.set(file, template);
     }
 
     return this.cache.get(file)!;
   }
 
-  compile(
+  compileTokens(
     tokens: Token[],
     outputVar = "__output",
     stopAt?: string[],
@@ -129,11 +128,14 @@ export default class Environment {
     while (tokens.length > 0 && tokens[0][0] === "filter") {
       const [, name, args] = tokens.shift()!;
       if (!this.filters[name]) {
-        throw new Error(`Unknown filter: ${name}`);
+        // It's a prototype's method (e.g. `String.toUpperCase()`)
+        output = `(${output}).${name}(${args ? `, ${args}` : ""})`;
+      } else {
+        // It's a filter (e.g. filters.upper())
+        output = `await __env.filters.${name}(${output}${
+          args ? `, ${args}` : ""
+        })`;
       }
-      output = `await __env.filters.${name}(${output}${
-        args ? `, ${args}` : ""
-      })`;
     }
 
     return output;

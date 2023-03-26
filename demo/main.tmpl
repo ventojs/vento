@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{= title | upper }}</title>
+  <title>{{= title |> toUpperCase }}</title>
 </head>
 <body>
   {{ if title == "This is an example" }}
@@ -13,7 +13,7 @@
   The title is {{= title }}
   {{ /if }}
 
-  {{ set variable | lower }}
+  {{ set variable |> toLowerCase }}
   {{ include "./other.tmpl" }}
   {{ /set }}
 

@@ -4,7 +4,7 @@ export type Token = [TokenType, string, string?];
 const KEYWORDS = {
   start: "{{",
   end: "}}",
-  filter: " | ",
+  filter: "|>",
 };
 
 export default function tokenize(source: string): Token[] {

@@ -1,7 +1,7 @@
 Imported content
 
 <ul>
-  {{ for tag of tags }}
+  {{ for tag of tags |> sort }}
   <li>{{= tag }}</li>
   {{ /for }}
 </ul>

@@ -14,20 +14,20 @@ export default function ifTag(
   const compiled: string[] = [];
 
   compiled.push(`if (${condition}) {`);
-  compiled.push(...env.compile(tokens, output, ["/if", "else"]));
+  compiled.push(...env.compileTokens(tokens, output, ["/if", "else"]));
   let last = tokens.shift();
 
   while (last && last[0] === "tag" && last[1] === "else") {
     if (last[2]) { // It's a "else if"
       const condition = last[2].replace(/^if\s+/, "");
       compiled.push(`} else if (${condition}) {`);
-      compiled.push(...env.compile(tokens, output, ["/if", "else"]));
+      compiled.push(...env.compileTokens(tokens, output, ["/if", "else"]));
       last = tokens.shift();
       continue;
     }
 
     compiled.push("} else {");
-    compiled.push(...env.compile(tokens, output, ["/if"]));
+    compiled.push(...env.compileTokens(tokens, output, ["/if"]));
     last = tokens.shift();
   }
 

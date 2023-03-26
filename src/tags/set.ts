@@ -30,7 +30,7 @@ export default function setTag(
   const compiledFilters = env.compileFilters(tokens, expression);
 
   compiled.push(`let ${expression} = "";`);
-  compiled.push(...env.compile(tokens, expression, ["/set"]));
+  compiled.push(...env.compileTokens(tokens, expression, ["/set"]));
 
   if (tokens.length && (tokens[0][0] !== "tag" || tokens[0][1] !== "/set")) {
     throw new Error(`Missing closing tag for set tag: ${code}`);
