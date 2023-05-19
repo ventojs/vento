@@ -1,10 +1,4 @@
-import { isEmpty, toIterator } from "./utils.ts";
 import tokenize, { Token } from "./tokenizer.ts";
-import forTag from "./tags/for.ts";
-import ifTag from "./tags/if.ts";
-import includeTag from "./tags/include.ts";
-import setTag from "./tags/set.ts";
-import printTag from "./tags/print.ts";
 
 import type { Loader } from "./loader.ts";
 
@@ -24,18 +18,21 @@ export type Tag = (
 // deno-lint-ignore no-explicit-any
 export type Filter = (...args: any[]) => any;
 
-export default class Environment {
+export type Plugin = (env: Environment) => void;
+
+export class Environment {
   cache = new Map<string, Template>();
   loader: Loader;
-  tags: Tag[] = [forTag, ifTag, includeTag, setTag, printTag];
+  tags: Tag[] = [];
   filters: Record<string, Filter> = {};
-  utils = {
-    toIterator,
-    isEmpty,
-  };
+  utils: Record<string, unknown> = {};
 
   constructor(loader: Loader) {
     this.loader = loader;
+  }
+
+  use(plugin: Plugin) {
+    plugin(this);
   }
 
   async run(
@@ -53,24 +50,29 @@ export default class Environment {
   ): Template {
     const tokens = tokenize(source);
     const code = this.compileTokens(tokens).join("\n");
-    const constructor = new Function(
-      "__file",
-      "__env",
-      `
-          return async function (__data = {}) {
-            let __output = "";
-            with (__data) {
-              ${code}
-            }
-            return __output;
-          }
-        `,
-    );
 
-    const template: Template = constructor(path, this);
-    template.file = path;
-    template.code = code;
-    return template;
+    try {
+      const constructor = new Function(
+        "__file",
+        "__env",
+        `
+            return async function (__data = {}) {
+              let __output = "";
+              with (__data) {
+                ${code}
+              }
+              return __output;
+            }
+          `,
+      );
+      // console.log(code);
+      const template: Template = constructor(path, this);
+      template.file = path;
+      template.code = code;
+      return template;
+    } catch {
+      throw new Error(`Error compiling template: ${code}`);
+    }
   }
 
   async load(file: string, from?: string): Promise<Template> {
@@ -126,7 +128,7 @@ export default class Environment {
       const [, name, args] = tokens.shift()!;
       if (!this.filters[name]) {
         // It's a prototype's method (e.g. `String.toUpperCase()`)
-        output = `(${output}).${name}(${args ? `, ${args}` : ""})`;
+        output = `(${output}).${name}(${args ? args : ""})`;
       } else {
         // It's a filter (e.g. filters.upper())
         output = `await __env.filters.${name}(${output}${

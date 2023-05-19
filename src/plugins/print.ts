@@ -1,7 +1,13 @@
 import type { Token } from "../tokenizer.ts";
-import type Environment from "../environment.ts";
+import type { Environment } from "../environment.ts";
 
-export default function printTag(
+export default function () {
+  return (env: Environment) => {
+    env.tags.push(printTag);
+  };
+}
+
+function printTag(
   env: Environment,
   code: string,
   output: string,

@@ -1,7 +1,13 @@
 import type { Token } from "../tokenizer.ts";
-import type Environment from "../environment.ts";
+import type { Environment } from "../environment.ts";
 
-export default function ifTag(
+export default function () {
+  return (env: Environment) => {
+    env.tags.push(ifTag);
+  };
+}
+
+function ifTag(
   env: Environment,
   code: string,
   output: string,
@@ -10,7 +16,7 @@ export default function ifTag(
   if (!code.startsWith("if ")) {
     return;
   }
-  const condition = compileCondition(code.replace(/^if\s+/, "").trim());
+  const condition = code.replace(/^if\s+/, "").trim();
   const compiled: string[] = [];
 
   compiled.push(`if (${condition}) {`);
@@ -36,21 +42,4 @@ export default function ifTag(
   }
 
   return compiled.join("\n");
-}
-
-function compileCondition(condition: string) {
-  // Variable exists
-  if (condition.match(/^[\w.?]+$/)) {
-    const first = condition.split(/\??\./)[0];
-    return `typeof ${first} !== "undefined" && ${condition}`;
-  }
-
-  // Variable does not exist
-  if (condition.match(/^![\w.?]+$/)) {
-    condition = condition.replace(/^!/, "");
-    const first = condition.split(/\??\./)[0];
-    return `typeof ${first} === "undefined" || !${condition}`;
-  }
-
-  return condition;
 }

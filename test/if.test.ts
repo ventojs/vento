@@ -11,44 +11,6 @@ Deno.test("If tag (true)", async () => {
   });
 });
 
-Deno.test("If tag (undefined)", async () => {
-  await test({
-    template: `
-    {{ if foo }}
-      <p>True</p>
-    {{ /if }}
-    `,
-    expected: "",
-  });
-  await test({
-    template: `
-    {{ if foo?.foo }}
-      <p>True</p>
-    {{ /if }}
-    `,
-    expected: "",
-  });
-});
-
-Deno.test("If tag (undefined negative)", async () => {
-  await test({
-    template: `
-    {{ if !foo }}
-      <p>True</p>
-    {{ /if }}
-    `,
-    expected: "<p>True</p>",
-  });
-  await test({
-    template: `
-    {{ if !foo.foo }}
-      <p>True</p>
-    {{ /if }}
-    `,
-    expected: "<p>True</p>",
-  });
-});
-
 Deno.test("If tag (defined value)", async () => {
   await test({
     template: `
@@ -67,14 +29,5 @@ Deno.test("If tag (defined value)", async () => {
     `,
     expected: "",
     data: { name: false },
-  });
-  await test({
-    template: `
-    {{ if !name.length }}
-      <p>True</p>
-    {{ /if }}
-    `,
-    expected: "<p>True</p>",
-    data: { name: [] },
   });
 });

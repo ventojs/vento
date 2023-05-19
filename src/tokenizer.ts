@@ -40,7 +40,7 @@ export default function tokenize(source: string): Token[] {
       tokens.push([type, code]);
 
       filters.forEach((filter) => {
-        const match = filter.trim().match(/^(\w+)(?::(.*))?$/);
+        const match = filter.trim().match(/^(\w+)(?:\((.*)\))?$/);
 
         if (!match) {
           throw new Error(`Invalid filter: ${filter}`);
