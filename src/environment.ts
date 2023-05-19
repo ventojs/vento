@@ -1,5 +1,4 @@
 import { isEmpty, toIterator } from "./utils.ts";
-import { FileLoader, Loader } from "./loader.ts";
 import tokenize, { Token } from "./tokenizer.ts";
 import forTag from "./tags/for.ts";
 import ifTag from "./tags/if.ts";
@@ -7,14 +6,12 @@ import includeTag from "./tags/include.ts";
 import setTag from "./tags/set.ts";
 import printTag from "./tags/print.ts";
 
+import type { Loader } from "./loader.ts";
+
 export interface Template {
-  (data: Record<string, unknown>): Promise<string>;
+  (data?: Record<string, unknown>): Promise<string>;
   code: string;
   file?: string;
-}
-
-export interface Options {
-  includes?: string;
 }
 
 export type Tag = (
@@ -37,8 +34,8 @@ export default class Environment {
     isEmpty,
   };
 
-  constructor(options: Options = {}) {
-    this.loader = new FileLoader(options.includes || "");
+  constructor(loader: Loader) {
+    this.loader = loader;
   }
 
   async run(

@@ -1,6 +1,6 @@
-import Environment from "../mod.ts";
+import tmpl from "../mod.ts";
 
-const env = new Environment();
+const env = tmpl();
 
 const template = await env.load("./main.tmpl");
 
