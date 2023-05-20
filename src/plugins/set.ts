@@ -1,7 +1,13 @@
 import type { Token } from "../tokenizer.ts";
-import type Environment from "../environment.ts";
+import type { Environment } from "../environment.ts";
 
-export default function setTag(
+export default function () {
+  return (env: Environment) => {
+    env.tags.push(setTag);
+  };
+}
+
+function setTag(
   env: Environment,
   code: string,
   _output: string,
@@ -15,21 +21,35 @@ export default function setTag(
 
   // Value is set (e.g. {{ set foo = "bar" }})
   if (expression.includes("=")) {
-    const match = code.match(/^(.+)\s*=\s*(.+)$/);
+    const match = code.match(/^set\s+(.+)\s*=\s*(.+)$/);
 
     if (!match) {
       throw new Error(`Invalid set tag: ${code}`);
     }
 
     const [, variable, value] = match;
-    return `let ${variable} = ${env.compileFilters(tokens, value)};`;
+    const val = env.compileFilters(tokens, value);
+
+    return `if (__data.hasOwnProperty("${variable}")) {
+      ${variable} = ${val};
+    } else {
+      var ${variable} = ${val};
+    }
+    __data["${variable.trim()}"] = ${variable};
+    `;
   }
 
   // Value is captured (eg: {{ set foo }}bar{{ /set }})
   const compiled: string[] = [];
   const compiledFilters = env.compileFilters(tokens, expression);
 
-  compiled.push(`let ${expression} = "";`);
+  compiled.push(`if (__data.hasOwnProperty("${expression}")) {
+    ${expression} = "";
+  } else {
+    var ${expression} = "";
+  }
+  `);
+
   compiled.push(...env.compileTokens(tokens, expression, ["/set"]));
 
   if (tokens.length && (tokens[0][0] !== "tag" || tokens[0][1] !== "/set")) {
@@ -38,5 +58,6 @@ export default function setTag(
 
   tokens.shift();
   compiled.push(`${expression} = ${compiledFilters};`);
+  compiled.push(`__data["${expression.trim()}"] = ${expression};`);
   return compiled.join("\n");
 }
