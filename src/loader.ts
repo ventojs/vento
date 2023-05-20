@@ -1,7 +1,7 @@
 import { path } from "../deps.ts";
 
 export interface Loader {
-  load(file: string): Promise<string>;
+  load(file: string): string | Promise<string>;
   resolve(from: string, file: string): string;
 }
 

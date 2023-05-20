@@ -1,6 +1,12 @@
-import Environment from "../environment.ts";
+import type { Environment } from "../environment.ts";
 
-export default function includeTag(
+export default function () {
+  return (env: Environment) => {
+    env.tags.push(includeTag);
+  };
+}
+
+function includeTag(
   _env: Environment,
   code: string,
   output: string,
@@ -9,6 +15,17 @@ export default function includeTag(
     return;
   }
 
-  const expression = code.replace(/^include\s+/, "");
-  return `${output} += await __env.run(${expression}, __data, __file);`;
+  const match = code?.match(
+    /^include\s+([^{]+)(?:\{(.*)\})?$/,
+  );
+
+  if (!match) {
+    throw new Error(`Invalid include: ${code}`);
+  }
+
+  const [_, file, data] = match;
+
+  return `${output} += await __env.run(${file}, {...__data${
+    data ? `, ${data}` : ""
+  }}, __file);`;
 }
