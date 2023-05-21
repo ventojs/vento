@@ -5,6 +5,7 @@ import printTag from "./src/plugins/print.ts";
 import forTag from "./src/plugins/for.ts";
 import includeTag from "./src/plugins/include.ts";
 import setTag from "./src/plugins/set.ts";
+import escape from "./src/plugins/escape.ts";
 
 export interface Options {
   includes?: string | Loader;
@@ -23,6 +24,7 @@ export default function (options: Options = {}) {
   env.use(forTag());
   env.use(includeTag());
   env.use(setTag());
+  env.use(escape());
 
   return env;
 }

@@ -1,3 +1,5 @@
+# VENTO
+
 This is a minimal and experimental template engine inspired by other great
 engines like Nunjucks, Liquid, Mustache or EJS.
 
@@ -61,13 +63,13 @@ neither is). The issues I found in existing template engines:
   - The data context is a bit confusing to me.
   - Very uncomfortable to work with filters.
 
-## What this new template engine has to offer?
+### What this new template engine has to offer?
 
 First, let's take a look at this syntax example:
 
 ```
 {{ if printName }}
-  {{= user.getName("full") |> toUpperCase }}
+  {{= await user.getName("full") |> toUpperCase }}
 {{ /if }}
 ```
 
@@ -75,10 +77,9 @@ First, let's take a look at this syntax example:
   no distinction between tags `{% tag %}` and printing variables `{{ var }}`.
   The way to print a variable is by adding a `=` sign (like EJS).
 - The closed tag is done by prepending the `/` character (like Mustache).
-- Everything is async. No matter if `user.getName()` returns a Promise or not.
-  Unlike Nunjucks, there are no special tags for async operations.
-- Like EJS, you can use real JavaScript code everywhere. `user.getName("full")`
-  is real JS code that will be executed at runtime.
+- Async friendly.
+- Like EJS, you can use real JavaScript code everywhere.
+  `await user.getName("full")` is real JS code that will be executed at runtime.
 - Filters are applied using the
   [pipeline operator](https://github.com/tc39/proposal-pipeline-operator)
   (`|>`). Note: this is not exactly like the last proposal for JavaScript, it's
@@ -88,3 +89,55 @@ First, let's take a look at this syntax example:
 - Filters can run prototype methods. In this example `users.getName("full")`
   returns a string, so the `toUpperCase` is a method of the `String` object.
   It's the same as `users.getName("full").toUpperCase()`.
+
+## API
+
+### For
+
+Use `for [value] of [collection]` tag to iterate over arrays, dictionaries,
+numbers, strings, etc:
+
+- Arrays:
+  ```
+  {{ for number of [1, 2, 3] }}
+    {{= number }}
+  {{ /for }}
+  ```
+- Objects:
+  ```
+  {{ for person of [{name: "Óscar"}, {name: "Laura"}] }}
+    {{= person.name }}
+  {{ /for }}
+  ```
+- Numbers (to count from 1 to 10):
+  ```
+  {{ for count of 10 }}
+    {{= count }}
+  {{ /for }}
+  ```
+- Strings (to split by letters):
+  ```
+  {{ for letter of "Text" }}
+    {{= letter }}
+  {{ /for }}
+  ```
+- Use `async` for asynchronous iterators:
+  ```
+  {{ for await item of getItems() }}
+    {{= item }}
+  {{ /for }}
+  ```
+- Use `key, value` to get the key of the iterator
+  ```
+  {{ for name, value of { name: "Óscar", surname: "Otero" } }}
+    Key: {{= name }}
+    Value: {{= value }}
+  {{ /for }}
+  ```
+- Apply filters to the collection before iterating it (in this example, filter
+  the even numbers):
+  ```
+  {{ for evenNumber of [1, 2, 3] |> filter((n) => n % 2 === 0) }}
+    {{= evenNumber }}
+  {{ /for }}
+  ```
