@@ -121,7 +121,7 @@ numbers, strings, etc:
     {{= letter }}
   {{ /for }}
   ```
-- Use `async` for asynchronous iterators:
+- Use `await` for asynchronous iterators:
   ```
   {{ for await item of getItems() }}
     {{= item }}
@@ -140,4 +140,36 @@ numbers, strings, etc:
   {{ for evenNumber of [1, 2, 3] |> filter((n) => n % 2 === 0) }}
     {{= evenNumber }}
   {{ /for }}
+  ```
+
+### If
+
+Use `if` to test a condition. The syntax for the condition is the same as
+regular JavaScript `if`:
+
+- A simple condition:
+  ```
+  {{ if user.is_active }}
+    The user is active
+  {{ /if }}
+  ```
+
+- If/else
+  ```
+  {{ if user.is_active && user.is_logged }}
+    The user is active and logged
+  {{ else }}
+    The user is not active
+  {{ /if }}
+  ```
+
+- If/else if
+  ```
+  {{ if user.active }}
+    The user is active
+  {{ else if user.logged }}
+    The user is logged
+  {{ else }}
+    The user is not active
+  {{ /if }}
   ```

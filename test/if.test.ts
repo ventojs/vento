@@ -31,3 +31,43 @@ Deno.test("If tag (defined value)", async () => {
     data: { name: false },
   });
 });
+
+Deno.test("If / else condition", async () => {
+  await test({
+    template: `
+    {{ if false }}
+      <p>Is false</p>
+    {{ else }}
+      <p>Is true</p>
+    {{ /if }}
+    `,
+    expected: "<p>Is true</p>",
+  });
+});
+
+Deno.test("If / else if condition", async () => {
+  await test({
+    template: `
+    {{ if name == "Óscar" }}
+      <p>Is Óscar</p>
+    {{ else if name == "Laura" }}
+      <p>Is Laura</p>
+    {{ /if }}
+    `,
+    expected: "<p>Is Laura</p>",
+    data: { name: "Laura" },
+  });
+  await test({
+    template: `
+    {{ if name == "Óscar" }}
+      <p>Is Óscar</p>
+    {{ else if name != "Laura" }}
+      <p>Is not Laura</p>
+    {{ else }}
+      <p>Is Laura</p>
+    {{ /if }}
+    `,
+    expected: "<p>Is Laura</p>",
+    data: { name: "Laura" },
+  });
+});
