@@ -83,3 +83,33 @@ Deno.test("Include tag (with custom data)", async () => {
     },
   });
 });
+
+Deno.test("Include tag (with front matter)", async () => {
+  await test({
+    template: `
+    {{ include "/my-file.tmpl" {salute: "Hello from include"} }}
+    `,
+    expected: "Hello from include",
+    includes: {
+      "/my-file.tmpl": `---
+salute: Hello from front matter
+---
+      {{ =salute }}
+      `,
+    },
+  });
+
+  await test({
+    template: `
+    {{ include "/my-file.tmpl" }}
+    `,
+    expected: "Hello from front matter",
+    includes: {
+      "/my-file.tmpl": `---
+salute: Hello from front matter
+---
+      {{ =salute }}
+      `,
+    },
+  });
+});

@@ -1,5 +1,10 @@
 import tmpl from "../mod.ts";
-import { assertEquals } from "https://deno.land/std@0.188.0/testing/asserts.ts";
+import { assertEquals } from "https://deno.land/std@0.190.0/testing/asserts.ts";
+import {
+  extract,
+  test as fmTest,
+} from "https://deno.land/std@0.190.0/front_matter/yaml.ts";
+
 import { path } from "../deps.ts";
 
 import type { Environment } from "../src/environment.ts";
@@ -33,8 +38,18 @@ export class FileLoader implements Loader {
     this.files = files;
   }
 
-  load(file: string): string {
-    return this.files[file] || "";
+  load(file: string) {
+    const source = this.files[file] || "";
+
+    if (fmTest(source)) {
+      const { body, attrs } = extract(source);
+      return {
+        source: body,
+        data: attrs,
+      };
+    }
+
+    return { source };
   }
 
   resolve(from: string, file: string): string {

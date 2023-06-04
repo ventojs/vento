@@ -47,6 +47,7 @@ export class Environment {
   compile(
     source: string,
     path?: string,
+    defaults?: Record<string, unknown>,
   ): Template {
     const tokens = tokenize(source);
     const code = this.compileTokens(tokens).join("\n");
@@ -55,8 +56,10 @@ export class Environment {
       const constructor = new Function(
         "__file",
         "__env",
+        "__defaults",
         `
-            return async function (__data = {}) {
+            return async function (__data) {
+              __data = Object.assign({}, __defaults, __data);
               let __output = "";
               with (__data) {
                 ${code}
@@ -66,7 +69,7 @@ export class Environment {
           `,
       );
       // console.log(code);
-      const template: Template = constructor(path, this);
+      const template: Template = constructor(path, this, defaults);
       template.file = path;
       template.code = code;
       return template;
@@ -79,8 +82,9 @@ export class Environment {
     const path = from ? this.loader.resolve(from, file) : file;
 
     if (!this.cache.has(path)) {
-      const source = await this.loader.load(path);
-      const template = this.compile(source, path);
+      const { source, data } = await this.loader.load(path);
+      const template = this.compile(source, path, data);
+
       this.cache.set(file, template);
     }
 
