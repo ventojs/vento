@@ -92,6 +92,27 @@ First, let's take a look at this syntax example:
 
 ## API
 
+### Print
+
+Use the `=` character to output the value of a variable or expression.
+
+- Print a variable:
+  ```
+  {{= name }}
+  ```
+- Print the result of an expression:
+  ```
+  {{= (name + " " + surname).toUpperCase() }}
+  ```
+- Apply pipes with `|>`:
+  ```
+  {{= name + " " + surname |> toUpperCase }}
+  ```
+- Print conditionally
+  ```
+  {{= name || "Unknown name" }}
+  ```
+
 ### For
 
 Use `for [value] of [collection]` tag to iterate over arrays, dictionaries,
@@ -172,4 +193,53 @@ regular JavaScript `if`:
   {{ else }}
     The user is not active
   {{ /if }}
+  ```
+
+### Include
+
+To insert other templates in place. You can also include extra data.
+
+- Include a template
+  ```
+  {{ include "filename.ven" }}
+  ```
+- Include a template dynamically
+  ```
+  {{ include `${filename}.ven` }}
+  ```
+- Add extra data
+  ```
+  {{ include `${filename}.ven` {name: "Value", name2: "Value2"} }}
+  ```
+
+### Set
+
+Allows to create or modify a variable.
+
+- Save a variable inline mode
+  ```
+  {{ set message = "Hello world" }}
+  ```
+- Save a variable block mode
+  ```
+  {{ set message }}
+    Hello world
+  {{ /set }}
+  ```
+- Use pipes
+  ```
+  {{ set message = "Hello world" |> toUpperCase }}
+  ```
+- Use pipes in block mode
+  ```
+  {{ set message |> toUpperCase }}
+    Hello world
+  {{ /set }}
+  ```
+
+## Available filters
+
+- `escape`: To escape HTML code:
+  ```
+  {{= "<h1>Hello world</h1>" |> escape }}
   ```

@@ -1,14 +1,14 @@
-import tmpl from "../mod.ts";
+import vento from "../mod.ts";
 import nunjucks from "npm:nunjucks@3.2.4";
 import { Liquid } from "npm:liquidjs@10.7.1";
 
-const env = tmpl();
+const env = vento();
 const engine = new Liquid({
   cache: true,
 });
 
 Deno.bench({
-  name: "Tmpl",
+  name: "Vento",
   async fn() {
     await env.run(Deno.cwd() + "/bench/tmp.tmpl", { hello: "Hello" });
   },

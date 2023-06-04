@@ -3,5 +3,8 @@
     "test": "deno test --allow-read",
     "bench": "deno bench --allow-read"
   },
-  "lock": false
+  "lock": false,
+  "fmt": {
+    "exclude": ["CHANGELOG.md"]
+  }
 }
