@@ -26,8 +26,7 @@ export async function test(options: TestOptions) {
   if (options.init) {
     options.init(env);
   }
-  const compiled = env.compile(options.template);
-  const output = await compiled(options.data);
+  const output = await env.runString(options.template, options.data);
   assertEquals(output.trim(), options.expected.trim());
 }
 

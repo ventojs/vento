@@ -10,7 +10,7 @@ const engine = new Liquid({
 Deno.bench({
   name: "Vento",
   async fn() {
-    await env.run(Deno.cwd() + "/bench/tmp.tmpl", { hello: "Hello" });
+    await env.run(Deno.cwd() + "/bench/tmp.vto", { hello: "Hello" });
   },
 });
 Deno.bench({

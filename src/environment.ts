@@ -44,6 +44,28 @@ export class Environment {
     return await template(data);
   }
 
+  async runString(
+    source: string,
+    data?: Record<string, unknown>,
+    file?: string,
+  ): Promise<string> {
+    if (file) {
+      const cached = this.cache.get(file);
+
+      if (cached) {
+        return await cached(data);
+      }
+
+      const template = this.compile(source, file);
+      this.cache.set(file, template);
+
+      return await template(data);
+    }
+
+    const template = this.compile(source, file);
+    return await template(data);
+  }
+
   compile(
     source: string,
     path?: string,
