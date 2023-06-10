@@ -1,10 +1,10 @@
 import { Environment } from "./src/environment.ts";
 import { FileLoader, Loader } from "./src/loader.ts";
-import ifTag from "./src/plugins/if.ts";
-import forTag from "./src/plugins/for.ts";
-import includeTag from "./src/plugins/include.ts";
-import setTag from "./src/plugins/set.ts";
-import escape from "./src/plugins/escape.ts";
+import ifTag from "./plugins/if.ts";
+import forTag from "./plugins/for.ts";
+import includeTag from "./plugins/include.ts";
+import setTag from "./plugins/set.ts";
+import escape from "./plugins/escape.ts";
 
 export interface Options {
   includes?: string | Loader;

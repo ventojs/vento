@@ -1,5 +1,5 @@
-import type { Token } from "../tokenizer.ts";
-import type { Environment } from "../environment.ts";
+import type { Token } from "../src/tokenizer.ts";
+import type { Environment } from "../src/environment.ts";
 
 export default function () {
   return (env: Environment) => {

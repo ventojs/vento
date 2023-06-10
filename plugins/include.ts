@@ -1,4 +1,4 @@
-import type { Environment } from "../environment.ts";
+import type { Environment } from "../src/environment.ts";
 
 export default function () {
   return (env: Environment) => {
