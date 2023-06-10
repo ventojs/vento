@@ -69,13 +69,12 @@ First, let's take a look at this syntax example:
 
 ```
 {{ if printName }}
-  {{= await user.getName("full") |> toUpperCase }}
+  {{ await user.getName("full") |> toUpperCase }}
 {{ /if }}
 ```
 
 - Everything is between `{{` and `}}` tags. Unlike Nunjucks or Liquid, there's
   no distinction between tags `{% tag %}` and printing variables `{{ var }}`.
-  The way to print a variable is by adding a `=` sign (like EJS).
 - The closed tag is done by prepending the `/` character (like Mustache).
 - Async friendly.
 - Like EJS, you can use real JavaScript code everywhere.
@@ -94,23 +93,23 @@ First, let's take a look at this syntax example:
 
 ### Print
 
-Use the `=` character to output the value of a variable or expression.
+Put a variable or expression between `{{ }}` to output the result.
 
 - Print a variable:
   ```
-  {{= name }}
+  {{ name }}
   ```
 - Print the result of an expression:
   ```
-  {{= (name + " " + surname).toUpperCase() }}
+  {{ (name + " " + surname).toUpperCase() }}
   ```
 - Apply pipes with `|>`:
   ```
-  {{= name + " " + surname |> toUpperCase }}
+  {{ name + " " + surname |> toUpperCase }}
   ```
 - Print conditionally
   ```
-  {{= name || "Unknown name" }}
+  {{ name || "Unknown name" }}
   ```
 
 ### For
@@ -121,45 +120,45 @@ numbers, strings, etc:
 - Arrays:
   ```
   {{ for number of [1, 2, 3] }}
-    {{= number }}
+    {{ number }}
   {{ /for }}
   ```
 - Objects:
   ```
   {{ for person of [{name: "Óscar"}, {name: "Laura"}] }}
-    {{= person.name }}
+    {{ person.name }}
   {{ /for }}
   ```
 - Numbers (to count from 1 to 10):
   ```
   {{ for count of 10 }}
-    {{= count }}
+    {{ count }}
   {{ /for }}
   ```
 - Strings (to split by letters):
   ```
   {{ for letter of "Text" }}
-    {{= letter }}
+    {{ letter }}
   {{ /for }}
   ```
 - Use `await` for asynchronous iterators:
   ```
   {{ for await item of getItems() }}
-    {{= item }}
+    {{ item }}
   {{ /for }}
   ```
 - Use `key, value` to get the key of the iterator
   ```
-  {{ for name, value of { name: "Óscar", surname: "Otero" } }}
-    Key: {{= name }}
-    Value: {{= value }}
+  {{ for key, value of { name: "Óscar", surname: "Otero" } }}
+    Key: {{ key }}
+    Value: {{ value }}
   {{ /for }}
   ```
 - Apply filters to the collection before iterating it (in this example, filter
   the even numbers):
   ```
   {{ for evenNumber of [1, 2, 3] |> filter((n) => n % 2 === 0) }}
-    {{= evenNumber }}
+    {{ evenNumber }}
   {{ /for }}
   ```
 
@@ -241,5 +240,5 @@ Allows to create or modify a variable.
 
 - `escape`: To escape HTML code:
   ```
-  {{= "<h1>Hello world</h1>" |> escape }}
+  {{ "<h1>Hello world</h1>" |> escape }}
   ```

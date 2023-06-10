@@ -4,7 +4,7 @@ Deno.test("Set tag", async () => {
   await test({
     template: `
     {{ set message = "Hello world" }}
-    {{ = message }}
+    {{ message }}
     `,
     expected: "Hello world",
   });
@@ -14,7 +14,7 @@ Deno.test("Set tag", async () => {
       Hello world
     {{ /set }}
 
-    {{ = message }}
+    {{ message }}
     `,
     expected: "Hello world",
   });
@@ -24,7 +24,7 @@ Deno.test("Set tag with complex", async () => {
   await test({
     template: `
     {{ set message = ["Hello", "world"].join(" ") }}
-    {{ = message }}
+    {{ message }}
     `,
     expected: "Hello world",
   });
@@ -34,7 +34,7 @@ Deno.test("Set tag with complex", async () => {
       Hello {{ if true }}world{{ /if }}
     {{ /set }}
 
-    {{ = message }}
+    {{ message }}
     `,
     expected: "Hello world",
   });
@@ -44,7 +44,7 @@ Deno.test("Set tag with filters", async () => {
   await test({
     template: `
     {{ set message = ["Hello", "world"] |> join(" ") }}
-    {{ = message }}
+    {{ message }}
     `,
     expected: "Hello world",
   });
@@ -54,7 +54,7 @@ Deno.test("Set tag with filters", async () => {
       Hello {{ if true }}world{{ /if }}
     {{ /set }}
 
-    {{ = message }}
+    {{ message }}
     `,
     expected: "HELLO WORLD",
   });
@@ -68,7 +68,7 @@ Deno.test("Set tag with includes", async () => {
     `,
     expected: "Hello World",
     includes: {
-      "/my-file.tmpl": "Hello {{= name }}",
+      "/my-file.tmpl": "Hello {{ name }}",
     },
   });
 });

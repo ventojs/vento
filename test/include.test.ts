@@ -30,7 +30,7 @@ Deno.test("Include tag (with data)", async () => {
     `,
     expected: "Hello world",
     includes: {
-      "/my-file.tmpl": "Hello {{ =name }}",
+      "/my-file.tmpl": "Hello {{ name }}",
     },
     data: {
       name: "world",
@@ -44,7 +44,7 @@ Deno.test("Include tag (with data)", async () => {
     expected: "Hello world",
     includes: {
       "/sub/my-file.tmpl": "{{ include './other-file.tmpl' }}",
-      "/sub/other-file.tmpl": "Hello {{ =name }}",
+      "/sub/other-file.tmpl": "Hello {{ name }}",
     },
     data: {
       name: "world",
@@ -59,7 +59,7 @@ Deno.test("Include tag (with custom data)", async () => {
     `,
     expected: "Good bye world",
     includes: {
-      "/my-file.tmpl": "{{ =salute }} {{ =name }}",
+      "/my-file.tmpl": "{{ salute }} {{ name }}",
     },
     data: {
       salute: "Hello",
@@ -75,7 +75,7 @@ Deno.test("Include tag (with custom data)", async () => {
     includes: {
       "/sub/my-file.tmpl":
         "{{ include './other-file.tmpl' { name: `${name} Óscar`} }}",
-      "/sub/other-file.tmpl": "{{= salute }} {{ =name }}",
+      "/sub/other-file.tmpl": "{{ salute }} {{ name }}",
     },
     data: {
       salute: "Hello",
@@ -94,7 +94,7 @@ Deno.test("Include tag (with front matter)", async () => {
       "/my-file.tmpl": `---
 salute: Hello from front matter
 ---
-      {{ =salute }}
+      {{ salute }}
       `,
     },
   });
@@ -108,7 +108,7 @@ salute: Hello from front matter
       "/my-file.tmpl": `---
 salute: Hello from front matter
 ---
-      {{ =salute }}
+      {{ salute }}
       `,
     },
   });

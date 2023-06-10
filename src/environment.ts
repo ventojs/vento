@@ -108,6 +108,7 @@ export class Environment {
 
       if (type === "string") {
         compiled.push(`${outputVar} += \`${code}\`;`);
+        continue;
       }
 
       if (type === "tag") {
@@ -120,8 +121,13 @@ export class Environment {
           }
         }
 
-        throw new Error(`Unknown block: ${code}`);
+        // Unknown tag, just print it
+        const expression = this.compileFilters(tokens, code);
+        compiled.push(`${outputVar} += ${expression};`);
+        continue;
       }
+
+      throw new Error(`Unknown token type "${type}"`);
     }
 
     return compiled;
