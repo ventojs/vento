@@ -33,7 +33,7 @@ neither is). The issues I found in existing template engines:
 
 - I like:
   - The support for async evaluation is less hacky than Nunjucks.
-  - The variables are not escaped by default, there's the `escape` filter for
+  - The variables are not escaped by default, there's an `escape` filter for
     that.
 
 - I don't like:
@@ -42,7 +42,7 @@ neither is). The issues I found in existing template engines:
   - It has the same problem as Nunjucks with the `%` character in the
     delimiters.
 
-### EJS
+### EJS/Eta
 
 - I like:
   - It allows running any javascript code in the template.
@@ -88,6 +88,45 @@ First, let's take a look at this syntax example:
 - Filters can run prototype methods. In this example `users.getName("full")`
   returns a string, so the `toUpperCase` is a method of the `String` object.
   It's the same as `users.getName("full").toUpperCase()`.
+
+## Getting started
+
+This is a library for Deno. I'm planning to release an NPM version in the
+future.
+
+First, you need to import the library and create an instance:
+
+```ts
+import vento from "https://deno.land/x/vento@v0.2.0/mod.ts";
+
+const vto = vento({
+  // Resolve the non-relative includes paths
+  includes: "./path/to/includes",
+});
+```
+
+There are different ways to load, compile and run a template. For example, you
+can use `load` to load and compile a template file and return it.
+
+```ts
+// Load and return a template
+const template = vto.load("my-template.vto");
+
+// Now you can use it passing the data
+template({ title: "Hello world" });
+```
+
+Alternatively, you can load and run the template file in a single call:
+
+```ts
+vto.run("my-template.vto", { title: "Hello world" });
+```
+
+If the template code is not a file, you can run it directly:
+
+```ts
+vto.runString("<h1>{{ title }}</h1>", { title: "Hello world" });
+```
 
 ## API
 
