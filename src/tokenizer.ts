@@ -27,15 +27,17 @@ export default function tokenize(source: string): Token[] {
     }
 
     if (type === "tag") {
-      const index = source.indexOf(KEYWORDS.end);
+      const index = indexEndTag(source);
 
-      if (index === -1) {
-        console.log(tokens);
+      if (index === undefined) {
         throw new Error(`Unclosed tag: ${source}`);
       }
 
+      const tagSource = source.slice(2, index - 2);
+      source = source.slice(index);
+
       // Save code and detect filters
-      const filters = source.slice(2, index).split(KEYWORDS.filter);
+      const filters = tagSource.split(KEYWORDS.filter);
       const code = filters.shift()!.trim();
       tokens.push([type, code]);
 
@@ -50,11 +52,116 @@ export default function tokenize(source: string): Token[] {
         tokens.push(["filter", filterName, filterArgs]);
       });
 
-      source = source.slice(index + 2);
       type = "string";
       continue;
     }
   }
 
   return tokens;
+}
+
+type status =
+  | "single-quote"
+  | "double-quote"
+  | "literal"
+  | "bracket"
+  | "comment";
+
+function indexEndTag(source: string): number | undefined {
+  const length = source.length;
+  const statuses: status[] = [];
+  let index = 0;
+
+  while (index < length) {
+    const char = source.charAt(index++);
+
+    switch (char) {
+      case "{": {
+        const status = statuses[0];
+
+        if (status === "literal" && source.charAt(index - 2) === "$") {
+          statuses.unshift("bracket");
+        } else if (
+          status !== "comment" && status !== "single-quote" &&
+          status !== "double-quote" && status !== "literal"
+        ) {
+          statuses.unshift("bracket");
+        }
+        break;
+      }
+      case "}": {
+        const status = statuses[0];
+
+        if (status === "bracket") {
+          statuses.shift();
+
+          if (statuses.length === 0) {
+            return index;
+          }
+        }
+        break;
+      }
+
+      case '"': {
+        const status = statuses[0];
+        if (status === "double-quote") {
+          statuses.shift();
+        } else if (
+          status !== "comment" &&
+          status !== "single-quote" &&
+          status !== "literal"
+        ) {
+          statuses.unshift("double-quote");
+        }
+        break;
+      }
+
+      case "'": {
+        const status = statuses[0];
+        if (status === "single-quote") {
+          statuses.shift();
+        } else if (
+          status !== "comment" &&
+          status !== "double-quote" &&
+          status !== "literal"
+        ) {
+          statuses.unshift("single-quote");
+        }
+        break;
+      }
+
+      case "`": {
+        const status = statuses[0];
+        if (status === "literal") {
+          statuses.shift();
+        } else if (
+          status !== "comment" &&
+          status !== "double-quote" &&
+          status !== "single-quote"
+        ) {
+          statuses.unshift("literal");
+        }
+        break;
+      }
+
+      case "/": {
+        const status = statuses[0];
+
+        if (
+          status !== "single-quote" && status !== "double-quote" &&
+          status !== "literal"
+        ) {
+          if (source.charAt(index) === "*") {
+            statuses.unshift("comment");
+          } else if (
+            status === "comment" &&
+            source.charAt(index - 2) === "*"
+          ) {
+            statuses.shift();
+          }
+        }
+        break;
+      }
+    }
+  }
 }
