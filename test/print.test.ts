@@ -12,7 +12,7 @@ Deno.test("Print tag", async () => {
 Deno.test("Print tag with variable", async () => {
   await test({
     template: `
-    {{ message }}
+    {{ it.message }}
     `,
     expected: "Hello world",
     data: { message: "Hello world" },

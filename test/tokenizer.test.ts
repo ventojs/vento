@@ -1,5 +1,14 @@
-import tokenize from "../src/tokenizer.ts";
+import tokenize, { parseTag } from "../src/tokenizer.ts";
 import { assertEquals } from "https://deno.land/std@0.190.0/testing/asserts.ts";
+
+Deno.test("Parse tag", () => {
+  const code = "{{ tag |> filter1 |> filter2 }}";
+  const positions = parseTag(code);
+  assertEquals(positions, [2, 9, 20, 31]);
+  assertEquals(code.substring(positions[0], positions[1]), " tag |>");
+  assertEquals(code.substring(positions[1], positions[2]), " filter1 |>");
+  assertEquals(code.substring(positions[2], positions[3]), " filter2 }}");
+});
 
 Deno.test("Basic tokenizer", () => {
   const code = `<h1>{{ message }}</h1>`;

@@ -8,6 +8,7 @@ import escape from "./plugins/escape.ts";
 
 export interface Options {
   includes?: string | Loader;
+  dataVarname?: string;
 }
 
 export default function (options: Options = {}) {
@@ -15,7 +16,10 @@ export default function (options: Options = {}) {
     ? options.includes
     : new FileLoader(options.includes || Deno.cwd());
 
-  const env = new Environment(loader);
+  const env = new Environment({
+    loader,
+    dataVarname: options.dataVarname || "it",
+  });
 
   // Register basic plugins
   env.use(ifTag());

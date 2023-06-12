@@ -20,15 +20,20 @@ export type Filter = (...args: any[]) => any;
 
 export type Plugin = (env: Environment) => void;
 
+export interface Options {
+  loader: Loader;
+  dataVarname?: string;
+}
+
 export class Environment {
   cache = new Map<string, Template>();
-  loader: Loader;
+  options: Options;
   tags: Tag[] = [];
   filters: Record<string, Filter> = {};
   utils: Record<string, unknown> = {};
 
-  constructor(loader: Loader) {
-    this.loader = loader;
+  constructor(options: Options) {
+    this.options = options;
   }
 
   use(plugin: Plugin) {
@@ -79,16 +84,16 @@ export class Environment {
         "__file",
         "__env",
         "__defaults",
-        `
-            return async function (__data) {
-              __data = Object.assign({}, __defaults, __data);
-              let __output = "";
-              with (__data) {
-                ${code}
-              }
-              return __output;
-            }
-          `,
+        `return async function (__data) {
+          __data = Object.assign({}, __defaults, __data);
+          const ${this.options.dataVarname} = __data;
+          let __output = "";
+          with (__data) {
+            ${code}
+          }
+          return __output;
+        }
+        `,
       );
       // console.log(code);
       const template: Template = constructor(path, this, defaults);
@@ -101,10 +106,10 @@ export class Environment {
   }
 
   async load(file: string, from?: string): Promise<Template> {
-    const path = from ? this.loader.resolve(from, file) : file;
+    const path = from ? this.options.loader.resolve(from, file) : file;
 
     if (!this.cache.has(path)) {
-      const { source, data } = await this.loader.load(path);
+      const { source, data } = await this.options.loader.load(path);
       const template = this.compile(source, path, data);
 
       this.cache.set(file, template);
