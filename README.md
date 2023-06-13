@@ -128,6 +128,11 @@ If the template code is not a file, you can run it directly:
 vto.runString("<h1>{{ title }}</h1>", { title: "Hello world" });
 ```
 
+## Visual Studio Code Support
+
+[The Vento extension for VS Code](https://marketplace.visualstudio.com/items?itemName=oscarotero.vento-syntax)
+enables syntax highlight and provides some useful snippets.
+
 ## API
 
 ### Print

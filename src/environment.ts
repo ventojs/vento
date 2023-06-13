@@ -85,13 +85,17 @@ export class Environment {
         "__env",
         "__defaults",
         `return async function (__data) {
-          __data = Object.assign({}, __defaults, __data);
-          const ${this.options.dataVarname} = __data;
-          let __output = "";
-          with (__data) {
-            ${code}
+          try {
+            __data = Object.assign({}, __defaults, __data);
+            const ${this.options.dataVarname} = __data;
+            let __output = "";
+            with (__data) {
+              ${code}
+            }
+            return __output;
+          } catch (e) {
+            throw new Error(\`Error rendering template: \${__file} \n \${e.message}\`);
           }
-          return __output;
         }
         `,
       );
