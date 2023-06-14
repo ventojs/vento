@@ -1,4 +1,4 @@
-export type TokenType = "string" | "tag" | "filter";
+export type TokenType = "string" | "tag" | "filter" | "comment";
 export type Token = [TokenType, string, string?];
 
 export default function tokenize(source: string): Token[] {
@@ -8,8 +8,8 @@ export default function tokenize(source: string): Token[] {
 
   while (source.length > 0) {
     if (type === "string") {
-      const index = findTag(source);
-      const code = index === undefined ? source : source.slice(0, index);
+      const index = source.indexOf("{{");
+      const code = index === -1 ? source : source.slice(0, index);
 
       if (trimNext) {
         tokens.push([type, code.trimStart()]);
@@ -18,12 +18,27 @@ export default function tokenize(source: string): Token[] {
         tokens.push([type, code]);
       }
 
-      if (index === undefined) {
+      if (index === -1) {
         break;
       }
 
       source = source.slice(index);
-      type = "tag";
+      type = source.startsWith("{{#") ? "comment" : "tag";
+      continue;
+    }
+
+    if (type === "comment") {
+      source = source.slice(3);
+      const index = source.indexOf("#}}");
+      const comment = index === -1 ? source : source.slice(0, index);
+      tokens.push([type, comment]);
+
+      if (index === -1) {
+        break;
+      }
+
+      source = source.slice(index + 3);
+      type = "string";
       continue;
     }
 
@@ -77,15 +92,6 @@ export default function tokenize(source: string): Token[] {
   }
 
   return tokens;
-}
-
-/**
- * Find the index of the first tag in the source.
- * For example: <h1>{{ message }}</h1> => 4
- */
-export function findTag(source: string): number | undefined {
-  const index = source.indexOf("{{");
-  return index === -1 ? undefined : index;
 }
 
 type status =

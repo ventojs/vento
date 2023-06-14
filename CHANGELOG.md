@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Added
 - Support for trims [#2].
+  For example: `<h1> {{- title -}} </h1>`.
+- Support for comments [#3].
+  For example: `{{# this is a comment #}}`.
 
 ### Fixed
 - Template literals in includes [#1].
@@ -37,6 +40,7 @@ First version
 
 [#1]: https://github.com/oscarotero/vento/issues/1
 [#2]: https://github.com/oscarotero/vento/issues/2
+[#3]: https://github.com/oscarotero/vento/issues/3
 
 [Unreleased]: https://github.com/oscarotero/vento/compare/v0.3.1...HEAD
 [0.3.1]: https://github.com/oscarotero/vento/compare/v0.3.0...v0.3.1

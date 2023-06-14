@@ -136,6 +136,10 @@ export class Environment {
 
       const [type, code] = tokens.shift()!;
 
+      if (type === "comment") {
+        continue;
+      }
+
       if (type === "string") {
         compiled.push(`${outputVar} += \`${code}\`;`);
         continue;

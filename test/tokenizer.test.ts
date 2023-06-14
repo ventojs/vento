@@ -60,13 +60,43 @@ Deno.test("Tokenizer (inner comment)", () => {
   ]);
 });
 
-Deno.test("Tokenizer (inner comment)", () => {
-  const code = `<h1>{{ message /* }} */ }}</h1>`;
+Deno.test("Tokenizer (left trim)", () => {
+  const code = `<h1> {{- message }} </h1>`;
   const tokens = tokenize(code);
   assertEquals(tokens, [
     ["string", "<h1>"],
-    ["tag", "message /* }} */"],
+    ["tag", "message"],
+    ["string", " </h1>"],
+  ]);
+});
+
+Deno.test("Tokenizer (right trim)", () => {
+  const code = `<h1> {{message -}} </h1>`;
+  const tokens = tokenize(code);
+  assertEquals(tokens, [
+    ["string", "<h1> "],
+    ["tag", "message"],
     ["string", "</h1>"],
+  ]);
+});
+
+Deno.test("Tokenizer (both trims)", () => {
+  const code = `<h1> {{-message -}} </h1>`;
+  const tokens = tokenize(code);
+  assertEquals(tokens, [
+    ["string", "<h1>"],
+    ["tag", "message"],
+    ["string", "</h1>"],
+  ]);
+});
+
+Deno.test("Tokenizer (comment)", () => {
+  const code = `<h1> {{# {{ message }} #}} </h1>`;
+  const tokens = tokenize(code);
+  assertEquals(tokens, [
+    ["string", "<h1> "],
+    ["comment", " {{ message }} "],
+    ["string", " </h1>"],
   ]);
 });
 
