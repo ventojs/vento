@@ -104,7 +104,7 @@ export class Environment {
       template.code = code;
       return template;
     } catch (cause) {
-      throw new Error(`Error compiling template: ${path}`, { cause });
+      throw new Error(`Error compiling template: ${path || source}`, { cause });
     }
   }
 

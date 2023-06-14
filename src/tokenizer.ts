@@ -4,17 +4,24 @@ export type Token = [TokenType, string, string?];
 export default function tokenize(source: string): Token[] {
   const tokens: Token[] = [];
   let type: TokenType = "string";
+  let trimNext = false;
 
   while (source.length > 0) {
     if (type === "string") {
       const index = findTag(source);
+      const code = index === undefined ? source : source.slice(0, index);
+
+      if (trimNext) {
+        tokens.push([type, code.trimStart()]);
+        trimNext = false;
+      } else {
+        tokens.push([type, code]);
+      }
 
       if (index === undefined) {
-        tokens.push([type, source]);
         break;
       }
 
-      tokens.push([type, source.slice(0, index)]);
       source = source.slice(index);
       type = "tag";
       continue;
@@ -22,18 +29,38 @@ export default function tokenize(source: string): Token[] {
 
     if (type === "tag") {
       const indexes = parseTag(source);
+      const lastIndex = indexes.length - 1;
 
       indexes.reduce((prev, curr, index) => {
-        const code = source.slice(prev, curr - 2).trim();
+        let code = source.slice(prev, curr - 2);
 
         // Tag
         if (index === 1) {
-          tokens.push([type, code]);
+          // Left trim
+          if (code.startsWith("-")) {
+            code = code.slice(1);
+            const lastToken = tokens[tokens.length - 1];
+            lastToken[1] = lastToken[1].trimEnd();
+          }
+
+          // Right trim
+          if (code.endsWith("-") && index === lastIndex) {
+            code = code.slice(0, -1);
+            trimNext = true;
+          }
+
+          tokens.push([type, code.trim()]);
           return curr;
         }
 
+        // Right trim
+        if (index === lastIndex && code.endsWith("-")) {
+          code = code.slice(0, -1);
+          trimNext = true;
+        }
+
         // Filters
-        const match = code.match(/^(\w+)(?:\((.*)\))?$/);
+        const match = code.trim().match(/^(\w+)(?:\((.*)\))?$/);
         if (!match) {
           throw new Error(`Invalid filter: ${code}`);
         }

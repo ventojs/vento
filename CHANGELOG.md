@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+- Support for trims [#2].
+
 ### Fixed
 - Template literals in includes [#1].
 - Chain errors using the `cause` property.
@@ -33,6 +36,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 First version
 
 [#1]: https://github.com/oscarotero/vento/issues/1
+[#2]: https://github.com/oscarotero/vento/issues/2
 
 [Unreleased]: https://github.com/oscarotero/vento/compare/v0.3.1...HEAD
 [0.3.1]: https://github.com/oscarotero/vento/compare/v0.3.0...v0.3.1

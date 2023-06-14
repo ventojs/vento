@@ -78,3 +78,20 @@ Deno.test("Print tag with filters", async () => {
     },
   });
 });
+
+Deno.test("Print trim", async () => {
+  await test({
+    template: `Hello {{- "World" }} !`,
+    expected: "HelloWorld !",
+  });
+
+  await test({
+    template: `Hello {{ "World" -}} !`,
+    expected: "Hello World!",
+  });
+
+  await test({
+    template: `Hello {{- "World" -}} !`,
+    expected: "HelloWorld!",
+  });
+});
