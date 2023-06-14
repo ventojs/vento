@@ -243,6 +243,28 @@ regular JavaScript `if`:
     The user is not active
   {{ /if }}
   ```
+- The variables are exposed to the global scope. If the variable doesn't exist,
+  an error is thrown:
+  ```
+  {{ if non_existing_variable }}
+    {{ non_existing_variable }}
+  {{ /if }}
+  ```
+  This code returns the error
+  `ReferenceError: non_existing_variable is not defined`. A way to avoid this in
+  JavaScript:
+  ```
+  {{ if typeof non_existing_variable !== "undefined" }}
+    {{ non_existing_variable }}
+  {{ /if }}
+  ```
+  But a more easy way is using the global object `it`, which contains all
+  variables:
+  ```
+  {{ if it.non_existing_variable }}
+    {{ non_existing_variable }}
+  {{ /if }}
+  ```
 
 ### Include
 
