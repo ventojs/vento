@@ -95,3 +95,16 @@ Deno.test("Print trim", async () => {
     expected: "HelloWorld!",
   });
 });
+
+Deno.test("Print async filters", async () => {
+  const url = import.meta.resolve("../deno.json");
+  const expected = JSON.stringify(
+    JSON.parse(Deno.readTextFileSync(new URL(url))),
+  );
+
+  await test({
+    template: `{{ url |> await fetch |> await json |> JSON.stringify }}`,
+    expected,
+    data: { url },
+  });
+});

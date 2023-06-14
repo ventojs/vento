@@ -1,5 +1,5 @@
 export type TokenType = "string" | "tag" | "filter" | "comment" | "raw";
-export type Token = [TokenType, string, string?];
+export type Token = [TokenType, string];
 
 export default function tokenize(source: string): Token[] {
   const tokens: Token[] = [];
@@ -87,13 +87,7 @@ export default function tokenize(source: string): Token[] {
         }
 
         // Filters
-        const match = code.trim().match(/^(\w+)(?:\((.*)\))?$/);
-        if (!match) {
-          throw new Error(`Invalid filter: ${code}`);
-        }
-
-        const [_, filterName, filterArgs] = match;
-        tokens.push(["filter", filterName, filterArgs]);
+        tokens.push(["filter", code.trim()]);
         return curr;
       });
 

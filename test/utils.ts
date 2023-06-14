@@ -7,12 +7,13 @@ import {
 
 import { path } from "../deps.ts";
 
-import type { Environment } from "../src/environment.ts";
+import type { Environment, Filter } from "../src/environment.ts";
 import type { Loader } from "../src/loader.ts";
 
 export interface TestOptions {
   template: string;
   data?: Record<string, unknown>;
+  filters?: Record<string, Filter>;
   expected: string;
   init?: (env: Environment) => void;
   includes?: Record<string, string>;
@@ -26,6 +27,13 @@ export async function test(options: TestOptions) {
   if (options.init) {
     options.init(env);
   }
+
+  if (options.filters) {
+    for (const [name, filter] of Object.entries(options.filters)) {
+      env.filters[name] = filter;
+    }
+  }
+
   const output = await env.runString(options.template, options.data);
   assertEquals(output.trim(), options.expected.trim());
 }

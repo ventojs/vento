@@ -119,3 +119,15 @@ Deno.test("Tokenizer (literal 2)", () => {
     ["string", "</h1>"],
   ]);
 });
+
+Deno.test("Tokenizer (filter)", () => {
+  const code = "{{ url |> await fetch |> await json |> stringify }}";
+  const tokens = tokenize(code);
+  assertEquals(tokens, [
+    ["string", ""],
+    ["tag", "url"],
+    ["filter", "await fetch"],
+    ["filter", "await json"],
+    ["filter", "stringify"],
+  ]);
+});

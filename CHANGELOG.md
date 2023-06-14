@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   For example: `{{# this is a comment #}}`.
 - Support for raw code [#4].
   For example: `{{raw}} {{ username }} {{/raw}}`.
+- Support for async filters and global functions [#5]
+  For example: {{ url |> await fetch |> await json |> JSON.stringify }}
 
 ### Fixed
 - Template literals in includes [#1].
@@ -43,6 +45,8 @@ First version
 [#1]: https://github.com/oscarotero/vento/issues/1
 [#2]: https://github.com/oscarotero/vento/issues/2
 [#3]: https://github.com/oscarotero/vento/issues/3
+[#4]: https://github.com/oscarotero/vento/issues/4
+[#5]: https://github.com/oscarotero/vento/issues/5
 
 [Unreleased]: https://github.com/oscarotero/vento/compare/v0.3.1...HEAD
 [0.3.1]: https://github.com/oscarotero/vento/compare/v0.3.0...v0.3.1

@@ -169,18 +169,49 @@ export class Environment {
 
   compileFilters(tokens: Token[], output: string) {
     while (tokens.length > 0 && tokens[0][0] === "filter") {
-      const [, name, args] = tokens.shift()!;
+      const [, code] = tokens.shift()!;
+
+      const match = code.match(/^(await\s+)?([\w.]+)(?:\((.*)\))?$/);
+
+      if (!match) {
+        throw new Error(`Invalid filter: ${code}`);
+      }
+
+      const [_, isAsync, name, args] = match;
+
       if (!this.filters[name]) {
-        // It's a prototype's method (e.g. `String.toUpperCase()`)
-        output = `(${output})?.${name}?.(${args ? args : ""})`;
+        // If a global function
+        if (isGlobal(name)) {
+          output = `${isAsync ? "await " : ""}${name}(${output}${
+            args ? `, ${args}` : ""
+          })`;
+        } else {
+          // It's a prototype's method (e.g. `String.toUpperCase()`)
+          output = `${isAsync ? "await " : ""}(${output})?.${name}?.(${
+            args ? args : ""
+          })`;
+        }
       } else {
         // It's a filter (e.g. filters.upper())
-        output = `await __env.filters.${name}(${output}${
+        output = `${isAsync ? "await " : ""}__env.filters.${name}(${output}${
           args ? `, ${args}` : ""
         })`;
       }
     }
 
     return output;
+  }
+}
+
+function isGlobal(name: string) {
+  // @ts-ignore TS doesn't know about globalThis
+  if (globalThis[name]) {
+    return true;
+  }
+
+  if (name.includes(".")) {
+    const [obj, prop] = name.split(".");
+    // @ts-ignore TS doesn't know about globalThis
+    return typeof globalThis[obj]?.[prop] === "function";
   }
 }
