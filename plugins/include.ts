@@ -16,7 +16,7 @@ function includeTag(
   }
 
   const match = code?.match(
-    /^include\s+([^{]+)(?:\{(.*)\})?$/,
+    /^include\s+([^{]+|`[^`]+`)+(?:\{(.*)\})?$/,
   );
 
   if (!match) {

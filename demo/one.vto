@@ -4,19 +4,19 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{= title |> toUpperCase }}</title>
+  <title>{{ title |> toUpperCase }}</title>
 </head>
 <body>
   {{ if title == "This is an example" }}
   The title is an example
   {{ else }}
-  The title is {{= title }}
+  The title is {{ title }}
   {{ /if }}
 
   {{ set variable |> toLowerCase }}
-  {{ include "./other.tmpl" }}
+  {{ include "./two.vto" }}
   {{ /set }}
 
-  {{= variable }}
+  {{ variable }}
 </body>
 </html>

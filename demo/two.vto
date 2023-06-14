@@ -2,6 +2,8 @@ Imported content
 
 <ul>
   {{ for tag of tags |> sort }}
-  <li>{{= tag }}</li>
+  <li>
+  {{ include "./three.vto" { tag } }}
+  </li>
   {{ /for }}
 </ul>

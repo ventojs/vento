@@ -113,3 +113,44 @@ salute: Hello from front matter
     },
   });
 });
+
+Deno.test("Include tag dynamically)", async () => {
+  await test({
+    template: `
+    {{ include file }}
+    `,
+    expected: "Hello world",
+    includes: {
+      "/my-file.tmpl": "Hello world",
+    },
+    data: {
+      file: "/my-file.tmpl",
+    },
+  });
+
+  await test({
+    template: `
+    {{ include file + ".tmpl" }}
+    `,
+    expected: "Hello world",
+    includes: {
+      "/my-file.tmpl": "Hello world",
+    },
+    data: {
+      file: "/my-file",
+    },
+  });
+
+  await test({
+    template: `
+    {{ include \`/\${file}.tmpl\` }}
+    `,
+    expected: "Hello world",
+    includes: {
+      "/my-file.tmpl": "Hello world",
+    },
+    data: {
+      file: "my-file",
+    },
+  });
+});

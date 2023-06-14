@@ -76,10 +76,9 @@ export class Environment {
     path?: string,
     defaults?: Record<string, unknown>,
   ): Template {
-    const tokens = tokenize(source);
-    const code = this.compileTokens(tokens).join("\n");
-
     try {
+      const tokens = tokenize(source);
+      const code = this.compileTokens(tokens).join("\n");
       const constructor = new Function(
         "__file",
         "__env",
@@ -93,8 +92,8 @@ export class Environment {
               ${code}
             }
             return __output;
-          } catch (e) {
-            throw new Error(\`Error rendering template: \${__file} \n \${e.message}\`);
+          } catch (cause) {
+            throw new Error(\`Error rendering template: \${__file}\`, { cause });
           }
         }
         `,
@@ -104,8 +103,8 @@ export class Environment {
       template.file = path;
       template.code = code;
       return template;
-    } catch {
-      throw new Error(`Error compiling template: ${code}`);
+    } catch (cause) {
+      throw new Error(`Error compiling template: ${path}`, { cause });
     }
   }
 
