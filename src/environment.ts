@@ -140,7 +140,7 @@ export class Environment {
         continue;
       }
 
-      if (type === "string") {
+      if (type === "string" || type === "raw") {
         compiled.push(`${outputVar} += \`${code}\`;`);
         continue;
       }

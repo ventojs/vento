@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   For example: `<h1> {{- title -}} </h1>`.
 - Support for comments [#3].
   For example: `{{# this is a comment #}}`.
+- Support for raw code [#4].
+  For example: `{{raw}} {{ username }} {{/raw}}`.
 
 ### Fixed
 - Template literals in includes [#1].

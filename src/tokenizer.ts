@@ -1,4 +1,4 @@
-export type TokenType = "string" | "tag" | "filter" | "comment";
+export type TokenType = "string" | "tag" | "filter" | "comment" | "raw";
 export type Token = [TokenType, string, string?];
 
 export default function tokenize(source: string): Token[] {
@@ -23,6 +23,18 @@ export default function tokenize(source: string): Token[] {
       }
 
       source = source.slice(index);
+
+      // Check if it's a {{raw}} tag
+      const raw = parseRawTag(source);
+
+      if (raw) {
+        const rawCode = source.slice(raw[0], raw[1]);
+        tokens.push(["raw", rawCode]);
+        source = source.slice(raw[2]);
+        type = "string";
+        continue;
+      }
+
       type = source.startsWith("{{#") ? "comment" : "tag";
       continue;
     }
@@ -223,4 +235,24 @@ export function parseTag(source: string): number[] {
   }
 
   throw new Error("Unclosed tag");
+}
+
+function parseRawTag(source: string): [number, number, number] | undefined {
+  const startResult = source.match(/^{{\s*raw\s*}}/);
+
+  if (!startResult) {
+    return;
+  }
+
+  const endResult = source.match(/{{\s*\/raw\s*}}/);
+
+  if (!endResult) {
+    throw new Error("Unclosed raw tag");
+  }
+
+  return [
+    startResult[0].length,
+    endResult.index!,
+    endResult.index! + endResult[0].length,
+  ];
 }
