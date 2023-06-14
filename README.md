@@ -155,6 +155,12 @@ Put a variable or expression between `{{ }}` to output the result.
   ```
   {{ name || "Unknown name" }}
   ```
+- Trim content (use `-` character next to the opening tag or previous to the
+  closing tag to remove white space):
+  ```
+  <h1>    {{- "Hello world" -}}    </h1>
+  ```
+  This outputs `<h1>Hello world</h1>`.
 
 ### For
 
@@ -280,9 +286,51 @@ Allows to create or modify a variable.
   {{ /set }}
   ```
 
+### Comments
+
+Use `{{#` to start a comment and `#}}` to end it. The commented code will be
+ignored by Vento and won't be printed.
+
+```
+{{# This is a commented code #}}
+```
+
+### Raw
+
+Use the `{{ raw }}` tag to disable the tag processing temporarily. This is
+useful for generating content (ej Nunjucks, Liquid, Mustache, etc) with
+conflicting syntax.
+
+```
+{{ raw }}
+  In Handlebars, {{ this }} will be HTML-escaped, but
+  {{{ that }}} will not.
+{{ /raw }}
+```
+
 ## Available filters
 
 - `escape`: To escape HTML code:
   ```
   {{ "<h1>Hello world</h1>" |> escape }}
   ```
+- Any global function. For example:
+  ```
+  {{ {name: "Óscar", surname: "Otero"} |> JSON.stringify }}
+  ```
+  Because `JSON.stringify` is a function existing in the global scope, it's
+  automatically used.
+- If the filter name is not registered and it's not in the global scope, Vento
+  will try to execute it as an object property. For example:
+  ```
+  {{ "https://example.com/data.json" |> await fetch |> await json |> JSON.stringify }}
+  ```
+  - Note that `fetch` is a global function so Vento will execute it by passing
+    the url as the argument.
+  - `json` is not in the global scope so it will be executed as a property of
+    the response returned by fetch
+  - `JSON.stringify` is a global function
+  - The compiled code of this is equivalent to:
+    ```js
+    JSON.stringify(await (await fetch("https://example.com/data.json")).json());
+    ```
