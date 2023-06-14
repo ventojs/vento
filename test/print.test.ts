@@ -7,6 +7,18 @@ Deno.test("Print tag", async () => {
     `,
     expected: "Hello world",
   });
+  await test({
+    template: `
+    {{ undefined }}
+    `,
+    expected: "",
+  });
+  await test({
+    template: `
+    {{ null }}
+    `,
+    expected: "",
+  });
 });
 
 Deno.test("Print tag with variable", async () => {
@@ -44,6 +56,14 @@ Deno.test("Print tag with filters", async () => {
     `,
     expected: "HELLO WORLD",
     data: { message: "Hello World" },
+  });
+
+  await test({
+    template: `
+    {{ message |> toUpperCase }}
+    `,
+    expected: "",
+    data: { message: 12 },
   });
 
   await test({

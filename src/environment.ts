@@ -154,7 +154,7 @@ export class Environment {
 
         // Unknown tag, just print it
         const expression = this.compileFilters(tokens, code);
-        compiled.push(`${outputVar} += ${expression};`);
+        compiled.push(`${outputVar} += (${expression}) ?? "";`);
         continue;
       }
 
@@ -169,7 +169,7 @@ export class Environment {
       const [, name, args] = tokens.shift()!;
       if (!this.filters[name]) {
         // It's a prototype's method (e.g. `String.toUpperCase()`)
-        output = `(${output}).${name}(${args ? args : ""})`;
+        output = `(${output})?.${name}?.(${args ? args : ""})`;
       } else {
         // It's a filter (e.g. filters.upper())
         output = `await __env.filters.${name}(${output}${
