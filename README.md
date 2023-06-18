@@ -330,6 +330,15 @@ conflicting syntax.
 {{ /raw }}
 ```
 
+### Arbitrary JavaScript code
+
+You can insert any JavaScript code in the templates, that will be evaluated at
+runtime by starting the tag with `>` character. For example:
+
+```
+{{> console.log("Hello world") }}
+```
+
 ## Available filters
 
 - `escape`: To escape HTML code:
