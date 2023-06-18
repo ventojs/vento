@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.5.0] - Unreleased
+### Added
+- Allow to add arbitrary JavaScript expressions with `{{> [js code] }}`.
+
 ## [0.4.0] - 2023-06-14
 ### Added
 - Support for trims [#2].
@@ -48,6 +52,7 @@ First version
 [#4]: https://github.com/oscarotero/vento/issues/4
 [#5]: https://github.com/oscarotero/vento/issues/5
 
+[0.5.0]: https://github.com/oscarotero/vento/compare/v0.4.0...HEAD
 [0.4.0]: https://github.com/oscarotero/vento/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/oscarotero/vento/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/oscarotero/vento/compare/v0.2.0...v0.3.0

@@ -4,6 +4,7 @@ import ifTag from "./plugins/if.ts";
 import forTag from "./plugins/for.ts";
 import includeTag from "./plugins/include.ts";
 import setTag from "./plugins/set.ts";
+import jsTag from "./plugins/js.ts";
 import escape from "./plugins/escape.ts";
 
 export interface Options {
@@ -24,6 +25,7 @@ export default function (options: Options = {}) {
   // Register basic plugins
   env.use(ifTag());
   env.use(forTag());
+  env.use(jsTag());
   env.use(includeTag());
   env.use(setTag());
   env.use(escape());
