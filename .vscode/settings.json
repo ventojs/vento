@@ -1,5 +1,5 @@
 {
   "deno.enable": true,
   "deno.unstable": true,
-  "deno.importMap": "./docs/deno.json" 
+  "deno.importMap": "./docs/deno.json"
 }

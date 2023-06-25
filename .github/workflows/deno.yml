@@ -8,6 +8,8 @@ on:
 
 permissions:
   contents: read
+  pages: write
+  id-token: write
 
 jobs:
   test:
@@ -30,3 +32,20 @@ jobs:
 
       - name: Run tests
         run: deno task test
+
+      - name: Build docs
+        run: |
+          cd docs
+          deno task build --location=https://oscarotero.github.io/vento/
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v2
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: 'docs/_site'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
