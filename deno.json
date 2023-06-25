@@ -1,7 +1,8 @@
 {
   "tasks": {
     "test": "deno test --allow-read",
-    "bench": "deno bench --allow-read"
+    "bench": "deno bench --allow-read",
+    "docs": "cd docs && deno task serve"
   },
   "lock": false,
   "fmt": {

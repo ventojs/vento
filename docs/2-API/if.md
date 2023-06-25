@@ -1,0 +1,36 @@
+# If
+
+Use `if` to test a condition. Any code you want to test will be evaluated as a
+regular JavaScript expression.
+
+```
+{{ if it.user }}
+  The user is {{ it.user }}
+{{ /if }}
+```
+
+## If/else
+
+The `else` tag is supported too.
+
+```
+{{ if it.user }}
+  The user is {{ it.user }}
+{{ else }}
+  No user found
+{{ /if }}
+```
+
+## If/else if
+
+Use `else if` to evaluate more conditions:
+
+```
+{{ if !it.user }}
+  No user found
+{{ else if !it.user.name }}
+  The user doesn't have name
+{{ else }}
+  The user is {{ it.user.name }}
+{{ /if }}
+```
