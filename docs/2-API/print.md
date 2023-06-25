@@ -27,9 +27,9 @@ Or an async operation (using `await`):
 {{ await users.getUserName(23) }}
 ```
 
-## Triming the previous/next content
+## Trimming the previous/next content
 
-Use `-` character next to the opening tag or previous to the closing tag to
+Use the `-` character next to the opening tag or previous to the closing tag to
 remove all white spaces and line breaks of the previous or next content.
 
 In the following example, the `-` in the opening tag configure Vento to remove
@@ -49,7 +49,7 @@ The result is:
 ```
 
 Use the `-` character in both opening and closing tags to remove the white space
-previous and next the printing tag:
+previous and next to the printing tag:
 
 ```html
 <h1>
@@ -65,7 +65,7 @@ The result is:
 
 ## Pipes
 
-Pipes allows to transform the content before printing it using custom functions
+Pipes allow transforming the content before printing it using custom functions
 or global functions. Use `|>` to apply functions.
 
 Vento comes with the `escape` filter by default. This filter escapes the html

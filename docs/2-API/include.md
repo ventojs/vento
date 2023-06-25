@@ -28,7 +28,7 @@ files dynamically:
 ## Data
 
 The included file inherits the same data as the main file. But you can add
-additional data passing an object after the file name.
+additional data by passing an object after the file name.
 
 ```js
 {{ include "./filename.vto" { name: "Óscar" } }}

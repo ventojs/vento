@@ -1,6 +1,6 @@
 # For
 
-Use `for [value] of [collection]` tag to iterate over arrays, dictionaries,
+Use `{{ for [value] of [collection] }}` tag to iterate over arrays, dictionaries,
 numbers, strings, etc. For example:
 
 ```
@@ -20,7 +20,7 @@ can place any expression you like:
 
 ## Get the key and value
 
-Use the `for [key], [value] of [collection]` syntax to get the key and the value
+Use the `{{ for [key], [value] of [collection] }}` syntax to get the key and the value
 of the entries:
 
 ```
@@ -44,8 +44,7 @@ Use `for await` for async iterators:
 
 ## Type casting
 
-If the collection is not iterable, Vento will try to convert it to a iterable
-object.
+If the collection is not iterable, Vento will try to convert it to an iterable object.
 
 ### Numbers
 
@@ -105,7 +104,7 @@ is equivalent to:
 
 ## Pipes
 
-You can use Pipes to transform the iterable object before iterate it. For
+You can use Pipes to transform the iterable object before iterating it. For
 example to filter by even numbers:
 
 ```

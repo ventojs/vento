@@ -1,6 +1,6 @@
 # If
 
-Use `if` to test a condition. Any code you want to test will be evaluated as a
+Use `{{ if [expression] }}` to test a condition. Any code you want to test will be evaluated as a
 regular JavaScript expression.
 
 ```
@@ -11,7 +11,7 @@ regular JavaScript expression.
 
 ## If/else
 
-The `else` tag is supported too.
+The `{{ else }}` tag is supported too.
 
 ```
 {{ if it.user }}
@@ -23,7 +23,7 @@ The `else` tag is supported too.
 
 ## If/else if
 
-Use `else if` to evaluate more conditions:
+Use `{{ else if [expression] }}` to evaluate more conditions:
 
 ```
 {{ if !it.user }}

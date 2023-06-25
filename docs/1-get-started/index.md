@@ -1,9 +1,8 @@
-# Quickstart
+# Get started
 
 ## Install
 
-Vento is a template engine for Deno, so you can import it in your project as a
-ESM module:
+Vento is a template engine for Deno, so you can import it into your project as an ESM module:
 
 ```js
 import vento from "https://deno.land/x/vento@v0.5.0/mod.ts";

@@ -21,7 +21,7 @@ default Vento has the `escape` filter out of the box, to escape HTML code:
 {{ "<h1>Hello world</h1>" |> escape }}
 ```
 
-If the filter accept additional arguments you can pass them between parenthesis:
+If the filter accepts additional arguments you can pass them between parenthesis:
 
 ```
 {{ "<h1>Hello world</h1>" |> filter_name(arg1, arg2) }}
@@ -59,7 +59,7 @@ This is equivalent to:
 
 As a fallback, Vento will execute the function as a prototype of the variable.
 In the following example, the variable is a string
-[which has the `toUpperCase()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toUpperCase)
+[that has the `toUpperCase()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toUpperCase)
 method, so it can be passed as a Pipe:
 
 ```

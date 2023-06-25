@@ -2,7 +2,7 @@
 
 ## Options
 
-You can pass an Options object to the vento instance with the some options.
+You can pass an Options object to the Vento instance with some options.
 
 ```js
 import vento from "https://deno.land/x/vento@v0.5.0/mod.ts";
@@ -17,8 +17,7 @@ const env = vento({
 Data variables are exposed to the global scope. For example, the code
 `{{ title }}` prints the variable `title` which is available globally. This can
 cause an error if the variable doesn't exist _(ReferenceError: title is not
-defined)_. To avoid this error you can check if the variable exists before print
-it:
+defined)_. To avoid this error you can check if the variable exists before printing it:
 
 ```
 {{ if typeof title !== "undefined" }}
@@ -39,7 +38,7 @@ the template. So you can do simply:
 {{ it.title }}
 ```
 
-The `dataVarname` option allows to change the name of this global object.
+The `dataVarname` option allows changing the name of this global object.
 
 ```js
 const env = vento({
@@ -49,12 +48,12 @@ const env = vento({
 
 ### includes
 
-The path of the directory where Vento will look for the includes templates.
+The path of the directory that Vento will use to look for includes templates.
 
 ## Filters
 
 Filters are custom functions to transform the content. For example, let's create
-a filter to put a text in italic:
+a filter to put text in italic:
 
 ```ts
 function italic(text: string) {
