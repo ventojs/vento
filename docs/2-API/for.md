@@ -1,7 +1,7 @@
 # For
 
-Use `{{ for [value] of [collection] }}` tag to iterate over arrays, dictionaries,
-numbers, strings, etc. For example:
+Use `{{ for [value] of [collection] }}` tag to iterate over arrays,
+dictionaries, numbers, strings, etc. For example:
 
 ```
 {{ for number of [1, 2, 3] }}
@@ -20,8 +20,8 @@ can place any expression you like:
 
 ## Get the key and value
 
-Use the `{{ for [key], [value] of [collection] }}` syntax to get the key and the value
-of the entries:
+Use the `{{ for [key], [value] of [collection] }}` syntax to get the key and the
+value of the entries:
 
 ```
 <dl>
@@ -44,7 +44,8 @@ Use `for await` for async iterators:
 
 ## Type casting
 
-If the collection is not iterable, Vento will try to convert it to an iterable object.
+If the collection is not iterable, Vento will try to convert it to an iterable
+object.
 
 ### Numbers
 

@@ -21,7 +21,8 @@ default Vento has the `escape` filter out of the box, to escape HTML code:
 {{ "<h1>Hello world</h1>" |> escape }}
 ```
 
-If the filter accepts additional arguments you can pass them between parenthesis:
+If the filter accepts additional arguments you can pass them between
+parenthesis:
 
 ```
 {{ "<h1>Hello world</h1>" |> filter_name(arg1, arg2) }}

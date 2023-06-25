@@ -1,7 +1,7 @@
 # If
 
-Use `{{ if [expression] }}` to test a condition. Any code you want to test will be evaluated as a
-regular JavaScript expression.
+Use `{{ if [expression] }}` to test a condition. Any code you want to test will
+be evaluated as a regular JavaScript expression.
 
 ```
 {{ if it.user }}

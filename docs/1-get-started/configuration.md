@@ -17,7 +17,8 @@ const env = vento({
 Data variables are exposed to the global scope. For example, the code
 `{{ title }}` prints the variable `title` which is available globally. This can
 cause an error if the variable doesn't exist _(ReferenceError: title is not
-defined)_. To avoid this error you can check if the variable exists before printing it:
+defined)_. To avoid this error you can check if the variable exists before
+printing it:
 
 ```
 {{ if typeof title !== "undefined" }}

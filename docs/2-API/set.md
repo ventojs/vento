@@ -1,6 +1,7 @@
 # Set
 
-The `{{ set [name] = [value] }}` tag allows to create or modify a global variable. For example:
+The `{{ set [name] = [value] }}` tag allows to create or modify a global
+variable. For example:
 
 ```
 {{ set message = "Hello world" }}
@@ -14,7 +15,8 @@ Use pipes to transform the value:
 
 ## Block mode
 
-It's also possible to capture the variable value between `{{ set [name] }}` and `{{ /set }}` tags:
+It's also possible to capture the variable value between `{{ set [name] }}` and
+`{{ /set }}` tags:
 
 ```
 {{ set message }}
@@ -32,8 +34,8 @@ Block mode supports pipes too:
 
 ## Differences between `set` and creating the variable with JavaScript
 
-Vento allows to [run JavaScript](./javascript.md), so it's possible to create new
-variables using normal JavaScript code:
+Vento allows to [run JavaScript](./javascript.md), so it's possible to create
+new variables using normal JavaScript code:
 
 ```
 {{> const name = "Óscar" }}
