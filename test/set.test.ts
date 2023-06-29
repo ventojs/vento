@@ -71,4 +71,26 @@ Deno.test("Set tag with includes", async () => {
       "/my-file.tmpl": "Hello {{ name }}",
     },
   });
+  await test({
+    template: `
+    {{ set text = toUpperCase(\`type=tag\`) }}
+    {{ text }}
+    `,
+    expected: "TYPE=TAG",
+    data: {
+      toUpperCase: (text: string) => text.toUpperCase(),
+    },
+  });
+  await test({
+    template: `
+    {{ set text = toUpperCase(
+      \`type=tag\`
+    ) }}
+    {{ text }}
+    `,
+    expected: "TYPE=TAG",
+    data: {
+      toUpperCase: (text: string) => text.toUpperCase(),
+    },
+  });
 });

@@ -21,7 +21,7 @@ function setTag(
 
   // Value is set (e.g. {{ set foo = "bar" }})
   if (expression.includes("=")) {
-    const match = code.match(/^set\s+(.+)\s*=\s*(.+)$/);
+    const match = code.match(/^set\s+([\w]+)\s*=\s*([\s\S]+)$/);
 
     if (!match) {
       throw new Error(`Invalid set tag: ${code}`);
@@ -35,7 +35,7 @@ function setTag(
     } else {
       var ${variable} = ${val};
     }
-    __data["${variable.trim()}"] = ${variable};
+    __data["${variable}"] = ${variable};
     `;
   }
 

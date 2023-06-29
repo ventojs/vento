@@ -82,6 +82,24 @@ Deno.test("Include tag (with custom data)", async () => {
       name: "world",
     },
   });
+
+  await test({
+    template: `
+    {{ include "/sub/my-file.tmpl" {
+      salute: "Very" + " " + "Welcome"
+    } }}
+    `,
+    expected: "Very Welcome world Óscar",
+    includes: {
+      "/sub/my-file.tmpl":
+        "{{ include './other-file.tmpl' { name: `${name} Óscar`} }}",
+      "/sub/other-file.tmpl": "{{ salute }} {{ name }}",
+    },
+    data: {
+      salute: "Hello",
+      name: "world",
+    },
+  });
 });
 
 Deno.test("Include tag (with front matter)", async () => {

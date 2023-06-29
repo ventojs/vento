@@ -58,6 +58,16 @@ Deno.test("For tag (object)", async () => {
 
   await test({
     template: `
+    {{ for name of {
+      one: "1",
+      two: "2"
+    } }}{{ name }}-{{ /for }}
+    `,
+    expected: "1-2-",
+  });
+
+  await test({
+    template: `
     {{ for key, name of { one: "1", two: "2" } }}{{name}}({{key}})-{{ /for }}
     `,
     expected: "1(one)-2(two)-",

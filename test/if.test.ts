@@ -31,6 +31,18 @@ Deno.test("If tag (defined value)", async () => {
     data: { name: false },
   });
 });
+Deno.test("If tag (multiline)", async () => {
+  await test({
+    template: `
+    {{ if names
+        .length > 0 }}
+      <p>True</p>
+    {{ /if }}
+    `,
+    expected: "<p>True</p>",
+    data: { names: ["Óscar", "Laura"] },
+  });
+});
 
 Deno.test("If / else condition", async () => {
   await test({
