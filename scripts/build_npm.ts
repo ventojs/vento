@@ -11,7 +11,7 @@ await build({
   scriptModule: false,
   package: {
     name: "ventojs",
-    version: Deno.args[0],
+    version: Deno.args[0]?.replace(/^v/, ""),
     description: "🌬 A minimal but powerful template engine",
     license: "MIT",
     repository: "github:oscarotero/vento",
