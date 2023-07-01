@@ -96,15 +96,20 @@ Deno.test("Print trim", async () => {
   });
 });
 
-Deno.test("Print async filters", async () => {
-  const url = new URL("../deno.json", import.meta.url).href;
-  const expected = JSON.stringify(
-    JSON.parse(Deno.readTextFileSync(new URL(url))),
-  );
-
-  await test({
-    template: `{{ url |> await fetch |> await json |> JSON.stringify }}`,
-    expected,
-    data: { url },
-  });
+Deno.test({
+  name: "Print async filters",
+  // @ts-ignore only used to detect node.js
+  ignore: globalThis?.process?.release?.name === "node",
+  fn: async () => {
+    const url = new URL("../deno.json", import.meta.url).href;
+    const expected = JSON.stringify(
+      JSON.parse(Deno.readTextFileSync(new URL(url))),
+    );
+  
+    await test({
+      template: `{{ url |> await fetch |> await json |> JSON.stringify }}`,
+      expected,
+      data: { url },
+    });
+  }
 });
