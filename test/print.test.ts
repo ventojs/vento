@@ -97,7 +97,7 @@ Deno.test("Print trim", async () => {
 });
 
 Deno.test("Print async filters", async () => {
-  const url = import.meta.resolve("../deno.json");
+  const url = new URL("../deno.json", import.meta.url).href;
   const expected = JSON.stringify(
     JSON.parse(Deno.readTextFileSync(new URL(url))),
   );
