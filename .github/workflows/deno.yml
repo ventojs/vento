@@ -36,7 +36,7 @@ jobs:
       - name: Build docs
         run: |
           cd docs
-          deno task build --location=https://oscarotero.github.io/vento/
+          deno task build
 
       - name: Setup Pages
         uses: actions/configure-pages@v2
