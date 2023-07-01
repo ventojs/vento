@@ -20,7 +20,6 @@ await build({
     bugs: "https://github.com/oscarotero/vento/issues",
   },
   postBuild() {
-    Deno.copyFileSync("deno.json", "npm/esm/deno.json");
     Deno.copyFileSync("LICENSE", "npm/LICENSE");
     Deno.copyFileSync("README.md", "npm/README.md");
   },
