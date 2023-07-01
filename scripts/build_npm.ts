@@ -12,7 +12,7 @@ await build({
   compilerOptions: { target: "ES2022" },
   scriptModule: false,
   package: {
-    name: "vento",
+    name: "ventojs",
     version: Deno.args[0],
     description: "🌬 A minimal but powerful template engine",
     license: "MIT",
