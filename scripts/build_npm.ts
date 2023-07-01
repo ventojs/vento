@@ -15,6 +15,7 @@ await build({
     description: "🌬 A minimal but powerful template engine",
     license: "MIT",
     repository: "github:oscarotero/vento",
+    homepage: "https://oscarotero.github.io/vento/",
     bugs: "https://github.com/oscarotero/vento/issues",
   },
   postBuild() {
