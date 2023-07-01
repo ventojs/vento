@@ -6,6 +6,6 @@
   },
   "lock": false,
   "fmt": {
-    "exclude": ["CHANGELOG.md"]
+    "exclude": ["CHANGELOG.md", "npm"]
   }
 }
