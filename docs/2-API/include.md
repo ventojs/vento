@@ -18,11 +18,7 @@ The file name can be any JavaScript expression, useful if you want to include
 files dynamically:
 
 ```js
-{
-  {
-    include`${name}.vto`;
-  }
-}
+{{ include`${name}.vto` }}
 ```
 
 ## Data
