@@ -1,7 +1,7 @@
 # Layout
 
 The `{{ layout }}` tag allows to capture some content in a template and render
-it into another template.
+it into another template under the variable `content`.
 
 For example, let's say you have the following `container.vto` template:
 
@@ -19,11 +19,20 @@ You can pass content to this template easily with the `layout` tag:
 {{ /layout }}
 ```
 
+Technically, the `layout` tag works a lot like the following:
+
+```html
+{{ set content }}
+<h1>Hello world</h1>
+{{ /set }}
+
+{{ include "container.vto" { content } }}
+```
+
 ## Data
 
 In addition to the `content` variable, the layout inherits the same data as the
-main file (it works exactly in the same way as [`include`](./include.md)). And
-you can add additional data by passing an object after the layout file name.
+main file. You can pass additional data creating an object after the layout file name.
 
 ```hml
 {{ layout "container.vto" { size: "big" } }}
