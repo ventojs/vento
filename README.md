@@ -92,8 +92,8 @@ First, let's take a look at this syntax example:
 ## Getting started
 
 This is a library for Deno. ~~I'm planning to release an NPM version in the
-future.~~ [There's already a NPM version](https://www.npmjs.com/package/ventojs)
-that you can install with: `npm install ventojs`.
+future.~~ [There's already an NPM version](https://www.npmjs.com/package/ventojs)
+that you can install with `npm install ventojs`.
 
 Import the library and create an instance:
 
