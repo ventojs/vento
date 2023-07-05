@@ -2,7 +2,8 @@
   "tasks": {
     "test": "deno test --allow-read",
     "bench": "deno bench --allow-read",
-    "docs": "cd docs && deno task serve"
+    "docs": "cd docs && deno task serve",
+    "build": "deno run --allow-run=npm --allow-env --allow-read --allow-write --allow-net=deno.land scripts/build_npm.ts"
   },
   "lock": false,
   "fmt": {

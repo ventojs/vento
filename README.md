@@ -91,13 +91,25 @@ First, let's take a look at this syntax example:
 
 ## Getting started
 
-This is a library for Deno. I'm planning to release an NPM version in the
-future.
+This is a library for Deno. ~~I'm planning to release an NPM version in the
+future.~~ [There's already a NPM version](https://www.npmjs.com/package/ventojs)
+that you can install with: `npm install ventojs`.
 
-First, you need to import the library and create an instance:
+Import the library and create an instance:
 
 ```ts
 import vento from "https://deno.land/x/vento@v0.2.0/mod.ts";
+
+const vto = vento({
+  // Resolve the non-relative includes paths
+  includes: "./path/to/includes",
+});
+```
+
+Or in Node:
+
+```ts
+import vento from "ventojs";
 
 const vto = vento({
   // Resolve the non-relative includes paths
