@@ -58,6 +58,21 @@ Deno.test("Set tag with filters", async () => {
     `,
     expected: "HELLO WORLD",
   });
+  // Test for https://github.com/oscarotero/vento/issues/8
+  await test({
+    template: `
+    {{ set foo = arr.filter(a => a !== 'bar') |> filt }}
+
+    {{ foo }}
+    `,
+    expected: "FOO BAZ",
+    data: {
+      arr: ["foo", "bar", "baz"],
+    },
+    filters: {
+      filt: (arr: string[]) => arr.map((a) => a.toUpperCase()).join(" "),
+    },
+  });
 });
 
 Deno.test("Set tag with includes", async () => {
