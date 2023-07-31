@@ -38,6 +38,23 @@ export async function test(options: TestOptions) {
   assertEquals(output.trim(), options.expected.trim());
 }
 
+export function testSync(options: TestOptions) {
+  const env = tmpl();
+
+  if (options.init) {
+    options.init(env);
+  }
+
+  if (options.filters) {
+    for (const [name, filter] of Object.entries(options.filters)) {
+      env.filters[name] = filter;
+    }
+  }
+
+  const output = env.runStringSync(options.template, options.data);
+  assertEquals(output.trim(), options.expected.trim());
+}
+
 export class FileLoader implements Loader {
   files: Record<string, string> = {};
 

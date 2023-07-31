@@ -8,6 +8,12 @@ export interface Template {
   file?: string;
 }
 
+export interface TemplateSync {
+  (data?: Record<string, unknown>): string;
+  code: string;
+  file?: string;
+}
+
 export type Tag = (
   env: Environment,
   code: string,
@@ -71,11 +77,32 @@ export class Environment {
     return await template(data);
   }
 
+  runStringSync(
+    source: string,
+    data?: Record<string, unknown>,
+  ): string {
+    const template = this.compile(source, "", {}, true);
+    return template(data);
+  }
+
   compile(
     source: string,
     path?: string,
     defaults?: Record<string, unknown>,
-  ): Template {
+    sync?: false,
+  ): Template;
+  compile(
+    source: string,
+    path?: string,
+    defaults?: Record<string, unknown>,
+    sync?: true,
+  ): TemplateSync;
+  compile(
+    source: string,
+    path?: string,
+    defaults?: Record<string, unknown>,
+    sync = false,
+  ): Template | TemplateSync {
     try {
       const tokens = tokenize(source);
       const code = this.compileTokens(tokens).join("\n");
@@ -83,7 +110,7 @@ export class Environment {
         "__file",
         "__env",
         "__defaults",
-        `return async function (__data) {
+        `return${sync ? "" : " async"} function (__data) {
           try {
             __data = Object.assign({}, __defaults, __data);
             const ${this.options.dataVarname} = __data;
