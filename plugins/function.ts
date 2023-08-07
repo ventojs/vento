@@ -13,21 +13,24 @@ function functionTag(
   _output: string,
   tokens: Token[],
 ): string | undefined {
-  if (!code.startsWith("function ") && !code.startsWith("async function ")) {
+  if (!code.match(/(export\s+)?(async\s+)?function\s/)) {
     return;
   }
 
-  const match = code?.match(
-    /^(async\s+)?function\s+(\w+)\s*(\([^)]+\))?$/,
+  const match = code.match(
+    /^(export\s+)?(async\s+)?function\s+(\w+)\s*(\([^)]+\))?$/,
   );
 
   if (!match) {
     throw new Error(`Invalid function: ${code}`);
   }
 
-  const [_, as, name, args] = match;
+  const [_, exp, as, name, args] = match;
 
-  const body = env.compileTokens(tokens, "__output", ["/function"]);
+  const compiled: string[] = [];
+  compiled.push(`${as || ""} function ${name} ${args || "()"} {`);
+  compiled.push(`let __output = "";`);
+  compiled.push(...env.compileTokens(tokens, "__output", ["/function"]));
 
   if (
     tokens.length && (tokens[0][0] !== "tag" || tokens[0][1] !== "/function")
@@ -37,9 +40,12 @@ function functionTag(
 
   tokens.shift();
 
-  return `${as || ""} function ${name} ${args || "()"} {
-    let __output = "";
-    ${body.join("\n")}
-    return __output;
-  }`;
+  compiled.push(`return __output;`);
+  compiled.push(`}`);
+
+  if (exp) {
+    compiled.push(`__exports.${name} = ${name}`);
+  }
+
+  return compiled.join("\n");
 }

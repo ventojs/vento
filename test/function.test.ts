@@ -3,13 +3,27 @@ import { test } from "./utils.ts";
 Deno.test("Function tag", async () => {
   await test({
     template: `
-    {{ function hello }}
+    {{ export function hello }}
     Hello world
     {{ /function }}
 
     {{ hello() }}
     `,
     expected: "Hello world",
+  });
+
+  await test({
+    template: `
+    {{ function hello }}
+    Hello {{ name }}
+    {{ /function }}
+
+    {{ hello() }}
+    `,
+    expected: "Hello world",
+    data: {
+      name: "world",
+    },
   });
 
   await test({

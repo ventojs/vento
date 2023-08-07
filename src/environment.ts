@@ -3,13 +3,16 @@ import tokenize, { Token } from "./tokenizer.ts";
 import type { Loader } from "./loader.ts";
 
 export interface Template {
-  (data?: Record<string, unknown>): Promise<string>;
+  (
+    data?: Record<string, unknown>,
+    exports?: Record<string, unknown>,
+  ): Promise<string>;
   code: string;
   file?: string;
 }
 
 export interface TemplateSync {
-  (data?: Record<string, unknown>): string;
+  (data?: Record<string, unknown>, exports?: Record<string, unknown>): string;
   code: string;
   file?: string;
 }
@@ -50,9 +53,10 @@ export class Environment {
     file: string,
     data: Record<string, unknown>,
     from?: string,
+    exports?: Record<string, unknown>,
   ): Promise<string> {
     const template = await this.load(file, from);
-    return await template(data);
+    return await template(data, exports);
   }
 
   async runString(
@@ -110,10 +114,11 @@ export class Environment {
         "__file",
         "__env",
         "__defaults",
-        `return${sync ? "" : " async"} function (__data) {
+        `return${sync ? "" : " async"} function (__data, __exports = {}) {
           try {
             __data = Object.assign({}, __defaults, __data);
             const ${this.options.dataVarname} = __data;
+            let __imports;
             let __output = "";
             with (__data) {
               ${code}
