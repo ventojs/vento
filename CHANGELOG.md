@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.7.0] - Unreleased
 ### Added
+- `function` tag [#9].
 - `runStringSync` function to run Vento in sync mode.
 
 ## [0.6.0] - 2023-07-03
@@ -67,6 +68,7 @@ First version
 [#3]: https://github.com/oscarotero/vento/issues/3
 [#4]: https://github.com/oscarotero/vento/issues/4
 [#5]: https://github.com/oscarotero/vento/issues/5
+[#9]: https://github.com/oscarotero/vento/issues/9
 
 [0.7.0]: https://github.com/oscarotero/vento/compare/v0.6.0...HEAD
 [0.6.0]: https://github.com/oscarotero/vento/compare/v0.5.1...v0.6.0

@@ -6,6 +6,7 @@ import includeTag from "./plugins/include.ts";
 import setTag from "./plugins/set.ts";
 import jsTag from "./plugins/js.ts";
 import layoutTag from "./plugins/layout.ts";
+import functionTag from "./plugins/function.ts";
 import escape from "./plugins/escape.ts";
 
 export interface Options {
@@ -30,6 +31,7 @@ export default function (options: Options = {}) {
   env.use(includeTag());
   env.use(setTag());
   env.use(layoutTag());
+  env.use(functionTag());
   env.use(escape());
 
   return env;
