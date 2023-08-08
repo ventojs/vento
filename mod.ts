@@ -8,6 +8,7 @@ import jsTag from "./plugins/js.ts";
 import layoutTag from "./plugins/layout.ts";
 import functionTag from "./plugins/function.ts";
 import importTag from "./plugins/import.ts";
+import exportTag from "./plugins/export.ts";
 import escape from "./plugins/escape.ts";
 
 export interface Options {
@@ -32,8 +33,9 @@ export default function (options: Options = {}) {
   env.use(includeTag());
   env.use(setTag());
   env.use(layoutTag());
-  env.use(importTag());
   env.use(functionTag());
+  env.use(importTag());
+  env.use(exportTag());
   env.use(escape());
 
   return env;

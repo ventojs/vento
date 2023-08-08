@@ -44,9 +44,11 @@ function layoutTag(
   compiled.push(`${varname} = ${compiledFilters};`);
 
   compiled.push(
-    `${output} += await __env.run(${file}, {...__data${
-      data ? `, ${data}` : ""
-    }, content: ${varname}}, __file);`,
+    `__tmp = await __env.run(${file},
+      {...__data${data ? `, ${data}` : ""}, content: ${varname}},
+      __file
+    );
+    ${output} += __tmp.content;`,
   );
 
   compiled.push("}");

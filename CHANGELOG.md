@@ -6,9 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.7.0] - Unreleased
 ### Added
-- `function` tag [#9].
-- `import` and `export` tag [#9].
+- `function`, `import` and `export` tags [#9].
 - `runStringSync` function to run Vento in sync mode.
+
+### Changed
+- `run` and `runString` returns a `TemplateResult` interface, instead of a string.
 
 ## [0.6.0] - 2023-07-03
 ### Added

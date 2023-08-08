@@ -25,8 +25,7 @@ function importTag(
   const [_, vars, file] = match;
 
   return `
-    __imports = {};
-    await __env.run(${file}, {...__data}, __file, __imports);
-    let ${vars} = __imports;
+    __tmp = await __env.run(${file}, {...__data}, __file);
+    let ${vars} = __tmp;
   `;
 }

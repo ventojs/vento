@@ -2,17 +2,19 @@ import tokenize, { Token } from "./tokenizer.ts";
 
 import type { Loader } from "./loader.ts";
 
+export interface TemplateResult {
+  content: string;
+  [key: string]: unknown;
+}
+
 export interface Template {
-  (
-    data?: Record<string, unknown>,
-    exports?: Record<string, unknown>,
-  ): Promise<string>;
+  (data?: Record<string, unknown>): Promise<TemplateResult>;
   code: string;
   file?: string;
 }
 
 export interface TemplateSync {
-  (data?: Record<string, unknown>, exports?: Record<string, unknown>): string;
+  (data?: Record<string, unknown>): TemplateResult;
   code: string;
   file?: string;
 }
@@ -53,17 +55,16 @@ export class Environment {
     file: string,
     data: Record<string, unknown>,
     from?: string,
-    exports?: Record<string, unknown>,
-  ): Promise<string> {
+  ): Promise<TemplateResult> {
     const template = await this.load(file, from);
-    return await template(data, exports);
+    return await template(data);
   }
 
   async runString(
     source: string,
     data?: Record<string, unknown>,
     file?: string,
-  ): Promise<string> {
+  ): Promise<TemplateResult> {
     if (file) {
       const cached = this.cache.get(file);
 
@@ -84,7 +85,7 @@ export class Environment {
   runStringSync(
     source: string,
     data?: Record<string, unknown>,
-  ): string {
+  ): TemplateResult {
     const template = this.compile(source, "", {}, true);
     return template(data);
   }
@@ -114,16 +115,16 @@ export class Environment {
         "__file",
         "__env",
         "__defaults",
-        `return${sync ? "" : " async"} function (__data, __exports = {}) {
+        `return${sync ? "" : " async"} function (__data) {
           try {
             __data = Object.assign({}, __defaults, __data);
             const ${this.options.dataVarname} = __data;
-            let __imports;
-            let __output = "";
+            let __tmp;
+            const __exports = { content: "" };
             with (__data) {
               ${code}
             }
-            return __output;
+            return __exports;
           } catch (cause) {
             throw new Error(\`Error rendering template: \${__file}\`, { cause });
           }
@@ -155,7 +156,7 @@ export class Environment {
 
   compileTokens(
     tokens: Token[],
-    outputVar = "__output",
+    outputVar = "__exports.content",
     stopAt?: string[],
   ): string[] {
     const compiled: string[] = [];

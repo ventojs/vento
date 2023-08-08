@@ -44,7 +44,7 @@ function functionTag(
   compiled.push(`}`);
 
   if (exp) {
-    compiled.push(`__exports.${name} = ${name}`);
+    compiled.push(`__exports["${name}"] = ${name}`);
   }
 
   return compiled.join("\n");

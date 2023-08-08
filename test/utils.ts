@@ -34,8 +34,8 @@ export async function test(options: TestOptions) {
     }
   }
 
-  const output = await env.runString(options.template, options.data);
-  assertEquals(output.trim(), options.expected.trim());
+  const result = await env.runString(options.template, options.data);
+  assertEquals(result.content.trim(), options.expected.trim());
 }
 
 export function testSync(options: TestOptions) {
@@ -51,8 +51,8 @@ export function testSync(options: TestOptions) {
     }
   }
 
-  const output = env.runStringSync(options.template, options.data);
-  assertEquals(output.trim(), options.expected.trim());
+  const result = env.runStringSync(options.template, options.data);
+  assertEquals(result.content.trim(), options.expected.trim());
 }
 
 export class FileLoader implements Loader {

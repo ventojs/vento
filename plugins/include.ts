@@ -25,7 +25,11 @@ function includeTag(
 
   const [_, file, data] = match;
 
-  return `${output} += await __env.run(${file}, {...__data${
-    data ? `, ${data}` : ""
-  }}, __file);`;
+  return `{
+    __tmp = await __env.run(${file},
+      {...__data${data ? `, ${data}` : ""}},
+      __file
+    );
+    ${output} += __tmp.content;
+  }`;
 }
