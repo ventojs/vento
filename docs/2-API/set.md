@@ -59,3 +59,7 @@ The `set` tag provides the following benefits:
   {{ set name = "Óscar" }}
   {{ set name = "Laura" }}
   ```
+
+## Import / Export variables
+
+[See Imports documentation](./import-export.md) to learn how to export and import variables from other templates.

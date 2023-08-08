@@ -5,7 +5,7 @@ Deno.test("Function tag", async () => {
     template: `
     {{ export function hello }}
     Hello world
-    {{ /function }}
+    {{ /export }}
 
     {{ hello() }}
     `,

@@ -9,7 +9,7 @@ Deno.test("Function tag (async)", async () => {
     expected: "Hello world / Hello Vento",
     includes: {
       "/my-file.tmpl": `
-      {{ export function hello (name = "world") }}Hello {{ name }}{{ /function }}
+      {{ export function hello (name = "world") }}Hello {{ name }}{{ /export }}
       `,
     },
   });

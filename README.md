@@ -99,7 +99,7 @@ can install with `npm install ventojs`.
 Import the library and create an instance:
 
 ```ts
-import vento from "https://deno.land/x/vento@v0.2.0/mod.ts";
+import vento from "https://deno.land/x/vento/mod.ts";
 
 const vto = vento({
   // Resolve the non-relative includes paths

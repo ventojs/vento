@@ -30,12 +30,23 @@ function functionTag(
   const compiled: string[] = [];
   compiled.push(`${as || ""} function ${name} ${args || "()"} {`);
   compiled.push(`let __output = "";`);
-  compiled.push(...env.compileTokens(tokens, "__output", ["/function"]));
 
-  if (
-    tokens.length && (tokens[0][0] !== "tag" || tokens[0][1] !== "/function")
-  ) {
-    throw new Error(`Missing closing tag for function tag: ${code}`);
+  if (exp) {
+    compiled.push(...env.compileTokens(tokens, "__output", ["/export"]));
+
+    if (
+      tokens.length && (tokens[0][0] !== "tag" || tokens[0][1] !== "/export")
+    ) {
+      throw new Error(`Missing closing tag for export function tag: ${code}`);
+    }
+  } else {
+    compiled.push(...env.compileTokens(tokens, "__output", ["/function"]));
+
+    if (
+      tokens.length && (tokens[0][0] !== "tag" || tokens[0][1] !== "/function")
+    ) {
+      throw new Error(`Missing closing tag for function tag: ${code}`);
+    }
   }
 
   tokens.shift();
