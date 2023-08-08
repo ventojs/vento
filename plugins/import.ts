@@ -15,7 +15,7 @@ function importTag(
   }
 
   const match = code?.match(
-    /^import\s+(\{[\s|\S]*\})\s+from\s+(.+)$/,
+    /^import\s+(\{[\s|\S]*\}|\w+)\s+from\s+(.+)$/,
   );
 
   if (!match) {
@@ -24,8 +24,14 @@ function importTag(
 
   const [_, vars, file] = match;
 
-  return `
-    __tmp = await __env.run(${file}, {...__data}, __file);
-    let ${vars} = __tmp;
-  `;
+  const compiled: string[] = [];
+  compiled.push(`__tmp = await __env.run(${file}, {...__data}, __file);`);
+
+  if (vars.startsWith("{")) {
+    compiled.push(`let ${vars} = __tmp;`);
+  } else {
+    compiled.push(`let ${vars} = __tmp;`);
+  }
+
+  return compiled.join("\n");
 }

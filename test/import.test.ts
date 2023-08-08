@@ -43,4 +43,19 @@ Deno.test("Function tag (async)", async () => {
       `,
     },
   });
+  await test({
+    template: `
+    {{ import vars from "/my-file.tmpl" }}
+    {{ vars.hello }}
+    `,
+    expected: "Hello Vento",
+    data: {
+      name: "Vento",
+    },
+    includes: {
+      "/my-file.tmpl": `
+      {{ export hello = "Hello " + name }}
+      `,
+    },
+  });
 });
