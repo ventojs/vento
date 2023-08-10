@@ -17,7 +17,7 @@ const result = await env.runString(
   { title: "Hello world" },
 );
 
-console.log(result);
+console.log(result.content);
 // <h1>Hello world</h1>
 ```
 
@@ -43,7 +43,7 @@ const result = await env.runString(
   { title: "Hello world" },
 );
 
-console.log(result);
+console.log(result.content);
 // <h1>Hello world</h1>
 ```
 

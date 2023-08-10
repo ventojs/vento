@@ -126,19 +126,22 @@ can use `load` to load and compile a template file and return it.
 const template = vto.load("my-template.vto");
 
 // Now you can use it passing the data
-template({ title: "Hello world" });
+const result = template({ title: "Hello world" });
+console.log(result.content);
 ```
 
 Alternatively, you can load and run the template file in a single call:
 
 ```ts
-vto.run("my-template.vto", { title: "Hello world" });
+const result = vto.run("my-template.vto", { title: "Hello world" });
+console.log(result.content);
 ```
 
 If the template code is not a file, you can run it directly:
 
 ```ts
-vto.runString("<h1>{{ title }}</h1>", { title: "Hello world" });
+const result = vto.runString("<h1>{{ title }}</h1>", { title: "Hello world" });
+console.log(result.content);
 ```
 
 ## Visual Studio Code Support
