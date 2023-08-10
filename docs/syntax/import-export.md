@@ -6,19 +6,19 @@ Vento templates not only render content but also can export other things like va
 
 The `export` tag allows to export a variable or function under a name. For example, to export a variable:
 
-```
+```vento
 {{ export message = "Hello world" }}
 ```
 
 Use pipes to transform the value:
 
-```
+```vento
 {{ export message = "Hello world" |> toUpperCase }}
 ```
 
 The exported variable is also available in the current template:
 
-```
+```vento
 {{ export message = "Hello world" }}
 
 {{ message }}
@@ -29,7 +29,7 @@ The exported variable is also available in the current template:
 It's also possible to export a block using `{{ export }}` and
 `{{ /export }}` tags:
 
-```
+```vento
 {{ export message }}
   Hello world
 {{ /export }}
@@ -37,7 +37,7 @@ It's also possible to export a block using `{{ export }}` and
 
 Block mode supports pipes too:
 
-```
+```vento
 {{ export message |> toUpperCase }}
   Hello world
 {{ /export }}
@@ -47,7 +47,7 @@ Block mode supports pipes too:
 
 To export a function, just include the `function` keyword after `export`:
 
-```
+```vento
 {{ export function message (name) }}
   Hello {{ name }}
 {{ /export }}
@@ -55,7 +55,7 @@ To export a function, just include the `function` keyword after `export`:
 
 Like with variables, the exported functions are also available in the template:
 
-```
+```vento
 {{ export function message (name) }}
   Hello {{ name }}
 {{ /export }}
@@ -67,7 +67,7 @@ Like with variables, the exported functions are also available in the template:
 
 Use the tag `import` to get the variables and functions exported by other templates. For example, to import and use a variable:
 
-```
+```vento
 {{ import { message } from "./vars.vto" }}
 
 {{ message }}
@@ -75,7 +75,7 @@ Use the tag `import` to get the variables and functions exported by other templa
 
 Or a function:
 
-```
+```vento
 {{ import { message } from "./functions.vto" }}
 
 {{ message() }}
@@ -83,7 +83,7 @@ Or a function:
 
 The imported variables are specified between curly brackets (For example `{ message }`). You can import all elements from a template by omiting the brackets.
 
-```
+```vento
 {{ import fns from "./functions.vto" }}
 
 {{ fns.message() }}

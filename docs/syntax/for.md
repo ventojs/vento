@@ -3,7 +3,7 @@
 Use `{{ for [value] of [collection] }}` tag to iterate over arrays,
 dictionaries, numbers, strings, etc. For example:
 
-```
+```vento
 {{ for number of [1, 2, 3] }}
   {{ number }}
 {{ /for }}
@@ -12,7 +12,7 @@ dictionaries, numbers, strings, etc. For example:
 Vento will evaluate any code in the `[collection]` as JavaScript code, so you
 can place any expression you like:
 
-```
+```vento
 {{ for pair_number of [1, 2, 3].map((n) => n%2) }}
   {{ pair_number }}
 {{ /for }}
@@ -23,7 +23,7 @@ can place any expression you like:
 Use the `{{ for [key], [value] of [collection] }}` syntax to get the key and the
 value of the entries:
 
-```
+```vento
 <dl>
 {{ for key, value of { name: "Óscar", surname: "Otero" } }}
   <dt>{{ key }}</dt>
@@ -36,7 +36,7 @@ value of the entries:
 
 Use `for await` for async iterators:
 
-```
+```vento
 {{ for await item of getItems() }}
   {{ item }}
 {{ /for }}
@@ -51,7 +51,7 @@ object.
 
 Any integer number will be converted to an array. The following example:
 
-```
+```vento
 {{ for count of 10 }}
   {{ count }}
 {{ /for }}
@@ -59,7 +59,7 @@ Any integer number will be converted to an array. The following example:
 
 is equivalent to:
 
-```
+```vento
 {{ for count of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }}
   {{ count }}
 {{ /for }}
@@ -70,7 +70,7 @@ is equivalent to:
 Any string will be converted to an array with one element per character. The
 following example:
 
-```
+```vento
 {{ for letter of "Hello" }}
   {{ letter }}
 {{ /for }}
@@ -78,7 +78,7 @@ following example:
 
 is equivalent to:
 
-```
+```vento
 {{ for letter of ["H", "e", "l", "l", "o"] }}
   {{ letter }}
 {{ /for }}
@@ -89,7 +89,7 @@ is equivalent to:
 Any NULL or undefined variable is converted to an empty array so the code won't
 fail:
 
-```
+```vento
 {{ for item of undefined }}
   {{ item }}
 {{ /for }}
@@ -97,7 +97,7 @@ fail:
 
 is equivalent to:
 
-```
+```vento
 {{ for item of [] }}
   {{ item }}
 {{ /for }}
@@ -108,7 +108,7 @@ is equivalent to:
 You can use Pipes to transform the iterable object before iterating it. For
 example to filter by even numbers:
 
-```
+```vento
 {{ for evenNumber of [1, 2, 3] |> filter((n) => n % 2 === 0) }}
   {{ evenNumber }}
 {{ /for }}

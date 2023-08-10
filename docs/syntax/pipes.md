@@ -17,14 +17,14 @@ Pipes can run three types of functions, in this order of priority:
 Filters are custom functions that you can configure to transform variables. By
 default Vento has the `escape` filter out of the box, to escape HTML code:
 
-```
+```vento
 {{ "<h1>Hello world</h1>" |> escape }}
 ```
 
 If the filter accepts additional arguments you can pass them between
 parenthesis:
 
-```
+```vento
 {{ "<h1>Hello world</h1>" |> filter_name(arg1, arg2) }}
 ```
 
@@ -33,26 +33,26 @@ parenthesis:
 If the function is a standard function available globally (for example
 `JSON.stringify()`), Vento will execute:
 
-```
+```vento
 {{ {name: "Óscar", surname: "Otero"} |> JSON.stringify }}
 ```
 
 This is equivalent to:
 
-```
+```vento
 {{ JSON.stringify({name: "Óscar", surname: "Otero"}) }}
 ```
 
 The value is passed as the first argument. Any other argument will go in the
 next positions:
 
-```
+```vento
 {{ {name: "Óscar", surname: "Otero"} |> JSON.stringify(null, 2) }}
 ```
 
 This is equivalent to:
 
-```
+```vento
 {{ JSON.stringify({name: "Óscar", surname: "Otero"}, null, 2) }}
 ```
 
@@ -63,13 +63,13 @@ In the following example, the variable is a string
 [that has the `toUpperCase()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toUpperCase)
 method, so it can be passed as a Pipe:
 
-```
+```vento
 {{ "Hello world" |> toUpperCase }}
 ```
 
 This is equivalent to:
 
-```
+```vento
 {{ "Hello world".toUpperCase() }}
 ```
 
@@ -78,7 +78,7 @@ This is equivalent to:
 You can chain different functions with the pipe operator and use `await` for
 async functions. For example:
 
-```
+```vento
 {{ "https://example.com/data.json" |> await fetch |> await json |> JSON.stringify }}
 ```
 

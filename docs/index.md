@@ -48,7 +48,7 @@ drawbacks and none of them meets all my requirements, so I've created Vento.
 
 First, let's take a look to the following example:
 
-```html
+```vento
 <header>
   {{ if printName }}
   <h1>{{ (await getUser(34)).name |> toUpperCase }}</h1>

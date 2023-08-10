@@ -1,27 +1,24 @@
 Prism.languages.vento = {
-  "comment": {
-    pattern: /(^\{\{#[\s\S]*#\}\}$)/,
-    lookbehind: true,
-  },
   "delimiter": {
-    pattern: /^\{\{-?|-?\}\}$/,
+    pattern: /\{{2}-?|-?\}{2}/,
     alias: "punctuation",
   },
+  "comment": /^#[\s\S]*#$/,
   "language-javascript": {
-    pattern: /[\s\S]+/,
+    pattern: /^[\s\S]+$/,
     inside: Prism.languages.javascript,
   },
 };
 
 Prism.hooks.add("before-tokenize", function (env) {
-  const ventoPattern = /\{\{[\s\S]+\}\}/g;
+  const ventoPattern = /\{{2}[\s\S]+\}{2}/g;
   Prism.languages["markup-templating"].buildPlaceholders(
     env,
-    "vto",
+    "vento",
     ventoPattern,
   );
 });
 
 Prism.hooks.add("after-tokenize", function (env) {
-  Prism.languages["markup-templating"].tokenizePlaceholders(env, "vto");
+  Prism.languages["markup-templating"].tokenizePlaceholders(env, "vento");
 });

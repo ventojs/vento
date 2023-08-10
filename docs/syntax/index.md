@@ -1,4 +1,4 @@
-# API
+# Syntax
 
 The API of Vento is designed to be very simple but flexible.
 

@@ -20,7 +20,7 @@ cause an error if the variable doesn't exist _(ReferenceError: title is not
 defined)_. To avoid this error you can check if the variable exists before
 printing it:
 
-```
+```vento
 {{ if typeof title !== "undefined" }}
   {{ title }}
 {{ /if }}
@@ -28,14 +28,14 @@ printing it:
 
 Or even simpler:
 
-```
+```vento
 {{ typeof title === "string" ? title : "" }}
 ```
 
 But Vento provides the `it` global object that contains all data available in
 the template. So you can do simply:
 
-```
+```vento
 {{ it.title }}
 ```
 
@@ -67,6 +67,6 @@ env.filters.italic = italic;
 
 Now you can use this filter anywhere:
 
-```html
+```vento
 <p>Welcome to {{ title |> italic }}</p>
 ```

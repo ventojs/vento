@@ -5,7 +5,7 @@ it into another template under the variable `content`.
 
 For example, let's say you have the following `container.vto` template:
 
-```html
+```vento
 <div class="container">
   {{ content }}
 </div>
@@ -13,7 +13,7 @@ For example, let's say you have the following `container.vto` template:
 
 You can pass content to this template easily with the `layout` tag:
 
-```html
+```vento
 {{ layout "container.vto" }}
 <h1>Hello world</h1>
 {{ /layout }}
@@ -21,7 +21,7 @@ You can pass content to this template easily with the `layout` tag:
 
 Technically, the `layout` tag works a lot like the following:
 
-```html
+```vento
 {{ set content }}
 <h1>Hello world</h1>
 {{ /set }}
@@ -34,7 +34,7 @@ Technically, the `layout` tag works a lot like the following:
 In addition to the `content` variable, the layout inherits the same data as the
 main file. You can pass additional data creating an object after the layout file name.
 
-```hml
+```vento
 {{ layout "container.vto" { size: "big" } }}
 <h1>Hello world</h1>
 {{ /layout }}
@@ -42,7 +42,7 @@ main file. You can pass additional data creating an object after the layout file
 
 Now, the layout content has the `size` variable:
 
-```html
+```vento
 <div class="container size-{{ size }}">
   {{ content }}
 </div>

@@ -2,7 +2,7 @@
 
 Functions are similar to regular JavaScript functions and allow to define reusable chunks of content. For example:
 
-```
+```vento
 {{ function hello }}
   Hello world
 {{ /function }}
@@ -12,7 +12,7 @@ Functions are similar to regular JavaScript functions and allow to define reusab
 
 You can specify arguments to the function in the same way as on JavaScript:
 
-```
+```vento
 {{ function hello(name = "World") }}
   Hello {{ name }}
 {{ /function }}
@@ -24,7 +24,7 @@ You can specify arguments to the function in the same way as on JavaScript:
 
 Like in JavaScript, Vento functions can access to scoped variables of the template, even if they are not passed to the function:
 
-```
+```vento
 {{ set name = "World" }}
 
 {{ function hello }}
@@ -38,7 +38,7 @@ Like in JavaScript, Vento functions can access to scoped variables of the templa
 
 Use the `async` keyword to create asynchronous functions:
 
-```
+```vento
 {{ async function hello }}
   {{ await Promise.resolve("Hello world") }}
 {{ /function }}
