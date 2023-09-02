@@ -33,6 +33,9 @@ jobs:
       - name: Run tests
         run: deno task test
 
+      - name: Run benchmarks
+        run: deno task bench
+
       - name: Build docs
         run: |
           cd docs
