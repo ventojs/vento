@@ -174,12 +174,7 @@ export class Environment {
       }
 
       if (type === "string" || type === "raw") {
-        compiled.push(`${outputVar} += \`${
-          code
-            .replaceAll("\\", "\\\\")
-            .replaceAll("`", "\\`")
-            .replaceAll("${", "\\${")
-        }\`;`);
+        compiled.push(`${outputVar} += ${JSON.stringify(code)};`);
         continue;
       }
 
