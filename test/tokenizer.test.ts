@@ -1,5 +1,5 @@
 import tokenize, { parseTag } from "../src/tokenizer.ts";
-import { assertEquals } from "https://deno.land/std@0.190.0/testing/asserts.ts";
+import { assertEquals } from "https://deno.land/std@0.201.0/testing/asserts.ts";
 
 Deno.test("Parse tag", () => {
   const code = "{{ tag |> filter1 |> filter2 }}";

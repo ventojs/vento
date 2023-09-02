@@ -1,11 +1,16 @@
 import vento from "../mod.ts";
 import nunjucks from "npm:nunjucks@3.2.4";
-import { Liquid } from "npm:liquidjs@10.7.1";
-import * as eta from "https://deno.land/x/eta@v2.2.0/mod.ts";
+import { Liquid } from "npm:liquidjs@10.9.2";
+import { Eta } from "https://deno.land/x/eta@v3.1.1/src/index.ts";
 
 const env = vento();
 const engine = new Liquid({
   cache: true,
+});
+const eta = new Eta({
+  cache: true,
+  useWith: true,
+  views: Deno.cwd() + "/bench",
 });
 
 Deno.bench({
@@ -30,9 +35,6 @@ Deno.bench({
 Deno.bench({
   name: "Eta",
   async fn() {
-    await eta.renderFile(Deno.cwd() + "/bench/tmp.eta", { hello: "Hello" }, {
-      cache: true,
-      useWith: true,
-    });
+    await eta.renderAsync("/tmp.eta", { hello: "Hello" });
   },
 });

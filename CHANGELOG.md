@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.7.2] - 2023-09-02
 ### Fixed
 - Escape backtick and `${` in the template [#10].
+- Updated dependencies
 
 ## [0.7.1] - 2023-08-08
 ### Fixed
