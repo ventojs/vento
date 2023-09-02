@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.7.3] - 2023-09-02
 ### Fixed
-- Escape backslashes [#12].
+- Escape backslashes [#12], [#13].
 
 ## [0.7.2] - 2023-09-02
 ### Fixed
@@ -87,6 +87,7 @@ First version
 [#9]: https://github.com/oscarotero/vento/issues/9
 [#10]: https://github.com/oscarotero/vento/issues/10
 [#12]: https://github.com/oscarotero/vento/issues/12
+[#13]: https://github.com/oscarotero/vento/issues/13
 
 [0.7.3]: https://github.com/oscarotero/vento/compare/v0.7.2...v0.7.3
 [0.7.2]: https://github.com/oscarotero/vento/compare/v0.7.1...v0.7.2
