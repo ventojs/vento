@@ -1,4 +1,4 @@
-export type TokenType = "string" | "tag" | "filter" | "comment" | "raw";
+export type TokenType = "string" | "tag" | "filter" | "comment";
 export type Token = [TokenType, string];
 
 export default function tokenize(source: string): Token[] {
@@ -23,18 +23,6 @@ export default function tokenize(source: string): Token[] {
       }
 
       source = source.slice(index);
-
-      // Check if it's a {{raw}} tag
-      const raw = parseRawTag(source);
-
-      if (raw) {
-        const rawCode = source.slice(raw[0], raw[1]);
-        tokens.push(["raw", rawCode]);
-        source = source.slice(raw[2]);
-        type = "string";
-        continue;
-      }
-
       type = source.startsWith("{{#") ? "comment" : "tag";
       continue;
     }
@@ -57,6 +45,7 @@ export default function tokenize(source: string): Token[] {
     if (type === "tag") {
       const indexes = parseTag(source);
       const lastIndex = indexes.length - 1;
+      let tag: Token | undefined;
 
       indexes.reduce((prev, curr, index) => {
         let code = source.slice(prev, curr - 2);
@@ -75,8 +64,8 @@ export default function tokenize(source: string): Token[] {
             code = code.slice(0, -1);
             trimNext = true;
           }
-
-          tokens.push([type, code.trim()]);
+          tag = [type, code.trim()];
+          tokens.push(tag);
           return curr;
         }
 
@@ -93,6 +82,20 @@ export default function tokenize(source: string): Token[] {
 
       source = source.slice(indexes[indexes.length - 1]);
       type = "string";
+
+      // Search the closing echo tag {{ /echo }}
+      if (tag?.[1] === "echo") {
+        const end = source.match(/{{\s*\/echo\s*}}/);
+
+        if (!end) {
+          throw new Error("Unclosed echo tag");
+        }
+
+        const rawCode = source.slice(0, end.index);
+        tag[1] = `echo ${JSON.stringify(rawCode)}`;
+        source = source.slice(Number(end.index) + end[0].length);
+      }
+
       continue;
     }
   }
@@ -229,24 +232,4 @@ export function parseTag(source: string): number[] {
   }
 
   throw new Error("Unclosed tag");
-}
-
-function parseRawTag(source: string): [number, number, number] | undefined {
-  const startResult = source.match(/^{{\s*raw\s*}}/);
-
-  if (!startResult) {
-    return;
-  }
-
-  const endResult = source.match(/{{\s*\/raw\s*}}/);
-
-  if (!endResult) {
-    throw new Error("Unclosed raw tag");
-  }
-
-  return [
-    startResult[0].length,
-    endResult.index!,
-    endResult.index! + endResult[0].length,
-  ];
 }

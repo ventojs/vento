@@ -33,7 +33,8 @@ export type Plugin = (env: Environment) => void;
 
 export interface Options {
   loader: Loader;
-  dataVarname?: string;
+  dataVarname: string;
+  autoescape: boolean;
 }
 
 export class Environment {
@@ -173,7 +174,7 @@ export class Environment {
         continue;
       }
 
-      if (type === "string" || type === "raw") {
+      if (type === "string") {
         compiled.push(`${outputVar} += ${JSON.stringify(code)};`);
         continue;
       }
@@ -201,6 +202,8 @@ export class Environment {
   }
 
   compileFilters(tokens: Token[], output: string) {
+    let unescaped = false;
+
     while (tokens.length > 0 && tokens[0][0] === "filter") {
       const [, code] = tokens.shift()!;
 
@@ -225,11 +228,20 @@ export class Environment {
           })`;
         }
       } else {
+        if (name === "unescape") {
+          unescaped = true;
+        }
+
         // It's a filter (e.g. filters.upper())
         output = `${isAsync ? "await " : ""}__env.filters.${name}(${output}${
           args ? `, ${args}` : ""
         })`;
       }
+    }
+
+    // Escape by default
+    if (this.options.autoescape && !unescaped) {
+      output = `__env.filters.escape(${output})`;
     }
 
     return output;

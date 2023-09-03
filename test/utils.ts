@@ -1,5 +1,5 @@
 import tmpl from "../mod.ts";
-import { assertEquals } from "https://deno.land/std@0.201.0/testing/asserts.ts";
+import { assertEquals } from "https://deno.land/std@0.201.0/assert/assert_equals.ts";
 import {
   extract,
   test as fmTest,
@@ -7,6 +7,7 @@ import {
 
 import { path } from "../deps.ts";
 
+import type { Options } from "../mod.ts";
 import type { Environment, Filter } from "../src/environment.ts";
 import type { Loader } from "../src/loader.ts";
 
@@ -17,11 +18,13 @@ export interface TestOptions {
   expected: string;
   init?: (env: Environment) => void;
   includes?: Record<string, string>;
+  options?: Options;
 }
 
 export async function test(options: TestOptions) {
   const env = tmpl({
     includes: new FileLoader(options.includes || {}),
+    ...options.options,
   });
 
   if (options.init) {
@@ -39,7 +42,9 @@ export async function test(options: TestOptions) {
 }
 
 export function testSync(options: TestOptions) {
-  const env = tmpl();
+  const env = tmpl({
+    ...options.options,
+  });
 
   if (options.init) {
     options.init(env);

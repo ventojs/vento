@@ -9,11 +9,14 @@ import layoutTag from "./plugins/layout.ts";
 import functionTag from "./plugins/function.ts";
 import importTag from "./plugins/import.ts";
 import exportTag from "./plugins/export.ts";
+import echoTag from "./plugins/echo.ts";
 import escape from "./plugins/escape.ts";
+import unescape from "./plugins/unescape.ts";
 
 export interface Options {
   includes?: string | Loader;
   dataVarname?: string;
+  autoescape?: boolean;
 }
 
 export default function (options: Options = {}) {
@@ -24,6 +27,7 @@ export default function (options: Options = {}) {
   const env = new Environment({
     loader,
     dataVarname: options.dataVarname || "it",
+    autoescape: options.autoescape || false,
   });
 
   // Register basic plugins
@@ -36,7 +40,9 @@ export default function (options: Options = {}) {
   env.use(functionTag());
   env.use(importTag());
   env.use(exportTag());
+  env.use(echoTag());
   env.use(escape());
+  env.use(unescape());
 
   return env;
 }
