@@ -148,10 +148,10 @@ export class Environment {
       const { source, data } = await this.options.loader.load(path);
       const template = this.compile(source, path, data);
 
-      this.cache.set(file, template);
+      this.cache.set(path, template);
     }
 
-    return this.cache.get(file)!;
+    return this.cache.get(path)!;
   }
 
   compileTokens(
