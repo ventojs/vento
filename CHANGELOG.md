@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 - The `raw` tag. Use `echo` instead.
 
+### Fixed
+- Use correct key for cache queries [#15]
+
 ## [0.7.3] - 2023-09-02
 ### Fixed
 - Escape backslashes [#12], [#13].
@@ -98,6 +101,7 @@ First version
 [#12]: https://github.com/oscarotero/vento/issues/12
 [#13]: https://github.com/oscarotero/vento/issues/13
 [#14]: https://github.com/oscarotero/vento/issues/14
+[#15]: https://github.com/oscarotero/vento/issues/15
 
 [0.8.0]: https://github.com/oscarotero/vento/compare/v0.7.3...HEAD
 [0.7.3]: https://github.com/oscarotero/vento/compare/v0.7.2...v0.7.3
