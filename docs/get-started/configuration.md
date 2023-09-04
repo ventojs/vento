@@ -70,3 +70,20 @@ Now you can use this filter anywhere:
 ```vento
 <p>Welcome to {{ title |> italic }}</p>
 ```
+
+## Autoescape
+
+Set `true` to escape automatically the printed variables:
+
+```ts
+const env = vento({
+  autoescape: true,
+});
+
+const result = env.runString("{{ title }}", { title: "<h1>Hello world</h1>" });
+// &lt;h1&gt;Hello world&lt;/h1&gt;
+
+// You can use the `unescape` filter for trusted content:
+const result = env.runString("{{ title |> unescape }}", { title: "<h1>Hello world</h1>" });
+// <h1>Hello world</h1>
+```
