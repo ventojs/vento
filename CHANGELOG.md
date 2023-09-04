@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [0.8.0] - Unreleased
+## [0.8.0] - 2023-09-04
 ### Added
 - New `echo` tag [#14].
 - New `unescape` filter.
@@ -105,7 +105,7 @@ First version
 [#14]: https://github.com/oscarotero/vento/issues/14
 [#15]: https://github.com/oscarotero/vento/issues/15
 
-[0.8.0]: https://github.com/oscarotero/vento/compare/v0.7.3...HEAD
+[0.8.0]: https://github.com/oscarotero/vento/compare/v0.7.3...v0.8.0
 [0.7.3]: https://github.com/oscarotero/vento/compare/v0.7.2...v0.7.3
 [0.7.2]: https://github.com/oscarotero/vento/compare/v0.7.1...v0.7.2
 [0.7.1]: https://github.com/oscarotero/vento/compare/v0.7.0...v0.7.1
