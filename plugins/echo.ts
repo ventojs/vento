@@ -18,7 +18,7 @@ function setTag(
   }
 
   const value = code.replace(/^echo\s+/, "");
-  const val = env.compileFilters(tokens, value);
+  const val = env.compileFilters(tokens, value, env.options.autoescape);
 
   return `${output} += ${val};`;
 }

@@ -7,8 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.8.0] - Unreleased
 ### Added
 - New `echo` tag [#14].
-- New `unescape`filter.
+- New `unescape` filter.
 - New option `autoescape`.
+- `include` supports pipes. For example: `{{ include "template.vto" |> toUpperCase }}`
+- `layout` supports pipes. For example: `{{ layout "template.vto" |> markdown }}Text in markdown{{ /layout }}`
 
 ### Removed
 - The `raw` tag. Use `echo` instead.

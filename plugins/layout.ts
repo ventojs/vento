@@ -45,7 +45,9 @@ function layoutTag(
 
   compiled.push(
     `__tmp = await __env.run(${file},
-      {...__data${data ? `, ${data}` : ""}, content: ${varname}},
+      {...__data${data ? `, ${data}` : ""}, content: ${
+      env.compileFilters(tokens, varname)
+    }},
       __file
     );
     ${output} += __tmp.content;`,

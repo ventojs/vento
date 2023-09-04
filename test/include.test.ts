@@ -23,6 +23,58 @@ Deno.test("Include tag", async () => {
   });
 });
 
+Deno.test("Include tag (autoescaped enabled)", async () => {
+  await test({
+    options: {
+      autoescape: true,
+    },
+    template: `
+    {{ include "/my-file.tmpl" }}
+    `,
+    expected: "<strong>Hello world</strong>",
+    includes: {
+      "/my-file.tmpl": "<strong>Hello world</strong>",
+    },
+  });
+
+  await test({
+    options: {
+      autoescape: true,
+    },
+    template: `
+    {{ include "/sub/my-file.tmpl" }}
+    `,
+    expected: "<strong>Hello world</strong>",
+    includes: {
+      "/sub/my-file.tmpl": "{{ include './other-file.tmpl' }}",
+      "/sub/other-file.tmpl": "<strong>Hello world</strong>",
+    },
+  });
+});
+
+Deno.test("Include tag (with filters)", async () => {
+  await test({
+    template: `
+    {{ include "/my-file.tmpl" |> toUpperCase }}
+    `,
+    expected: "HELLO WORLD",
+    includes: {
+      "/my-file.tmpl": "Hello world",
+    },
+  });
+
+  await test({
+    template: `
+    {{ include "/sub/my-file.tmpl" |> replace(" ", "-") }}
+    `,
+    expected: "HELLO-WORLD",
+    includes: {
+      "/sub/my-file.tmpl": "{{ include './other-file.tmpl' |> toUpperCase }}",
+      "/sub/other-file.tmpl": "Hello world",
+    },
+  });
+});
+
 Deno.test("Include tag (with data)", async () => {
   await test({
     template: `
@@ -94,6 +146,22 @@ Deno.test("Include tag (with custom data)", async () => {
       "/sub/my-file.tmpl":
         "{{ include './other-file.tmpl' { name: `${name} Óscar`} }}",
       "/sub/other-file.tmpl": "{{ salute }} {{ name }}",
+    },
+    data: {
+      salute: "Hello",
+      name: "world",
+    },
+  });
+});
+
+Deno.test("Include tag (with custom data and filters)", async () => {
+  await test({
+    template: `
+    {{ include "/my-file.tmpl" {salute: "Good bye"} |> toUpperCase }}
+    `,
+    expected: "GOOD BYE WORLD",
+    includes: {
+      "/my-file.tmpl": "{{ salute }} {{ name }}",
     },
     data: {
       salute: "Hello",

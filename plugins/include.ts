@@ -1,3 +1,4 @@
+import type { Token } from "../src/tokenizer.ts";
 import type { Environment } from "../src/environment.ts";
 
 export default function () {
@@ -7,9 +8,10 @@ export default function () {
 }
 
 function includeTag(
-  _env: Environment,
+  env: Environment,
   code: string,
   output: string,
+  tokens: Token[],
 ): string | undefined {
   if (!code.startsWith("include ")) {
     return;
@@ -30,6 +32,6 @@ function includeTag(
       {...__data${data ? `, ${data}` : ""}},
       __file
     );
-    ${output} += __tmp.content;
+    ${output} += ${env.compileFilters(tokens, "__tmp.content")};
   }`;
 }

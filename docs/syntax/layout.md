@@ -47,3 +47,21 @@ Now, the layout content has the `size` variable:
   {{ content }}
 </div>
 ```
+
+## Pipes
+
+You can use [pipes](./pipes.md) to transform **the content** passed to the layout. For example:
+
+```vento
+{{ layout "container.vto" |> toUpperCase }}
+<h1>Hello world</h1>
+{{ /layout }}
+```
+
+This code outputs:
+
+```html
+<div class="container">
+  <H1>HELLO WORLD</H1>
+</div>
+```

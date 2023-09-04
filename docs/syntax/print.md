@@ -1,4 +1,4 @@
-# Print variables
+# Printing variables
 
 Put a variable or expression between `{{ }}` to output the result.
 
@@ -66,7 +66,7 @@ The result is:
 ## Pipes
 
 Pipes allow transforming the content before printing it using custom functions
-or global functions. Use `|>` to apply functions.
+or global functions. [More info about pipes](./pipes.md).
 
 Vento comes with the `escape` filter by default. This filter escapes the html
 code. For example:
@@ -79,4 +79,44 @@ This code outputs:
 
 ```
 &lt;h1&gt;Hello world&lt;/h1&gt;
+```
+
+## Echo
+
+The `{{ echo }}` tag does the same as printing. It was added to cover a couple of common cases:
+
+### Disable the tag processing temporarily
+
+You might want to print content with conflicting syntax (like code examples of Vento, Nunjucks, Liquid, Mustache etc):
+
+```vento
+{{ echo }}
+In Vento, {{ name }} will print the "name" variable.
+Use {{ name |> escape }} to HTML-escape its content
+{{ /echo }}
+```
+
+### To apply pipes to a block of content
+
+Let's say you have a `md` filter to transform markdown content to html:
+
+```vento
+{{ echo |> md }}
+## This is a markdown content
+
+- First item
+- Second item
+{{ /echo }}
+```
+
+The `echo` tag can also be used in inline mode, passing the content after the tag name:
+
+```vento
+{{ echo "Hello world" }}
+```
+
+Which is exactly the same as:
+
+```vento
+{{ "Hello world" }}
 ```

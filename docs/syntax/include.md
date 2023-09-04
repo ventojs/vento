@@ -29,3 +29,17 @@ additional data by passing an object after the file name.
 ```vento
 {{ include "./filename.vto" { name: "Óscar" } }}
 ```
+
+## Pipes
+
+You can use [pipes](./pipes.md) to transform the included content. For example:
+
+```vento
+{{ include "/hello-world.vto" |> toUpperCase }}
+```
+
+This code outputs:
+
+```
+HELLO WORLD
+```

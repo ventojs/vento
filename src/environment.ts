@@ -190,7 +190,11 @@ export class Environment {
         }
 
         // Unknown tag, just print it
-        const expression = this.compileFilters(tokens, code);
+        const expression = this.compileFilters(
+          tokens,
+          code,
+          this.options.autoescape,
+        );
         compiled.push(`${outputVar} += (${expression}) ?? "";`);
         continue;
       }
@@ -201,7 +205,7 @@ export class Environment {
     return compiled;
   }
 
-  compileFilters(tokens: Token[], output: string) {
+  compileFilters(tokens: Token[], output: string, autoescape = false): string {
     let unescaped = false;
 
     while (tokens.length > 0 && tokens[0][0] === "filter") {
@@ -240,7 +244,7 @@ export class Environment {
     }
 
     // Escape by default
-    if (this.options.autoescape && !unescaped) {
+    if (autoescape && !unescaped) {
       output = `__env.filters.escape(${output})`;
     }
 
