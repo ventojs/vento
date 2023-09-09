@@ -7,7 +7,7 @@ await build({
   outDir: "./npm",
   shims: { deno: true },
   compilerOptions: { target: "ES2022" },
-  scriptModule: false,
+  typeCheck: "both",
   package: {
     name: "ventojs",
     version: Deno.args[0]?.replace(/^v/, ""),
