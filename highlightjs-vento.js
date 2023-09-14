@@ -1,7 +1,7 @@
 /** @type LanguageFn */
 export default function (hljs) {
   return {
-    name: "VTO",
+    name: "vento",
     subLanguage: "xml",
     contains: [
       hljs.COMMENT("{{#", "#}}"),
@@ -9,6 +9,13 @@ export default function (hljs) {
         begin: "{{[-]?",
         end: "[-]?}}",
         subLanguage: "javascript",
+        excludeBegin: true,
+        excludeEnd: true,
+      },
+      {
+        begin: "^---\n",
+        end: "\n---\n",
+        subLanguage: "yaml",
         excludeBegin: true,
         excludeEnd: true,
       },

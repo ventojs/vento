@@ -1,11 +1,13 @@
 Prism.languages.vento = {
   "delimiter": {
-    pattern: /\{{2}-?|-?\}{2}/,
+    pattern: /\{{2}[->]?|-?\}{2}/,
     alias: "punctuation",
+    lookbehind: true,
   },
   "comment": /^#[\s\S]*#$/,
-  "language-javascript": {
-    pattern: /^[\s\S]+$/,
+  "javascript": {
+    pattern: /\s*\S[\s\S]*/,
+    alias: "language-javascript",
     inside: Prism.languages.javascript,
   },
 };

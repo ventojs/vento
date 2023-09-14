@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.8.1] - 2023-09-14
+### Added
+- CJS version to NPM package [#16].
+- Language definition for Highlight.js
+
 ## [0.8.0] - 2023-09-04
 ### Added
 - New `echo` tag [#14].
@@ -104,7 +109,9 @@ First version
 [#13]: https://github.com/oscarotero/vento/issues/13
 [#14]: https://github.com/oscarotero/vento/issues/14
 [#15]: https://github.com/oscarotero/vento/issues/15
+[#16]: https://github.com/oscarotero/vento/issues/16
 
+[0.8.1]: https://github.com/oscarotero/vento/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/oscarotero/vento/compare/v0.7.3...v0.8.0
 [0.7.3]: https://github.com/oscarotero/vento/compare/v0.7.2...v0.7.3
 [0.7.2]: https://github.com/oscarotero/vento/compare/v0.7.1...v0.7.2
