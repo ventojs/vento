@@ -91,7 +91,9 @@ First, let's take a look at this syntax example:
 
 ## Getting started
 
-This is a library for Deno. There is also an [NPM version](https://www.npmjs.com/package/ventojs) that you can install with `npm install ventojs`.
+This is a library for Deno. There is also an
+[NPM version](https://www.npmjs.com/package/ventojs) that you can install with
+`npm install ventojs`.
 
 Import the library and create an instance:
 
