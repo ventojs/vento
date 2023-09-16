@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.8.2] - Unreleased
+### Changed
+- Use the `std/html` implementation for `escape` and `unescape` filters.
+
 ## [0.8.1] - 2023-09-14
 ### Added
 - CJS version to NPM package [#16].
@@ -111,6 +115,7 @@ First version
 [#15]: https://github.com/oscarotero/vento/issues/15
 [#16]: https://github.com/oscarotero/vento/issues/16
 
+[0.8.2]: https://github.com/oscarotero/vento/compare/v0.8.1...HEAD
 [0.8.1]: https://github.com/oscarotero/vento/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/oscarotero/vento/compare/v0.7.3...v0.8.0
 [0.7.3]: https://github.com/oscarotero/vento/compare/v0.7.2...v0.7.3
