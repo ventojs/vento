@@ -13,8 +13,8 @@ Vento will evaluate any code in the `[collection]` as JavaScript code, so you
 can place any expression you like:
 
 ```vento
-{{ for pair_number of [1, 2, 3].map((n) => n%2) }}
-  {{ pair_number }}
+{{ for odd_number of [1, 2, 3].filter((n) => n%2) }}
+  {{ odd_number }}
 {{ /for }}
 ```
 
