@@ -1,7 +1,7 @@
-# VENTO
+# Vento
 
 This is a minimal template engine inspired by other great engines like Nunjucks,
-Liquid, Mustache or EJS.
+Liquid, Mustache, and EJS.
 
 ## Why another template engine?
 
@@ -32,6 +32,7 @@ neither is). The issues I found in existing template engines:
 ### Liquid
 
 - I like:
+
   - The support for async evaluation is less hacky than Nunjucks.
   - The variables are not escaped by default, there's an `escape` filter for
     that.
@@ -91,59 +92,9 @@ First, let's take a look at this syntax example:
 
 ## Getting started
 
-This is a library for Deno. There is also an
-[NPM version](https://www.npmjs.com/package/ventojs) that you can install with
-`npm install ventojs`.
+See [Getting started](https://vento.js.org/get-started/) on the docs.
 
-Import the library and create an instance:
+## Visual Studio Code support
 
-```ts
-// Deno
-import vento from "https://deno.land/x/vento/mod.ts";
-// ESM
-import vento from "ventojs";
-// CJS
-const vento = require("ventojs");
-
-const vto = vento({
-  // Resolve the non-relative includes paths
-  includes: "./path/to/includes",
-});
-```
-
-There are different ways to load, compile and run a template. For example, you
-can use `load` to load and compile a template file and return it.
-
-```ts
-// Load and return a template
-const template = await vto.load("my-template.vto");
-
-// Now you can use it passing the data
-const result = await template({ title: "Hello world" });
-console.log(result.content);
-```
-
-Alternatively, you can load and run the template file in a single call:
-
-```ts
-const result = await vto.run("my-template.vto", { title: "Hello world" });
-console.log(result.content);
-```
-
-If the template code is not a file, you can run it directly:
-
-```ts
-const result = await vto.runString("<h1>{{ title }}</h1>", {
-  title: "Hello world",
-});
-console.log(result.content);
-```
-
-## Visual Studio Code Support
-
-[The Vento extension for VS Code](https://marketplace.visualstudio.com/items?itemName=oscarotero.vento-syntax)
-enables syntax highlight and provides some useful snippets.
-
-## API
-
-[Read the docs](https://oscarotero.github.io/vento/)
+[Vento Template Support for VS Code](https://marketplace.visualstudio.com/items?itemName=oscarotero.vento-syntax)
+enables syntax highlighting and Vento snippets.
