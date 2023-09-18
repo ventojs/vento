@@ -12,6 +12,7 @@ import exportTag from "./plugins/export.ts";
 import echoTag from "./plugins/echo.ts";
 import escape from "./plugins/escape.ts";
 import unescape from "./plugins/unescape.ts";
+import safe from "./plugins/safe.ts";
 
 export interface Options {
   includes?: string | Loader;
@@ -43,6 +44,7 @@ export default function (options: Options = {}) {
   env.use(echoTag());
   env.use(escape());
   env.use(unescape());
+  env.use(safe());
 
   return env;
 }

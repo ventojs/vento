@@ -83,7 +83,11 @@ const env = vento({
 const result = env.runString("{{ title }}", { title: "<h1>Hello world</h1>" });
 // &lt;h1&gt;Hello world&lt;/h1&gt;
 
-// You can use the `unescape` filter for trusted content:
-const result = env.runString("{{ title |> unescape }}", { title: "<h1>Hello world</h1>" });
+// You can use the `safe` filter for trusted content:
+const result = env.runString("{{ title |> safe }}", { title: "<h1>Hello world</h1>" });
+// <h1>Hello world</h1>
+
+// The `unescape` filter also marks content as trusted:
+const result = env.runString("{{ title |> unescape }}", { title: "&lt;h1&gt;Hello world&lt;/h1&gt;" });
 // <h1>Hello world</h1>
 ```

@@ -232,7 +232,7 @@ export class Environment {
           })`;
         }
       } else {
-        if (name === "unescape") {
+        if (name === "unescape" || name === "safe") {
           unescaped = true;
         }
 
