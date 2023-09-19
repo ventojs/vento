@@ -83,11 +83,13 @@ This code outputs:
 
 ## Echo
 
-The `{{ echo }}` tag does the same as printing. It was added to cover a couple of common cases:
+The `{{ echo }}` tag does the same as printing. It was added to cover a couple
+of common cases:
 
 ### Disable the tag processing temporarily
 
-You might want to print content with conflicting syntax (like code examples of Vento, Nunjucks, Liquid, Mustache etc):
+You might want to print content with conflicting syntax (like code examples of
+Vento, Nunjucks, Liquid, Mustache etc):
 
 ```vento
 {{ echo }}
@@ -109,7 +111,8 @@ Let's say you have a `md` filter to transform markdown content to html:
 {{ /echo }}
 ```
 
-The `echo` tag can also be used in inline mode, passing the content after the tag name:
+The `echo` tag can also be used in inline mode, passing the content after the
+tag name:
 
 ```vento
 {{ echo "Hello world" }}
