@@ -92,9 +92,9 @@ First, let's take a look at this syntax example:
 
 ## Getting started
 
-See [Getting started](https://vento.js.org/get-started/) on the docs.
+See [Getting started](https://vento.js.org/getting-started/) on the docs.
 
-## Visual Studio Code support
+## Editor support
 
-[Vento Template Support for VS Code](https://marketplace.visualstudio.com/items?itemName=oscarotero.vento-syntax)
-enables syntax highlighting and Vento snippets.
+See [Editor integrations](https://vento.js.org/editor-integrations/) on the
+docs.
