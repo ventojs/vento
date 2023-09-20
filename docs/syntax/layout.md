@@ -15,7 +15,7 @@ You can pass content to this template easily with the `layout` tag:
 
 ```vento
 {{ layout "container.vto" }}
-<h1>Hello world</h1>
+<h1>Hello, world!</h1>
 {{ /layout }}
 ```
 
@@ -23,7 +23,7 @@ Technically, the `layout` tag works a lot like the following:
 
 ```vento
 {{ set content }}
-<h1>Hello world</h1>
+<h1>Hello, world!</h1>
 {{ /set }}
 
 {{ include "container.vto" { content } }}
@@ -37,7 +37,7 @@ name.
 
 ```vento
 {{ layout "container.vto" { size: "big" } }}
-<h1>Hello world</h1>
+<h1>Hello, world!</h1>
 {{ /layout }}
 ```
 
@@ -56,7 +56,7 @@ layout. For example:
 
 ```vento
 {{ layout "container.vto" |> toUpperCase }}
-<h1>Hello world</h1>
+<h1>Hello, world!</h1>
 {{ /layout }}
 ```
 
@@ -64,6 +64,6 @@ This code outputs:
 
 ```html
 <div class="container">
-  <H1>HELLO WORLD</H1>
+	<h1>HELLO, WORLD!</h1>
 </div>
 ```

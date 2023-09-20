@@ -18,7 +18,7 @@ print the result of an expression:
 Or a condition:
 
 ```vento
-{{ name || "Unknown name" }}
+{{ name || "Unknown" }}
 ```
 
 Or an async operation (using `await`):
@@ -37,14 +37,14 @@ the white space before the printing tag:
 
 ```vento
 <h1>
-  {{- "Hello world" }}
+  {{- "Hello, world!" }}
 </h1>
 ```
 
 The result is:
 
 ```html
-<h1>Hello world
+<h1>Hello, world!
 </h1>
 ```
 
@@ -53,14 +53,14 @@ previous and next to the printing tag:
 
 ```html
 <h1>
-  {{- "Hello world" -}}
+  {{- "Hello, world!" -}}
 </h1>
 ```
 
 The result is:
 
 ```html
-<h1>Hello world</h1>
+<h1>Hello, world!</h1>
 ```
 
 ## Pipes
@@ -72,13 +72,13 @@ Vento comes with the `escape` filter by default. This filter escapes the html
 code. For example:
 
 ```vento
-{{ "<h1>Hello world</h1>" |> escape }}
+{{ "<h1>Hello, world!</h1>" |> escape }}
 ```
 
 This code outputs:
 
 ```
-&lt;h1&gt;Hello world&lt;/h1&gt;
+&lt;h1&gt;Hello, world!&lt;/h1&gt;
 ```
 
 ## Echo
@@ -100,14 +100,14 @@ Use {{ name |> escape }} to HTML-escape its content
 
 ### To apply pipes to a block of content
 
-Let's say you have a `md` filter to transform markdown content to html:
+Let's say you have a `md` filter to transform Markdown content to HTML:
 
 ```vento
 {{ echo |> md }}
-## This is a markdown content
+## Header
 
-- First item
-- Second item
+- First item.
+- Second item.
 {{ /echo }}
 ```
 
@@ -115,11 +115,11 @@ The `echo` tag can also be used in inline mode, passing the content after the
 tag name:
 
 ```vento
-{{ echo "Hello world" }}
+{{ echo "Hello, world!" }}
 ```
 
 Which is exactly the same as:
 
 ```vento
-{{ "Hello world" }}
+{{ "Hello, world!" }}
 ```
