@@ -1,10 +1,11 @@
 # Pipes
 
 Pipes are the way to chain functions to transform a value. Vento uses the
-[pipeline operator](https://github.com/tc39/proposal-pipeline-operator) (`|>`).
+[pipeline operator](https://github.com/tc39/proposal-pipeline-operator), `|>`.
+
 Note: this is not exactly like the last proposal for JavaScript, it's inspired
 by
-([the previous proposal](https://github.com/valtech-nyc/proposal-fsharp-pipelines)
+[the previous proposal](https://github.com/valtech-nyc/proposal-fsharp-pipelines)
 that was rejected but it's way more simple and fits better for filters.
 
 Pipes can be used to [print a variable](./print.md), [save it](./set.md) or
@@ -19,59 +20,58 @@ default Vento has the `escape` and `unescape` filter out of the box, to escape
 and unescape HTML code:
 
 ```vento
-{{ "<h1>Hello world</h1>" |> escape }}
+{{ "<h1>Hello, world!</h1>" |> escape }}
 ```
 
 If the filter accepts additional arguments you can pass them between
 parenthesis:
 
 ```vento
-{{ "<h1>Hello world</h1>" |> filter_name(arg1, arg2) }}
+{{ "<h1>Hello, world!</h1>" |> filter_name(arg1, arg2, ...) }}
 ```
 
 ## Global functions
 
-If the function is a standard function available globally (for example
-`JSON.stringify()`), Vento will execute:
+Vento will execute functions available in the standard JavaScript namespace, such as `JSON.stringify()`:
 
 ```vento
-{{ {name: "Óscar", surname: "Otero"} |> JSON.stringify }}
+{{ { name: "Óscar", surname: "Otero" } |> JSON.stringify }}
 ```
 
 This is equivalent to:
 
 ```vento
-{{ JSON.stringify({name: "Óscar", surname: "Otero"}) }}
+{{ JSON.stringify({ name: "Óscar", surname: "Otero" }) }}
 ```
 
 The value is passed as the first argument. Any other argument will go in the
 next positions:
 
 ```vento
-{{ {name: "Óscar", surname: "Otero"} |> JSON.stringify(null, 2) }}
+{{ { name: "Óscar", surname: "Otero" } |> JSON.stringify(null, 2) }}
 ```
 
 This is equivalent to:
 
 ```vento
-{{ JSON.stringify({name: "Óscar", surname: "Otero"}, null, 2) }}
+{{ JSON.stringify({ name: "Óscar", surname: "Otero" }, null, 2) }}
 ```
 
 ## Prototype functions
 
 As a fallback, Vento will execute the function as a prototype of the variable.
-In the following example, the variable is a string
-[that has the `toUpperCase()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toUpperCase)
+In this example, the variable is a string that has the
+[`toUpperCase()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toUpperCase)
 method, so it can be passed as a Pipe:
 
 ```vento
-{{ "Hello world" |> toUpperCase }}
+{{ "Hello, world!" |> toUpperCase }}
 ```
 
 This is equivalent to:
 
 ```vento
-{{ "Hello world".toUpperCase() }}
+{{ "Hello, world!".toUpperCase() }}
 ```
 
 ## Chain pipes
@@ -84,12 +84,12 @@ async functions. For example:
 ```
 
 - [`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/fetch) is a global
-  async function so Vento will execute it by passing the url as the argument.
-- `json` is a method of the response returned by fetch and it's async.
+  async function.
+- [`json`](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) is an async method of the `Response` object returned by `fetch`.
 - [`JSON.stringify`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
-  is a global function
+  is a global function.
 
-The compiled code of this is equivalent to:
+The JavaScript equivalent of this is:
 
 ```js
 JSON.stringify(await (await fetch("https://example.com/data.json")).json());

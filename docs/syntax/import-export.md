@@ -10,19 +10,19 @@ The `export` tag allows to export a variable or function under a name. For
 example, to export a variable:
 
 ```vento
-{{ export message = "Hello world" }}
+{{ export message = "Hello, world!" }}
 ```
 
 Use pipes to transform the value:
 
 ```vento
-{{ export message = "Hello world" |> toUpperCase }}
+{{ export message = "Hello, world!" |> toUpperCase }}
 ```
 
 The exported variable is also available in the current template:
 
 ```vento
-{{ export message = "Hello world" }}
+{{ export message = "Hello, world!" }}
 
 {{ message }}
 ```
@@ -30,11 +30,11 @@ The exported variable is also available in the current template:
 ### Block mode
 
 It's also possible to export a block using `{{ export }}` and `{{ /export }}`
-tags:
+tags.
 
 ```vento
 {{ export message }}
-  Hello world
+  Hello, world!
 {{ /export }}
 ```
 
@@ -42,7 +42,7 @@ Block mode supports pipes too:
 
 ```vento
 {{ export message |> toUpperCase }}
-  Hello world
+  Hello, world!
 {{ /export }}
 ```
 
@@ -52,7 +52,7 @@ To export a function, just include the `function` keyword after `export`:
 
 ```vento
 {{ export function message (name) }}
-  Hello {{ name }}
+  Hello, {{ name }}!
 {{ /export }}
 ```
 
@@ -60,10 +60,10 @@ Like with variables, the exported functions are also available in the template:
 
 ```vento
 {{ export function message (name) }}
-  Hello {{ name }}
+  Hello, {{ name }}!
 {{ /export }}
 
-{{ message("World") }}
+{{ message("world") }}
 ```
 
 ## Importing
