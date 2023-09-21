@@ -1,3 +1,7 @@
+---
+order: 5
+---
+
 # Layout
 
 The `{{ layout }}` tag allows to capture some content in a template and render

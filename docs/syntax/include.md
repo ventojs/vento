@@ -1,3 +1,7 @@
+---
+order: 4
+---
+
 # Include
 
 Use `{{ include [filename] }}` to insert other templates in place. Vento will

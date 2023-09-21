@@ -1,3 +1,7 @@
+---
+order: 1.4
+---
+
 # Pipes
 
 Pipes are the way to chain functions to transform a value. Vento uses the

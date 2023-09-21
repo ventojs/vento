@@ -1,3 +1,7 @@
+---
+logo: /icon.svg
+---
+
 # 🌬 Vento
 
 Vento is the [Galician](https://en.wikipedia.org/wiki/Galician_language) word

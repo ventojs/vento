@@ -1,3 +1,7 @@
+---
+order: 3
+---
+
 # For
 
 Use `{{ for [value] of [collection] }}` tag to iterate over arrays,

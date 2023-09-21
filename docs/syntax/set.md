@@ -1,3 +1,7 @@
+---
+order: 1.5
+---
+
 # Set
 
 The `{{ set [name] = [value] }}` tag allows to create or modify a global

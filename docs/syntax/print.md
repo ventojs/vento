@@ -1,3 +1,7 @@
+---
+order: 1
+---
+
 # Printing variables
 
 Put a variable or expression between `{{ }}` to output the result.

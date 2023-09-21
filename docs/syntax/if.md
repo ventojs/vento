@@ -1,3 +1,7 @@
+---
+order: 2
+---
+
 # If
 
 Use `{{ if [expression] }}` to test a condition. Any code you want to test will

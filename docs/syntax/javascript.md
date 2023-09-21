@@ -1,3 +1,7 @@
+---
+order: 10
+---
+
 # JavaScript code
 
 You can insert any JavaScript code in the templates between the tags
