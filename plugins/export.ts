@@ -18,6 +18,7 @@ function exportTag(
   }
 
   const expression = code.replace(/^export\s+/, "");
+  const { dataVarname } = env.options;
 
   // Value is set (e.g. {{ export foo = "bar" }})
   if (expression.includes("=")) {
@@ -30,12 +31,12 @@ function exportTag(
     const [, variable, value] = match;
     const val = env.compileFilters(tokens, value);
 
-    return `if (__data.hasOwnProperty("${variable}")) {
+    return `if (${dataVarname}.hasOwnProperty("${variable}")) {
       ${variable} = ${val};
     } else {
       var ${variable} = ${val};
     }
-    __data["${variable}"] = ${variable};
+    ${dataVarname}["${variable}"] = ${variable};
     __exports["${variable}"] = ${variable};
     `;
   }
@@ -44,7 +45,7 @@ function exportTag(
   const compiled: string[] = [];
   const compiledFilters = env.compileFilters(tokens, expression);
 
-  compiled.push(`if (__data.hasOwnProperty("${expression}")) {
+  compiled.push(`if (${dataVarname}.hasOwnProperty("${expression}")) {
     ${expression} = "";
   } else {
     var ${expression} = "";
@@ -59,7 +60,7 @@ function exportTag(
 
   tokens.shift();
   compiled.push(`${expression} = ${compiledFilters};`);
-  compiled.push(`__data["${expression.trim()}"] = ${expression};`);
+  compiled.push(`${dataVarname}["${expression.trim()}"] = ${expression};`);
   compiled.push(`__exports["${expression.trim()}"] = ${expression};`);
   return compiled.join("\n");
 }

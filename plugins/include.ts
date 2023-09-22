@@ -26,10 +26,11 @@ function includeTag(
   }
 
   const [_, file, data] = match;
+  const { dataVarname } = env.options;
 
   return `{
-    __tmp = await __env.run(${file},
-      {...__data${data ? `, ${data}` : ""}},
+    const __tmp = await __env.run(${file},
+      {...${dataVarname}${data ? `, ${data}` : ""}},
       __file
     );
     ${output} += ${env.compileFilters(tokens, "__tmp.content")};

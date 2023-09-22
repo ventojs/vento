@@ -32,7 +32,7 @@ function layoutTag(
   const compiledFilters = env.compileFilters(tokens, varname);
 
   compiled.push("{");
-  compiled.push(`var ${varname} = "";`);
+  compiled.push(`let ${varname} = "";`);
   compiled.push(...env.compileTokens(tokens, varname, ["/layout"]));
 
   if (tokens.length && (tokens[0][0] !== "tag" || tokens[0][1] !== "/layout")) {
@@ -42,10 +42,11 @@ function layoutTag(
   tokens.shift();
 
   compiled.push(`${varname} = ${compiledFilters};`);
+  const { dataVarname } = env.options;
 
   compiled.push(
-    `__tmp = await __env.run(${file},
-      {...__data${data ? `, ${data}` : ""}, content: ${
+    `const __tmp = await __env.run(${file},
+      {...${dataVarname}${data ? `, ${data}` : ""}, content: ${
       env.compileFilters(tokens, varname)
     }},
       __file

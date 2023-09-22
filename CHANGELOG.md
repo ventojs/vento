@@ -5,8 +5,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.8.2] - Unreleased
+### Added
+- New option `useWith` to remove the `with` statement.
+
 ### Changed
 - Use the `std/html` implementation for `escape` and `unescape` filters.
+- Simplified compiled function: removed `__data` and `__tmp` variables.
 
 ## [0.8.1] - 2023-09-14
 ### Added

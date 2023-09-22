@@ -7,7 +7,7 @@ export default function () {
 }
 
 function importTag(
-  _env: Environment,
+  env: Environment,
   code: string,
 ): string | undefined {
   if (!code.startsWith("import ")) {
@@ -22,16 +22,7 @@ function importTag(
     throw new Error(`Invalid import: ${code}`);
   }
 
-  const [_, vars, file] = match;
-
-  const compiled: string[] = [];
-  compiled.push(`__tmp = await __env.run(${file}, {...__data}, __file);`);
-
-  if (vars.startsWith("{")) {
-    compiled.push(`let ${vars} = __tmp;`);
-  } else {
-    compiled.push(`let ${vars} = __tmp;`);
-  }
-
-  return compiled.join("\n");
+  const [, vars, file] = match;
+  const { dataVarname } = env.options;
+  return `let ${vars} = await __env.run(${file}, {...${dataVarname}}, __file);`;
 }

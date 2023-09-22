@@ -15,6 +15,7 @@ import unescape from "./plugins/unescape.ts";
 
 export interface Options {
   includes?: string | Loader;
+  useWith?: boolean;
   dataVarname?: string;
   autoescape?: boolean;
 }
@@ -28,6 +29,7 @@ export default function (options: Options = {}) {
     loader,
     dataVarname: options.dataVarname || "it",
     autoescape: options.autoescape || false,
+    useWith: options.useWith || true,
   });
 
   // Register basic plugins

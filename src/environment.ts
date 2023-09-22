@@ -35,6 +35,7 @@ export interface Options {
   loader: Loader;
   dataVarname: string;
   autoescape: boolean;
+  useWith: boolean;
 }
 
 export class Environment {
@@ -112,19 +113,16 @@ export class Environment {
     try {
       const tokens = tokenize(source);
       const code = this.compileTokens(tokens).join("\n");
+      const { dataVarname, useWith } = this.options;
       const constructor = new Function(
         "__file",
         "__env",
         "__defaults",
-        `return${sync ? "" : " async"} function (__data) {
+        `return${sync ? "" : " async"} function (${dataVarname}) {
           try {
-            __data = Object.assign({}, __defaults, __data);
-            const ${this.options.dataVarname} = __data;
-            let __tmp;
+            ${dataVarname} = Object.assign({}, __defaults, ${dataVarname});
             const __exports = { content: "" };
-            with (__data) {
-              ${code}
-            }
+            ${useWith ? `with (${dataVarname}) {${code}}` : code}
             return __exports;
           } catch (cause) {
             throw new Error(\`Error rendering template: \${__file}\`, { cause });
