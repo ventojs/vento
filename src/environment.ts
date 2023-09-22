@@ -220,8 +220,10 @@ export class Environment {
       const [_, isAsync, name, args] = match;
 
       if (!this.filters[name]) {
-        // If a global function
-        if (isGlobal(name)) {
+        if (name === "safe") {
+          unescaped = true;
+        } else if (isGlobal(name)) {
+          // If a global function
           output = `${isAsync ? "await " : ""}${name}(${output}${
             args ? `, ${args}` : ""
           })`;
@@ -232,10 +234,6 @@ export class Environment {
           })`;
         }
       } else {
-        if (name === "unescape" || name === "safe") {
-          unescaped = true;
-        }
-
         // It's a filter (e.g. filters.upper())
         output = `${isAsync ? "await " : ""}__env.filters.${name}(${output}${
           args ? `, ${args}` : ""
