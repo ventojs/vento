@@ -1,18 +1,20 @@
+---
+order: 2
+---
+
 # Configuration
 
 ## Options
 
-You can pass an Options object to the Vento instance with some options.
+Pass an options object to the `vento()` function to customize Vento.
 
 ```js
-import vento from "https://deno.land/x/vento@v0.5.0/mod.ts";
-
 const env = vento({
-  // Options here
+	// Options here!
 });
 ```
 
-### dataVarname
+### `dataVarname`
 
 Data variables are exposed to the global scope. For example, the code
 `{{ title }}` prints the variable `title` which is available globally. This can
@@ -43,25 +45,29 @@ The `dataVarname` option allows changing the name of this global object.
 
 ```js
 const env = vento({
-  dataVarname: "g", // change "it" to "g".
+	dataVarname: "global", // "it" -> "global"
 });
 ```
 
-### includes
+### `includes`
 
 The path of the directory that Vento will use to look for includes templates.
 
 ## Filters
 
-Filters are custom functions to transform the content. For example, let's create
-a filter to put text in italic:
+Filters are custom functions to transform the content.
+
+For example, let's create a function to make text italic:
 
 ```ts
 function italic(text: string) {
-  return `<em>${text}</em>`;
+	return `<em>${text}</em>`;
 }
+```
 
-// Register the filter
+And we can register that with Vento:
+
+```ts
 env.filters.italic = italic;
 ```
 
@@ -73,21 +79,27 @@ Now you can use this filter anywhere:
 
 ## Autoescape
 
-Set `true` to escape automatically the printed variables:
+Set `true` to automatically escape printed variables:
 
 ```ts
 const env = vento({
-  autoescape: true,
+	autoescape: true,
 });
 
-const result = env.runString("{{ title }}", { title: "<h1>Hello world</h1>" });
-// &lt;h1&gt;Hello world&lt;/h1&gt;
+const result = env.runString("{{ title }}", {
+	title: "<h1>Hello, world!</h1>",
+});
+// &lt;h1&gt;Hello, world!&lt;/h1&gt;
 
 // You can use the `safe` filter for trusted content:
-const result = env.runString("{{ title |> safe }}", { title: "<h1>Hello world</h1>" });
+const result = env.runString("{{ title |> safe }}", {
+	title: "<h1>Hello world</h1>"
+});
 // <h1>Hello world</h1>
 
 // The `unescape` filter also marks content as trusted:
-const result = env.runString("{{ title |> unescape }}", { title: "&lt;h1&gt;Hello world&lt;/h1&gt;" });
+const result = env.runString("{{ title |> unescape }}", {
+	title: "&lt;h1&gt;Hello world&lt;/h1&gt;"
+});
 // <h1>Hello world</h1>
 ```

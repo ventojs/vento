@@ -1,0 +1,72 @@
+---
+order: 1
+---
+
+# Getting Started
+
+## Install
+
+### Deno
+
+With Deno, just import Vento like so:
+
+```js
+import vento from "https://deno.land/x/vento@v0.5.0/mod.ts";
+```
+
+### Node.js
+
+In Node.js, install it from NPM:
+
+```sh
+npm install ventojs
+```
+
+And then import Vento:
+
+```js
+// ESM:
+import vento from "ventojs";
+
+// CJS:
+const vento = require("ventojs");
+```
+
+## Usage
+
+First, create an instance of Vento.
+
+```js
+const env = vento();
+```
+
+### `load`
+
+You can use `load` to load and compile a template from a path. The compiled
+templates are stored in an internal cache, so they are only compiled once.
+
+```ts
+const template = await env.load("my-template.vto");
+const result = await template({ title: "Hello, world!" });
+```
+
+### `run`
+
+Alternatively, you can load and run the template file in a single call:
+
+```ts
+const result = await env.run("my-template.vto", { title: "Hello, world!" });
+```
+
+### `runString`
+
+If the template code is not a file, you can run it directly:
+
+```ts
+const result = await env.runString("<h1>{{ title }}</h1>", {
+  title: "Hello, world!",
+});
+
+console.log(result.content);
+// <h1>Hello, world!</h1>
+```

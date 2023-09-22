@@ -1,7 +1,11 @@
+---
+order: 3
+---
+
 # For
 
 Use `{{ for [value] of [collection] }}` tag to iterate over arrays,
-dictionaries, numbers, strings, etc. For example:
+dictionaries, numbers, strings, etc.
 
 ```vento
 {{ for number of [1, 2, 3] }}
@@ -9,8 +13,8 @@ dictionaries, numbers, strings, etc. For example:
 {{ /for }}
 ```
 
-Vento will evaluate any code in the `[collection]` as JavaScript code, so you
-can place any expression you like:
+Vento will evaluate any code in the `[collection]` spot as JavaScript code, so you
+can use any expression you'd like:
 
 ```vento
 {{ for odd_number of [1, 2, 3].filter((n) => n%2) }}
@@ -21,7 +25,7 @@ can place any expression you like:
 ## Get the key and value
 
 Use the `{{ for [key], [value] of [collection] }}` syntax to get the key and the
-value of the entries:
+value of the entries.
 
 ```vento
 <dl>
@@ -34,7 +38,7 @@ value of the entries:
 
 ## Async iterators
 
-Use `for await` for async iterators:
+Use `for await` for async iterators.
 
 ```vento
 {{ for await item of getItems() }}
@@ -71,7 +75,7 @@ Any string will be converted to an array with one element per character. The
 following example:
 
 ```vento
-{{ for letter of "Hello" }}
+{{ for letter of "abcd" }}
   {{ letter }}
 {{ /for }}
 ```
@@ -79,15 +83,15 @@ following example:
 is equivalent to:
 
 ```vento
-{{ for letter of ["H", "e", "l", "l", "o"] }}
+{{ for letter of ["a", "b", "c", "d"] }}
   {{ letter }}
 {{ /for }}
 ```
 
-### NULL and undefined values
+### `null` and `undefined` values
 
-Any NULL or undefined variable is converted to an empty array so the code won't
-fail:
+Any `null` or `undefined` variable is converted to an empty array so the code won't
+fail.
 
 ```vento
 {{ for item of undefined }}
@@ -95,7 +99,7 @@ fail:
 {{ /for }}
 ```
 
-is equivalent to:
+The above example is equivalent to:
 
 ```vento
 {{ for item of [] }}
@@ -105,11 +109,10 @@ is equivalent to:
 
 ## Pipes
 
-You can use Pipes to transform the iterable object before iterating it. For
-example to filter by even numbers:
+You can use Pipes to transform the iterable object before iterating it. For example, to filter by even numbers:
 
 ```vento
-{{ for evenNumber of [1, 2, 3] |> filter((n) => n % 2 === 0) }}
-  {{ evenNumber }}
+{{ for even_number of [1, 2, 3] |> filter((n) => n % 2 === 0) }}
+  {{ even_number }}
 {{ /for }}
 ```
