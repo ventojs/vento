@@ -20,11 +20,17 @@ Pipes can run three types of functions, in this order of priority:
 ## Filters
 
 Filters are custom functions that you can configure to transform variables. By
-default Vento has the `escape` and `unescape` filter out of the box, to escape
-and unescape HTML code:
+default Vento has the `escape`, `unescape` and `safe` filters out of the box,
+to escape and unescape HTML code:
 
 ```vento
 {{ "<h1>Hello, world!</h1>" |> escape }}
+```
+
+The `safe` filter does not transform the content, but can be used to mark HTML data as trusted when in autoescaping mode;
+
+```vento
+{{ myTrustedSource.getHtml() |> safe }}
 ```
 
 If the filter accepts additional arguments you can pass them between
