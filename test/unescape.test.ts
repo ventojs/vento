@@ -21,7 +21,7 @@ Deno.test("Escape by default", async () => {
       autoescape: true,
     },
     template: `
-    {{ "<h1>Hello world</h1>" |> unescape }}
+    {{ "<h1>Hello world</h1>" |> unescape |> safe }}
     `,
     expected: "<h1>Hello world</h1>",
   });
@@ -30,7 +30,7 @@ Deno.test("Escape by default", async () => {
       autoescape: true,
     },
     template: `
-    {{ "<h1>Hello world</h1>" |> unescape }}
+    {{ "<h1>Hello world</h1>" |> unescape |> safe }}
     `,
     expected: "<h1>Hello world</h1>",
   });
