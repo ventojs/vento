@@ -31,6 +31,26 @@ Or an async operation (using `await`):
 {{ await users.getUserName(23) }}
 ```
 
+## Autoescaping
+
+If autoescaping is enabled [See Configuration for more info](../configuration.md#autoescape), any HTML content will be escaped automatically. For example:
+
+```vento
+{{ "<h1>Hello, world!</h1>" }}
+```
+
+This prints:
+
+```html
+&lt;h1&gt;Hello, world!&lt;/h1&gt;
+```
+
+To mark this variable as trust, use the `safe` filter:
+
+```vento
+{{ "<h1>Hello, world!</h1>" |> safe }}
+```
+
 ## Trimming the previous/next content
 
 Use the `-` character next to the opening tag or previous to the closing tag to
@@ -81,7 +101,7 @@ code. For example:
 
 This code outputs:
 
-```
+```html
 &lt;h1&gt;Hello, world!&lt;/h1&gt;
 ```
 

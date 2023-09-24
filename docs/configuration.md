@@ -9,47 +9,76 @@ order: 2
 Pass an options object to the `vento()` function to customize Vento.
 
 ```js
+// Example with the default options:
 const env = vento({
-	// Options here!
+  dataVarname: "it",
+  useWith: true,
+  includes: Deno.cwd(),
+  autoescape: false,
 });
 ```
 
-### `dataVarname`
+### dataVarname
 
-Data variables are exposed to the global scope. For example, the code
-`{{ title }}` prints the variable `title` which is available globally. This can
-cause an error if the variable doesn't exist _(ReferenceError: title is not
-defined)_. To avoid this error you can check if the variable exists before
-printing it:
-
-```vento
-{{ if typeof title !== "undefined" }}
-  {{ title }}
-{{ /if }}
-```
-
-Or even simpler:
-
-```vento
-{{ typeof title === "string" ? title : "" }}
-```
-
-But Vento provides the `it` global object that contains all data available in
-the template. So you can do simply:
+Vento provides the `it` variable with all data available in
+the template. For example:
 
 ```vento
 {{ it.title }}
 ```
 
-The `dataVarname` option allows changing the name of this global object.
+The `dataVarname` option allows changing the name of this variable.
 
 ```js
 const env = vento({
-	dataVarname: "global", // "it" -> "global"
+  dataVarname: "global",
 });
 ```
 
-### `includes`
+Now you can use the `global` variable:
+
+```vento
+{{ global.title }}
+```
+
+### useWith
+
+Vento use [`with` statement](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/with) to convert the variables from `it` to global. For example, instead of `{{ it.title }}` you can simply write `{{ title }}`.
+
+Note that if the variable doesn't exist, the error _(ReferenceError: title is not
+defined)_ is thrown.
+
+You can disable the `with` behavior by setting this option to `false`:
+
+```js
+const env = vento({
+  useWith: false,
+});
+```
+
+### autoescape
+
+Set `true` to automatically escape printed variables:
+
+```js
+const env = vento({
+  autoescape: true,
+});
+
+const result = env.runString("{{ title }}", {
+  title: "<h1>Hello, world!</h1>",
+});
+// &lt;h1&gt;Hello, world!&lt;/h1&gt;
+
+// Like in Nunjucks, you can use the `safe` filter for trusted content:
+const result = env.runString("{{ title |> safe }}", {
+  title: "<h1>Hello world</h1>"
+});
+// <h1>Hello world</h1>
+```
+
+
+### includes
 
 The path of the directory that Vento will use to look for includes templates.
 
@@ -61,7 +90,7 @@ For example, let's create a function to make text italic:
 
 ```ts
 function italic(text: string) {
-	return `<em>${text}</em>`;
+  return `<em>${text}</em>`;
 }
 ```
 
@@ -75,31 +104,4 @@ Now you can use this filter anywhere:
 
 ```vento
 <p>Welcome to {{ title |> italic }}</p>
-```
-
-## Autoescape
-
-Set `true` to automatically escape printed variables:
-
-```ts
-const env = vento({
-	autoescape: true,
-});
-
-const result = env.runString("{{ title }}", {
-	title: "<h1>Hello, world!</h1>",
-});
-// &lt;h1&gt;Hello, world!&lt;/h1&gt;
-
-// You can use the `safe` filter for trusted content:
-const result = env.runString("{{ title |> safe }}", {
-	title: "<h1>Hello world</h1>"
-});
-// <h1>Hello world</h1>
-
-// The `unescape` filter also marks content as trusted:
-const result = env.runString("{{ title |> unescape }}", {
-	title: "&lt;h1&gt;Hello world&lt;/h1&gt;"
-});
-// <h1>Hello world</h1>
 ```
