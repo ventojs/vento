@@ -2,6 +2,12 @@ import { build, emptyDir } from "https://deno.land/x/dnt@0.38.1/mod.ts";
 
 await emptyDir("./npm");
 
+const version = Deno.args[0]?.replace(/^v/, "");
+
+if (!version) {
+  throw new Error("Version is required");
+}
+
 await build({
   entryPoints: ["./mod.ts"],
   outDir: "./npm",
@@ -10,7 +16,7 @@ await build({
   typeCheck: "both",
   package: {
     name: "ventojs",
-    version: Deno.args[0]?.replace(/^v/, ""),
+    version,
     description: "🌬 A minimal but powerful template engine",
     license: "MIT",
     repository: "github:oscarotero/vento",
