@@ -138,35 +138,12 @@ export class Environment {
       }
       `,
     );
-    // console.log(code);
+
     const template: Template = constructor(path, this, defaults);
     template.file = path;
     template.code = code;
     template.source = source;
     return template;
-  }
-
-  /** Returns the number and code of the errored line */
-  errorLine(source: string, pos: number): [number, number, string] {
-    let line = 1;
-    let column = 1;
-
-    for (let index = 0; index < pos; index++) {
-      if (
-        source[index] === "\n" ||
-        (source[index] === "\r" && source[index + 1] === "\n")
-      ) {
-        line++;
-        column = 1;
-
-        if (source[index] === "\r") {
-          index++;
-        }
-      } else {
-        column++;
-      }
-    }
-    return [line, column, source.split("\n")[line - 1]];
   }
 
   async load(file: string, from?: string): Promise<Template> {
