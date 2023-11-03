@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Improved error messages.
 
+### Fixed
+- Updated dependencies.
+
 ## [0.9.0] - 2023-09-24
 ### Added
 - New option `useWith` to remove the `with` statement.

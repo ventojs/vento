@@ -1,9 +1,9 @@
 import tmpl from "../mod.ts";
-import { assertEquals } from "https://deno.land/std@0.201.0/assert/assert_equals.ts";
+import { assertEquals } from "https://deno.land/std@0.205.0/assert/assert_equals.ts";
 import {
   extract,
   test as fmTest,
-} from "https://deno.land/std@0.201.0/front_matter/yaml.ts";
+} from "https://deno.land/std@0.205.0/front_matter/yaml.ts";
 
 import { path } from "../deps.ts";
 
