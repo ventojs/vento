@@ -11,7 +11,7 @@ order: 1
 With Deno, just import Vento like so:
 
 ```js
-import vento from "https://deno.land/x/vento@v0.5.0/mod.ts";
+import vento from "https://deno.land/x/vento@v0.9.1/mod.ts";
 ```
 
 ### Node.js
