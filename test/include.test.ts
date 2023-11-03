@@ -200,7 +200,7 @@ salute: Hello from front matter
   });
 });
 
-Deno.test("Include tag dynamically)", async () => {
+Deno.test("Include tag dynamically", async () => {
   await test({
     template: `
     {{ include file }}

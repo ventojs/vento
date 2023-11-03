@@ -3,7 +3,9 @@ import nunjucks from "npm:nunjucks@3.2.4";
 import { Liquid } from "npm:liquidjs@10.9.2";
 import { Eta } from "https://deno.land/x/eta@v3.1.1/src/index.ts";
 
-const env = vento();
+const env = vento({
+  useWith: false,
+});
 const engine = new Liquid({
   cache: true,
 });
