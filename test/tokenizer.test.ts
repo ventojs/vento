@@ -12,7 +12,7 @@ Deno.test("Parse tag", () => {
 
 Deno.test("Basic tokenizer", () => {
   const code = `<h1>{{ message }}</h1>`;
-  const tokens = tokenize(code);
+  const { tokens } = tokenize(code);
   assertEquals(tokens, [
     ["string", "<h1>", 0],
     ["tag", "message", 4],
@@ -22,7 +22,7 @@ Deno.test("Basic tokenizer", () => {
 
 Deno.test("Tokenizer (doble quotes)", () => {
   const code = `<h1>{{ message + "{{}}" }}</h1>`;
-  const tokens = tokenize(code);
+  const { tokens } = tokenize(code);
   assertEquals(tokens, [
     ["string", "<h1>", 0],
     ["tag", 'message + "{{}}"', 4],
@@ -32,7 +32,7 @@ Deno.test("Tokenizer (doble quotes)", () => {
 
 Deno.test("Tokenizer (single quotes)", () => {
   const code = `<h1>{{ message + '{{"}}' }}</h1>`;
-  const tokens = tokenize(code);
+  const { tokens } = tokenize(code);
   assertEquals(tokens, [
     ["string", "<h1>", 0],
     ["tag", "message + '{{\"}}'", 4],
@@ -42,7 +42,7 @@ Deno.test("Tokenizer (single quotes)", () => {
 
 Deno.test("Tokenizer (inner curly brackets)", () => {
   const code = `<h1>{{ message + JSON.stringify({fo: {}}) }}</h1>`;
-  const tokens = tokenize(code);
+  const { tokens } = tokenize(code);
   assertEquals(tokens, [
     ["string", "<h1>", 0],
     ["tag", "message + JSON.stringify({fo: {}})", 4],
@@ -52,7 +52,7 @@ Deno.test("Tokenizer (inner curly brackets)", () => {
 
 Deno.test("Tokenizer (inner comment)", () => {
   const code = `<h1>{{ message /* }} */ }}</h1>`;
-  const tokens = tokenize(code);
+  const { tokens } = tokenize(code);
   assertEquals(tokens, [
     ["string", "<h1>", 0],
     ["tag", "message /* }} */", 4],
@@ -62,7 +62,7 @@ Deno.test("Tokenizer (inner comment)", () => {
 
 Deno.test("Tokenizer (left trim)", () => {
   const code = `<h1> {{- message }} </h1>`;
-  const tokens = tokenize(code);
+  const { tokens } = tokenize(code);
   assertEquals(tokens, [
     ["string", "<h1>", 0],
     ["tag", "message", 5],
@@ -72,7 +72,7 @@ Deno.test("Tokenizer (left trim)", () => {
 
 Deno.test("Tokenizer (right trim)", () => {
   const code = `<h1> {{message -}} </h1>`;
-  const tokens = tokenize(code);
+  const { tokens } = tokenize(code);
   assertEquals(tokens, [
     ["string", "<h1> ", 0],
     ["tag", "message", 5],
@@ -82,7 +82,7 @@ Deno.test("Tokenizer (right trim)", () => {
 
 Deno.test("Tokenizer (both trims)", () => {
   const code = `<h1> {{-message -}} </h1>`;
-  const tokens = tokenize(code);
+  const { tokens } = tokenize(code);
   assertEquals(tokens, [
     ["string", "<h1>", 0],
     ["tag", "message", 5],
@@ -92,7 +92,7 @@ Deno.test("Tokenizer (both trims)", () => {
 
 Deno.test("Tokenizer (comment)", () => {
   const code = `<h1> {{# {{ message }} #}} </h1>`;
-  const tokens = tokenize(code);
+  const { tokens } = tokenize(code);
   assertEquals(tokens, [
     ["string", "<h1> ", 0],
     ["comment", " {{ message }} ", 5],
@@ -102,7 +102,7 @@ Deno.test("Tokenizer (comment)", () => {
 
 Deno.test("Tokenizer (literal)", () => {
   const code = "<h1>{{ `message {}}` }}</h1>";
-  const tokens = tokenize(code);
+  const { tokens } = tokenize(code);
   assertEquals(tokens, [
     ["string", "<h1>", 0],
     ["tag", "`message {}}`", 4],
@@ -112,7 +112,7 @@ Deno.test("Tokenizer (literal)", () => {
 
 Deno.test("Tokenizer (literal 2)", () => {
   const code = "<h1>{{ `message ${ JSON.stringify({o:{}}) }` }}</h1>";
-  const tokens = tokenize(code);
+  const { tokens } = tokenize(code);
   assertEquals(tokens, [
     ["string", "<h1>", 0],
     ["tag", "`message ${ JSON.stringify({o:{}}) }`", 4],
@@ -122,7 +122,7 @@ Deno.test("Tokenizer (literal 2)", () => {
 
 Deno.test("Tokenizer (filter)", () => {
   const code = "{{ url |> await fetch |> await json |> stringify }}";
-  const tokens = tokenize(code);
+  const { tokens } = tokenize(code);
   assertEquals(tokens, [
     ["string", "", 0],
     ["tag", "url", 0],

@@ -9,12 +9,14 @@ export interface TemplateResult {
 
 export interface Template {
   (data?: Record<string, unknown>): Promise<TemplateResult>;
+  source: string;
   code: string;
   file?: string;
 }
 
 export interface TemplateSync {
   (data?: Record<string, unknown>): TemplateResult;
+  source: string;
   code: string;
   file?: string;
 }
@@ -110,34 +112,61 @@ export class Environment {
     defaults?: Record<string, unknown>,
     sync = false,
   ): Template | TemplateSync {
-    try {
-      const tokens = tokenize(source);
-      const code = this.compileTokens(tokens).join("\n");
-      const { dataVarname, useWith } = this.options;
-      const constructor = new Function(
-        "__file",
-        "__env",
-        "__defaults",
-        `return${sync ? "" : " async"} function (${dataVarname}) {
-          try {
-            ${dataVarname} = Object.assign({}, __defaults, ${dataVarname});
-            const __exports = { content: "" };
-            ${useWith ? `with (${dataVarname}) {${code}}` : code}
-            return __exports;
-          } catch (cause) {
-            throw new Error(\`Error rendering template: \${__file}\`, { cause });
-          }
-        }
-        `,
-      );
-      // console.log(code);
-      const template: Template = constructor(path, this, defaults);
-      template.file = path;
-      template.code = code;
-      return template;
-    } catch (cause) {
-      throw new Error(`Error compiling template: ${path || source}`, { cause });
+    const { tokens, position, error } = tokenize(source);
+
+    if (error) {
+      throw this.createError(path || "unknown", source, position, error);
     }
+
+    const code = this.compileTokens(tokens).join("\n");
+    const { dataVarname, useWith } = this.options;
+    const constructor = new Function(
+      "__file",
+      "__env",
+      "__defaults",
+      `return${sync ? "" : " async"} function (${dataVarname}) {
+        let __pos = 0;
+        try {
+          ${dataVarname} = Object.assign({}, __defaults, ${dataVarname});
+          const __exports = { content: "" };
+          ${useWith ? `with (${dataVarname}) {${code}}` : code}
+          return __exports;
+        } catch (cause) {
+          const template = __env.cache.get(__file);
+          throw __env.createError(__file, template?.source || "", __pos, cause);
+        }
+      }
+      `,
+    );
+    // console.log(code);
+    const template: Template = constructor(path, this, defaults);
+    template.file = path;
+    template.code = code;
+    template.source = source;
+    return template;
+  }
+
+  /** Returns the number and code of the errored line */
+  errorLine(source: string, pos: number): [number, number, string] {
+    let line = 1;
+    let column = 1;
+
+    for (let index = 0; index < pos; index++) {
+      if (
+        source[index] === "\n" ||
+        (source[index] === "\r" && source[index + 1] === "\n")
+      ) {
+        line++;
+        column = 1;
+
+        if (source[index] === "\r") {
+          index++;
+        }
+      } else {
+        column++;
+      }
+    }
+    return [line, column, source.split("\n")[line - 1]];
   }
 
   async load(file: string, from?: string): Promise<Template> {
@@ -166,7 +195,7 @@ export class Environment {
         break;
       }
 
-      const [type, code] = tokens.shift()!;
+      const [type, code, pos] = tokens.shift()!;
 
       if (type === "comment") {
         continue;
@@ -178,6 +207,7 @@ export class Environment {
       }
 
       if (type === "tag") {
+        compiled.push(`__pos = ${pos};`);
         for (const tag of this.tags) {
           const compiledTag = tag(this, code, outputVar, tokens);
 
@@ -246,6 +276,24 @@ export class Environment {
 
     return output;
   }
+
+  createError(
+    path: string,
+    source: string,
+    position: number,
+    cause: Error,
+  ): Error {
+    if (!source) {
+      return cause;
+    }
+
+    const [line, column, code] = errorLine(source, position);
+
+    return new Error(
+      `Error in the template ${path}:${line}:${column}\n\n${code.trim()}\n\n> ${cause.message}\n`,
+      { cause },
+    );
+  }
 }
 
 function isGlobal(name: string) {
@@ -259,4 +307,31 @@ function isGlobal(name: string) {
     // @ts-ignore TS doesn't know about globalThis
     return typeof globalThis[obj]?.[prop] === "function";
   }
+}
+
+/** Returns the number and code of the errored line */
+export function errorLine(
+  source: string,
+  pos: number,
+): [number, number, string] {
+  let line = 1;
+  let column = 1;
+
+  for (let index = 0; index < pos; index++) {
+    if (
+      source[index] === "\n" ||
+      (source[index] === "\r" && source[index + 1] === "\n")
+    ) {
+      line++;
+      column = 1;
+
+      if (source[index] === "\r") {
+        index++;
+      }
+    } else {
+      column++;
+    }
+  }
+
+  return [line, column, source.split("\n")[line - 1]];
 }
