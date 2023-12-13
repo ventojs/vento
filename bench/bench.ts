@@ -4,7 +4,7 @@ import { Liquid } from "npm:liquidjs@10.9.2";
 import { Eta } from "https://deno.land/x/eta@v3.1.1/src/index.ts";
 
 const env = vento({
-  useWith: false,
+  useWith: true,
 });
 const engine = new Liquid({
   cache: true,

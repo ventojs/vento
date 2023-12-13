@@ -1,9 +1,10 @@
 import tmpl from "../mod.ts";
-import { assertEquals } from "https://deno.land/std@0.205.0/assert/assert_equals.ts";
+import { assertEquals } from "https://deno.land/std@0.208.0/assert/assert_equals.ts";
+import { assertThrows } from "https://deno.land/std@0.208.0/assert/assert_throws.ts";
 import {
   extract,
   test as fmTest,
-} from "https://deno.land/std@0.205.0/front_matter/yaml.ts";
+} from "https://deno.land/std@0.208.0/front_matter/yaml.ts";
 
 import { path } from "../deps.ts";
 
@@ -19,6 +20,10 @@ export interface TestOptions {
   init?: (env: Environment) => void;
   includes?: Record<string, string>;
   options?: Options;
+}
+
+export function testThrows(options: TestOptions) {
+  assertThrows(() => testSync(options));
 }
 
 export async function test(options: TestOptions) {

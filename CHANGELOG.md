@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.9.2] - 2023-12-13
 ### Fixed
 - `useWith` configuration does not work [#25].
+- Updated dependencies.
 
 ## [0.9.1] - 2023-11-03
 ### Changed

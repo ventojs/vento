@@ -1,4 +1,4 @@
-import { test } from "./utils.ts";
+import { test, testThrows } from "./utils.ts";
 
 Deno.test("Echo tag", async () => {
   await test({
@@ -34,5 +34,18 @@ Deno.test("Echo tag", async () => {
     {{echo |> toUpperCase }} Hello {{ world }} {{/echo}}
     `,
     expected: "HELLO {{ WORLD }}",
+  });
+
+  testThrows({
+    options: {
+      useWith: false,
+    },
+    template: `
+    Hello {{ world }}
+    `,
+    expected: "Hello world",
+    data: {
+      world: "world",
+    },
   });
 });
