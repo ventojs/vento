@@ -28,8 +28,8 @@ export default function (options: Options = {}) {
   const env = new Environment({
     loader,
     dataVarname: options.dataVarname || "it",
-    autoescape: options.autoescape || false,
-    useWith: options.useWith || true,
+    autoescape: options.autoescape ?? false,
+    useWith: options.useWith ?? true,
   });
 
   // Register basic plugins
