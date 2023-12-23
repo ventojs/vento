@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.10.0] - Unreleased
+### Added
+- Filters can use `this` to access to the `Environment` instance and contextual data.
+
 ## [0.9.2] - 2023-12-13
 ### Fixed
 - `useWith` configuration does not work [#25].
@@ -135,6 +139,7 @@ First version
 [#20]: https://github.com/oscarotero/vento/issues/20
 [#25]: https://github.com/oscarotero/vento/issues/25
 
+[0.10.0]: https://github.com/oscarotero/vento/compare/v0.9.2...HEAD
 [0.9.2]: https://github.com/oscarotero/vento/compare/v0.9.1...v0.9.2
 [0.9.1]: https://github.com/oscarotero/vento/compare/v0.9.0...v0.9.1
 [0.9.0]: https://github.com/oscarotero/vento/compare/v0.8.1...v0.9.0

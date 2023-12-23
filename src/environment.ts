@@ -28,8 +28,13 @@ export type Tag = (
   tokens: Token[],
 ) => string | undefined;
 
+export type FilterThis = {
+  data: Record<string, unknown>;
+  env: Environment;
+};
+
 // deno-lint-ignore no-explicit-any
-export type Filter = (...args: any[]) => any;
+export type Filter = (this: FilterThis, ...args: any[]) => any;
 
 export type Plugin = (env: Environment) => void;
 
@@ -240,7 +245,10 @@ export class Environment {
         }
       } else {
         // It's a filter (e.g. filters.upper())
-        output = `${isAsync ? "await " : ""}__env.filters.${name}(${output}${
+        const { dataVarname } = this.options;
+        output = `${
+          isAsync ? "await " : ""
+        }__env.filters.${name}.call({data:${dataVarname},env:__env}, ${output}${
           args ? `, ${args}` : ""
         })`;
       }

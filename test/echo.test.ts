@@ -36,6 +36,40 @@ Deno.test("Echo tag", async () => {
     expected: "HELLO {{ WORLD }}",
   });
 
+  await test({
+    template: `
+    {{ "title" |> fromData |> toUpperCase }}
+    `,
+    expected: "HELLO WORLD",
+    data: {
+      title: "Hello world",
+    },
+    filters: {
+      fromData(key: string) {
+        return this.data[key];
+      },
+    },
+  });
+
+  await test({
+    template: `
+    {{ "title" |> fromData }}
+    `,
+    expected: "#Hello world",
+    data: {
+      title: "Hello world",
+      prefix: "#",
+    },
+    filters: {
+      prefix(value: string) {
+        return this.data.prefix + value;
+      },
+      fromData(key: string) {
+        return this.env.filters.prefix.call(this, this.data[key]);
+      },
+    },
+  });
+
   testThrows({
     options: {
       useWith: false,
