@@ -122,9 +122,11 @@ export default function tokenize(source: string): TokenizeResult {
 type status =
   | "single-quote"
   | "double-quote"
+  | "regex"
   | "literal"
   | "bracket"
-  | "comment";
+  | "comment"
+  | "line-comment";
 
 /**
  * Parse a tag and return the indexes of the start and end brackets, and the filters between.
@@ -149,7 +151,8 @@ export function parseTag(source: string): number[] {
           statuses.unshift("bracket");
         } else if (
           status !== "comment" && status !== "single-quote" &&
-          status !== "double-quote" && status !== "literal"
+          status !== "double-quote" && status !== "literal" &&
+          status !== "regex" && status !== "line-comment"
         ) {
           statuses.unshift("bracket");
         }
@@ -179,7 +182,9 @@ export function parseTag(source: string): number[] {
         } else if (
           status !== "comment" &&
           status !== "single-quote" &&
-          status !== "literal"
+          status !== "literal" &&
+          status !== "regex" &&
+          status !== "line-comment"
         ) {
           statuses.unshift("double-quote");
         }
@@ -194,7 +199,9 @@ export function parseTag(source: string): number[] {
         } else if (
           status !== "comment" &&
           status !== "double-quote" &&
-          status !== "literal"
+          status !== "literal" &&
+          status !== "regex" &&
+          status !== "line-comment"
         ) {
           statuses.unshift("single-quote");
         }
@@ -209,29 +216,66 @@ export function parseTag(source: string): number[] {
         } else if (
           status !== "comment" &&
           status !== "double-quote" &&
-          status !== "single-quote"
+          status !== "single-quote" &&
+          status !== "regex" &&
+          status !== "line-comment"
         ) {
           statuses.unshift("literal");
         }
         break;
       }
 
-      // Detect comments
+      // Detect comments and regex
       case "/": {
         const status = statuses[0];
-
         if (
-          status !== "single-quote" && status !== "double-quote" &&
-          status !== "literal"
+          status === "single-quote" || status === "double-quote" ||
+          status === "literal" || status === "line-comment"
         ) {
-          if (source.charAt(index) === "*") {
-            statuses.unshift("comment");
-          } else if (
-            status === "comment" &&
-            source.charAt(index - 2) === "*"
-          ) {
+          break;
+        }
+
+        // We are in a comment: close or ignore
+        if (status === "comment") {
+          if (source.charAt(index - 2) === "*") {
             statuses.shift();
           }
+          break;
+        }
+
+        // We are in a regex: close or ignore
+        if (status === "regex") {
+          if (source.charAt(index - 2) !== "\\") {
+            statuses.shift();
+          }
+          break;
+        }
+
+        // Start a new comment
+        if (source.charAt(index) === "*") {
+          statuses.unshift("comment");
+          break;
+        }
+
+        // Start a new line comment
+        if (source.charAt(index - 2) === "/") {
+          statuses.unshift("line-comment");
+          break;
+        }
+
+        // Start a new regex
+        const prev = prevChar(source, index - 1);
+        if (prev === "(" || prev === "=" || prev === ":" || prev === ",") {
+          statuses.unshift("regex");
+        }
+        break;
+      }
+
+      // Detect end of line comments
+      case "\n": {
+        const status = statuses[0];
+        if (status === "line-comment") {
+          statuses.shift();
         }
         break;
       }
@@ -248,4 +292,15 @@ export function parseTag(source: string): number[] {
   }
 
   throw new Error("Unclosed tag");
+}
+
+// Get the previous character in a string ignoring spaces, line breaks and tabs
+function prevChar(source: string, index: number) {
+  while (index > 0) {
+    const char = source.charAt(--index);
+    if (char !== " " && char !== "\n" && char !== "\r" && char !== "\t") {
+      return char;
+    }
+  }
+  return "";
 }

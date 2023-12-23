@@ -10,7 +10,7 @@ function jsTag(
   _env: Environment,
   code: string,
 ): string | undefined {
-  if (!code.startsWith("> ")) {
+  if (!code.startsWith(">")) {
     return;
   }
 

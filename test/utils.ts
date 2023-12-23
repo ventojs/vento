@@ -1,10 +1,8 @@
 import tmpl from "../mod.ts";
-import { assertEquals } from "https://deno.land/std@0.208.0/assert/assert_equals.ts";
-import { assertThrows } from "https://deno.land/std@0.208.0/assert/assert_throws.ts";
-import {
-  extract,
-  test as fmTest,
-} from "https://deno.land/std@0.208.0/front_matter/yaml.ts";
+import { assertEquals } from "https://deno.land/std@0.210.0/assert/assert_equals.ts";
+import { assertThrows } from "https://deno.land/std@0.210.0/assert/assert_throws.ts";
+import { extract } from "https://deno.land/std@0.210.0/front_matter/yaml.ts";
+import { test as fmTest } from "https://deno.land/std@0.210.0/front_matter/mod.ts";
 
 import { path } from "../deps.ts";
 
@@ -75,7 +73,7 @@ export class FileLoader implements Loader {
   load(file: string) {
     const source = this.files[file] || "";
 
-    if (fmTest(source)) {
+    if (fmTest(source, ["yaml"])) {
       const { body, attrs } = extract(source);
       return {
         source: body,
