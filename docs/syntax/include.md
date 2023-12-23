@@ -5,7 +5,8 @@ order: 4
 # Include
 
 Use `{{ include [filename] }}` to insert other templates in place. Vento will
-look for the included file in the [`includes` folder](../configuration.md#includes).
+look for the included file in the
+[`includes` folder](../configuration.md#includes).
 
 ```vento
 {{ include "filename.vto" }}

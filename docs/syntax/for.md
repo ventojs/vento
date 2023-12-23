@@ -13,8 +13,8 @@ dictionaries, numbers, strings, etc.
 {{ /for }}
 ```
 
-Vento will evaluate any code in the `[collection]` spot as JavaScript code, so you
-can use any expression you'd like:
+Vento will evaluate any code in the `[collection]` spot as JavaScript code, so
+you can use any expression you'd like:
 
 ```vento
 {{ for odd_number of [1, 2, 3].filter((n) => n%2) }}
@@ -90,8 +90,8 @@ is equivalent to:
 
 ### `null` and `undefined` values
 
-Any `null` or `undefined` variable is converted to an empty array so the code won't
-fail.
+Any `null` or `undefined` variable is converted to an empty array so the code
+won't fail.
 
 ```vento
 {{ for item of undefined }}
@@ -109,7 +109,8 @@ The above example is equivalent to:
 
 ## Pipes
 
-You can use Pipes to transform the iterable object before iterating it. For example, to filter by even numbers:
+You can use Pipes to transform the iterable object before iterating it. For
+example, to filter by even numbers:
 
 ```vento
 {{ for even_number of [1, 2, 3] |> filter((n) => n % 2 === 0) }}

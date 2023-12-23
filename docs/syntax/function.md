@@ -1,7 +1,7 @@
 # Function
 
-Functions are similar to JavaScript functions and allow you to define
-reusable chunks of content.
+Functions are similar to JavaScript functions and allow you to define reusable
+chunks of content.
 
 ```vento
 {{ function hello }}
@@ -50,5 +50,5 @@ Use the `async` keyword to create asynchronous functions.
 
 ## Importing/exporting functions
 
-See [Imports and exports](./import-export.md) to learn how to import and
-export functions from other templates.
+See [Imports and exports](./import-export.md) to learn how to import and export
+functions from other templates.

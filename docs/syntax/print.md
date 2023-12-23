@@ -33,7 +33,9 @@ Or an async operation (using `await`):
 
 ## Autoescaping
 
-If autoescaping is enabled [See Configuration for more info](../configuration.md#autoescape), any HTML content will be escaped automatically. For example:
+If autoescaping is enabled
+[See Configuration for more info](../configuration.md#autoescape), any HTML
+content will be escaped automatically. For example:
 
 ```vento
 {{ "<h1>Hello, world!</h1>" }}

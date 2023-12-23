@@ -20,14 +20,15 @@ Pipes can run three types of functions, in this order of priority:
 ## Filters
 
 Filters are custom functions that you can configure to transform variables. By
-default Vento has the `escape`, `unescape` and `safe` filters out of the box,
-to escape and unescape HTML code:
+default Vento has the `escape`, `unescape` and `safe` filters out of the box, to
+escape and unescape HTML code:
 
 ```vento
 {{ "<h1>Hello, world!</h1>" |> escape }}
 ```
 
-The `safe` filter does not transform the content, but can be used to mark HTML data as trusted when in autoescaping mode;
+The `safe` filter does not transform the content, but can be used to mark HTML
+data as trusted when in autoescaping mode;
 
 ```vento
 {{ myTrustedSource.getHtml() |> safe }}
@@ -42,7 +43,8 @@ parenthesis:
 
 ## Global functions
 
-Vento will execute functions available in the standard JavaScript namespace, such as `JSON.stringify()`:
+Vento will execute functions available in the standard JavaScript namespace,
+such as `JSON.stringify()`:
 
 ```vento
 {{ { name: "Óscar", surname: "Otero" } |> JSON.stringify }}
@@ -95,7 +97,8 @@ async functions. For example:
 
 - [`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/fetch) is a global
   async function.
-- [`json`](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) is an async method of the `Response` object returned by `fetch`.
+- [`json`](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) is an
+  async method of the `Response` object returned by `fetch`.
 - [`JSON.stringify`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
   is a global function.
 

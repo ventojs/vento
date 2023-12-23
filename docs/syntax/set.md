@@ -38,8 +38,8 @@ Block mode supports pipes too:
 
 ## Differences between `set` and creating the variable with JavaScript
 
-Vento allows you to [run JavaScript](./javascript.md), so it's possible to create
-new variables using normal JavaScript code:
+Vento allows you to [run JavaScript](./javascript.md), so it's possible to
+create new variables using normal JavaScript code:
 
 ```vento
 {{> const name = "Óscar" }}
@@ -68,5 +68,5 @@ The `set` tag provides the following benefits:
 
 ## Importing/exporting variables
 
-See [Imports and exports](./import-export.md) to learn how to export and
-import variables from other templates.
+See [Imports and exports](./import-export.md) to learn how to export and import
+variables from other templates.
