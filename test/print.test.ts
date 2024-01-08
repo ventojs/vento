@@ -113,3 +113,22 @@ Deno.test({
     });
   },
 });
+
+Deno.test({
+  name: "Print auto async filters",
+  // @ts-ignore only used to detect node.js
+  ignore: globalThis?.process?.release?.name === "node",
+  fn: async () => {
+    await test({
+      template: `<{{ "foo" |> getAsync }}>`,
+      expected: "<FOO>",
+      filters: {
+        async getAsync(text: string) {
+          return await new Promise((resolve) => {
+            setTimeout(() => resolve(text.toUpperCase()), 10);
+          });
+        },
+      },
+    });
+  },
+});

@@ -247,7 +247,7 @@ export class Environment {
         // It's a filter (e.g. filters.upper())
         const { dataVarname } = this.options;
         output = `${
-          isAsync ? "await " : ""
+          (isAsync || checkAsync(this.filters[name])) ? "await " : ""
         }__env.filters.${name}.call({data:${dataVarname},env:__env}, ${output}${
           args ? `, ${args}` : ""
         })`;
@@ -319,4 +319,8 @@ export function errorLine(
   }
 
   return [line, column, source.split("\n")[line - 1]];
+}
+
+function checkAsync(fn: () => unknown): boolean {
+  return fn.constructor?.name === "AsyncFunction";
 }
