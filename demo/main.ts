@@ -12,4 +12,4 @@ const result = await template({
   ],
 });
 
-console.log(result);
+console.log(result.content);

@@ -49,7 +49,11 @@ function forTag(
   return compiled.join("\n");
 }
 
-function toIterator(item: unknown, withKeys = false): Array<unknown> {
+// deno-lint-ignore no-explicit-any
+function toIterator(
+  item: any,
+  withKeys = false,
+): Iterable<unknown> | AsyncIterable<unknown> | Array<unknown> {
   if (item === undefined || item === null) {
     return [];
   }
@@ -63,6 +67,21 @@ function toIterator(item: unknown, withKeys = false): Array<unknown> {
   }
 
   if (typeof item === "object" && item !== null) {
+    if (typeof item[Symbol.iterator] === "function") {
+      if (withKeys) {
+        return iterableToEntries(item as Iterable<unknown>);
+      }
+      return item as Iterable<unknown>;
+    }
+
+    if (typeof item[Symbol.asyncIterator] === "function") {
+      if (withKeys) {
+        return asyncIterableToEntries(item as AsyncIterable<unknown>);
+      }
+
+      return item as AsyncIterable<unknown>;
+    }
+
     return withKeys ? Object.entries(item) : Object.values(item);
   }
 
@@ -75,4 +94,22 @@ function toIterator(item: unknown, withKeys = false): Array<unknown> {
   }
 
   return toIterator([item], withKeys);
+}
+
+function* iterableToEntries(
+  iterator: Iterable<unknown>,
+): Generator<[number, unknown]> {
+  let i = 0;
+  for (const value of iterator) {
+    yield [i++, value];
+  }
+}
+
+async function* asyncIterableToEntries(
+  iterator: AsyncIterable<unknown>,
+): AsyncGenerator<[number, unknown]> {
+  let i = 0;
+  for await (const value of iterator) {
+    yield [i++, value];
+  }
 }

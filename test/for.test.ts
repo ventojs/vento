@@ -94,6 +94,30 @@ Deno.test("For tag (function)", async () => {
       items: () => ({ one: "1", two: "2" }),
     },
   });
+  await test({
+    template: `
+    {{ for key, name of iterator }}{{key}}/{{name}}-{{ /for }}
+    `,
+    expected: "0/one-1/two-",
+    data: {
+      *iterator() {
+        yield "one";
+        yield "two";
+      },
+    },
+  });
+  await test({
+    template: `
+    {{ for await key, name of iterator }}{{key}}/{{name}}-{{ /for }}
+    `,
+    expected: "0/one-1/two-",
+    data: {
+      async *iterator() {
+        yield "one";
+        yield "two";
+      },
+    },
+  });
 });
 
 Deno.test("For tag (empty)", async () => {

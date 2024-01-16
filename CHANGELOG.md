@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.10.2] - Unreleased
+### Fixed
+- `for` not working as expected with AsyncIterable? [#28]
+
 ## [0.10.1] - 2024-01-08
 ### Added
 - Filters of type `AsyncFunction` are automatically awaited. No need to add the `await` keyword manually.
@@ -156,7 +160,9 @@ First version
 [#16]: https://github.com/oscarotero/vento/issues/16
 [#20]: https://github.com/oscarotero/vento/issues/20
 [#25]: https://github.com/oscarotero/vento/issues/25
+[#28]: https://github.com/oscarotero/vento/issues/28
 
+[0.10.2]: https://github.com/oscarotero/vento/compare/v0.10.1...HEAD
 [0.10.1]: https://github.com/oscarotero/vento/compare/v0.10.0...v0.10.1
 [0.10.0]: https://github.com/oscarotero/vento/compare/v0.9.2...v0.10.0
 [0.9.2]: https://github.com/oscarotero/vento/compare/v0.9.1...v0.9.2
