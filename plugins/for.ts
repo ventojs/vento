@@ -49,8 +49,8 @@ function forTag(
   return compiled.join("\n");
 }
 
-// deno-lint-ignore no-explicit-any
 function toIterator(
+  // deno-lint-ignore no-explicit-any
   item: any,
   withKeys = false,
 ): Iterable<unknown> | AsyncIterable<unknown> | Array<unknown> {
