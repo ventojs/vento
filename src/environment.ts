@@ -43,6 +43,7 @@ export interface Options {
   dataVarname: string;
   autoescape: boolean;
   useWith: boolean;
+  cache: boolean;
 }
 
 export class Environment {
@@ -75,10 +76,12 @@ export class Environment {
     file?: string,
   ): Promise<TemplateResult> {
     if (file) {
-      const cached = this.cache.get(file);
+      if (this.options.cache) {
+        const cached = this.cache.get(file);
 
-      if (cached) {
-        return await cached(data);
+        if (cached) {
+          return await cached(data);
+        }
       }
 
       const template = this.compile(source, file);
@@ -154,11 +157,13 @@ export class Environment {
   async load(file: string, from?: string): Promise<Template> {
     const path = from ? this.options.loader.resolve(from, file) : file;
 
-    if (!this.cache.has(path)) {
+    if (!this.cache.has(path) || !this.options.cache) {
       const { source, data } = await this.options.loader.load(path);
       const template = this.compile(source, path, data);
 
       this.cache.set(path, template);
+
+      return template;
     }
 
     return this.cache.get(path)!;

@@ -18,6 +18,7 @@ export interface Options {
   useWith?: boolean;
   dataVarname?: string;
   autoescape?: boolean;
+  cache?: boolean;
 }
 
 export default function (options: Options = {}) {
@@ -30,6 +31,7 @@ export default function (options: Options = {}) {
     dataVarname: options.dataVarname || "it",
     autoescape: options.autoescape ?? false,
     useWith: options.useWith ?? true,
+    cache: options.cache ?? true,
   });
 
   // Register basic plugins
