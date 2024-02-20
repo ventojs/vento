@@ -70,3 +70,12 @@ const result = await env.runString("<h1>{{ title }}</h1>", {
 console.log(result.content);
 // <h1>Hello, world!</h1>
 ```
+
+### Clearing cache
+
+Vento implements a cache to prevent excessive compilation. If you need to
+reload your templates at runtime (ie. for development), you can clear the cache.
+
+```js
+env.cache.clear();
+```
