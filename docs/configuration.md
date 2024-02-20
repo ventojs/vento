@@ -15,6 +15,7 @@ const env = vento({
   useWith: true,
   includes: Deno.cwd(),
   autoescape: false,
+  cache: true,
 });
 ```
 
@@ -83,6 +84,16 @@ const result = env.runString("{{ title |> safe }}", {
 ### includes
 
 The path of the directory that Vento will use to look for includes templates.
+
+### cache
+
+Set `false` to ignore the cache, and re-compile the template when loading.
+
+```js
+const env = vento({
+  cache: false, // default is true
+});
+```
 
 ## Filters
 
