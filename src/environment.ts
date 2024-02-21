@@ -21,6 +21,12 @@ export interface TemplateSync {
   file?: string;
 }
 
+export type TokenPreprocessor = (
+  env: Environment,
+  tokens: Token[],
+  path?: string,
+) => Token[] | undefined;
+
 export type Tag = (
   env: Environment,
   code: string,
@@ -49,6 +55,7 @@ export class Environment {
   cache = new Map<string, Template>();
   options: Options;
   tags: Tag[] = [];
+  tokenPreprocessors: TokenPreprocessor[] = [];
   filters: Record<string, Filter> = {};
   utils: Record<string, unknown> = {};
 
@@ -117,10 +124,20 @@ export class Environment {
     defaults?: Record<string, unknown>,
     sync = false,
   ): Template | TemplateSync {
-    const { tokens, position, error } = tokenize(source);
+    const result = tokenize(source);
+    let { tokens } = result;
+    const { position, error } = result;
 
     if (error) {
       throw this.createError(path || "unknown", source, position, error);
+    }
+
+    for (const tokenPreprocessor of this.tokenPreprocessors) {
+      const result = tokenPreprocessor(this, tokens, path);
+
+      if (result !== undefined) {
+        tokens = result;
+      }
     }
 
     const code = this.compileTokens(tokens).join("\n");
@@ -155,7 +172,12 @@ export class Environment {
     const path = from ? this.options.loader.resolve(from, file) : file;
 
     if (!this.cache.has(path)) {
-      const { source, data } = await this.options.loader.load(path);
+      // Remove query and hash params from path before loading
+      const cleanPath = path
+        .split("?")[0]
+        .split("#")[0];
+
+      const { source, data } = await this.options.loader.load(cleanPath);
       const template = this.compile(source, path, data);
 
       this.cache.set(path, template);
