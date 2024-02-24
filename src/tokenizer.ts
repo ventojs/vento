@@ -7,7 +7,13 @@ export interface TokenizeResult {
   error: Error | undefined;
 }
 
-export default function tokenize(source: string): TokenizeResult {
+export type TrimType = "all" | false;
+export type TrimTagOptions = { left: TrimType; right: TrimType };
+
+export default function tokenize(
+  source: string,
+  trimOptions?: TrimTagOptions,
+): TokenizeResult {
   const tokens: Token[] = [];
   let type: TokenType = "string";
   let trimNext = false;
@@ -60,17 +66,28 @@ export default function tokenize(source: string): TokenizeResult {
         indexes.reduce((prev, curr, index) => {
           let code = source.slice(prev, curr - 2);
 
+          const preserveLeft = code.startsWith("+");
+          const preserveRight = code.endsWith("+");
+
+          const trimLeft = code.startsWith("-") || trimOptions?.left;
+          const trimRight = code.endsWith("-") ||
+            (trimOptions?.right && index === lastIndex);
+
           // Tag
           if (index === 1) {
             // Left trim
-            if (code.startsWith("-")) {
+            if (preserveLeft) {
+              code = code.slice(1);
+            } else if (trimLeft) {
               code = code.slice(1);
               const lastToken = tokens[tokens.length - 1];
               lastToken[1] = lastToken[1].trimEnd();
             }
 
             // Right trim
-            if (code.endsWith("-") && index === lastIndex) {
+            if (preserveRight) {
+              code = code.slice(0, -1);
+            } else if (trimRight) {
               code = code.slice(0, -1);
               trimNext = true;
             }
@@ -80,7 +97,9 @@ export default function tokenize(source: string): TokenizeResult {
           }
 
           // Right trim
-          if (index === lastIndex && code.endsWith("-")) {
+          if (preserveRight) {
+            code = code.slice(0, -1);
+          } else if (trimRight) {
             code = code.slice(0, -1);
             trimNext = true;
           }

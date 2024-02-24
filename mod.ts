@@ -12,12 +12,15 @@ import exportTag from "./plugins/export.ts";
 import echoTag from "./plugins/echo.ts";
 import escape from "./plugins/escape.ts";
 import unescape from "./plugins/unescape.ts";
+import { TrimTagOptions } from "./src/tokenizer.ts";
+import { TrimType } from "./src/tokenizer.ts";
 
 export interface Options {
   includes?: string | Loader;
   useWith?: boolean;
   dataVarname?: string;
   autoescape?: boolean;
+  trimTags?: TrimType | TrimTagOptions;
 }
 
 export default function (options: Options = {}) {
@@ -30,6 +33,12 @@ export default function (options: Options = {}) {
     dataVarname: options.dataVarname || "it",
     autoescape: options.autoescape ?? false,
     useWith: options.useWith ?? true,
+    trimTags: typeof options.trimTags === "object"
+      ? options.trimTags
+      : {
+        left: options.trimTags ?? false,
+        right: options.trimTags ?? false,
+      },
   });
 
   // Register basic plugins

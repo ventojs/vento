@@ -1,6 +1,7 @@
 import tokenize, { Token } from "./tokenizer.ts";
 
 import type { Loader } from "./loader.ts";
+import { TrimTagOptions } from "./tokenizer.ts";
 
 export interface TemplateResult {
   content: string;
@@ -49,6 +50,7 @@ export interface Options {
   dataVarname: string;
   autoescape: boolean;
   useWith: boolean;
+  trimTags: TrimTagOptions;
 }
 
 export class Environment {
@@ -124,7 +126,7 @@ export class Environment {
     defaults?: Record<string, unknown>,
     sync = false,
   ): Template | TemplateSync {
-    const result = tokenize(source);
+    const result = tokenize(source, this.options.trimTags);
     let { tokens } = result;
     const { position, error } = result;
 
