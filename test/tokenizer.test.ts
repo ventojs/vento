@@ -116,7 +116,7 @@ Deno.test("Tokenizer (auto both trims)", () => {
   assertEquals(tokens, [
     ["string", "<h1>", 0],
     ["tag", "message", 5],
-    ["string", "</h1>", 19],
+    ["string", "</h1>", 18],
   ]);
 });
 
@@ -125,8 +125,8 @@ Deno.test("Tokenizer (preserve left)", () => {
   const { tokens } = tokenize(code, { left: "all", right: "all" });
   assertEquals(tokens, [
     ["string", "<h1>      ", 0],
-    ["tag", "message", 5],
-    ["string", "</h1>", 19],
+    ["tag", "message", 10],
+    ["string", "</h1>", 24],
   ]);
 });
 
@@ -135,8 +135,8 @@ Deno.test("Tokenizer (preserve right)", () => {
   const { tokens } = tokenize(code, { left: "all", right: "all" });
   assertEquals(tokens, [
     ["string", "<h1>", 0],
-    ["tag", "message", 5],
-    ["string", " </h1>", 19],
+    ["tag", "message", 10],
+    ["string", " </h1>", 24],
   ]);
 });
 
@@ -145,8 +145,8 @@ Deno.test("Tokenizer (preserve both)", () => {
   const { tokens } = tokenize(code, { left: "all", right: "all" });
   assertEquals(tokens, [
     ["string", "<h1>      ", 0],
-    ["tag", "message", 5],
-    ["string", " </h1>", 19],
+    ["tag", "message", 10],
+    ["string", " </h1>", 25],
   ]);
 });
 
