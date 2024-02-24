@@ -33,12 +33,10 @@ export default function (options: Options = {}) {
     dataVarname: options.dataVarname || "it",
     autoescape: options.autoescape ?? false,
     useWith: options.useWith ?? true,
-    trimTags: typeof options.trimTags === "object"
-      ? options.trimTags
-      : {
-        left: options.trimTags ?? false,
-        right: options.trimTags ?? false,
-      },
+    trimTags: typeof options.trimTags === "object" ? options.trimTags : {
+      left: options.trimTags ?? false,
+      right: options.trimTags ?? false,
+    },
   });
 
   // Register basic plugins
