@@ -66,41 +66,33 @@ export default function tokenize(
         indexes.reduce((prev, curr, index) => {
           let code = source.slice(prev, curr - 2);
 
-          const preserveLeft = code.startsWith("+");
-          const preserveRight = code.endsWith("+");
+          const trimLeft = !code.startsWith("+") && 
+            (code.startsWith("-") || trimOptions?.left);
+          const trimRight = !code.endsWith("+") && 
+            (code.endsWith("-") || (trimOptions?.right && index === lastIndex));
 
-          const trimLeft = code.startsWith("-") || trimOptions?.left;
-          const trimRight = code.endsWith("-") ||
-            (trimOptions?.right && index === lastIndex);
+          code = code.replace(/^[\+\-]/, "").replace(/[\+\-]$/, "");
 
           // Tag
           if (index === 1) {
             // Left trim
-            if (preserveLeft) {
-              code = code.slice(1);
-            } else if (trimLeft) {
-              code = code.slice(1);
+            if (trimLeft) {
               const lastToken = tokens[tokens.length - 1];
               lastToken[1] = lastToken[1].trimEnd();
             }
 
             // Right trim
-            if (preserveRight) {
-              code = code.slice(0, -1);
-            } else if (trimRight) {
-              code = code.slice(0, -1);
+            if (trimRight) {
               trimNext = true;
             }
+
             tag = [type, code.trim(), position];
             tokens.push(tag);
             return curr;
           }
 
           // Right trim
-          if (preserveRight) {
-            code = code.slice(0, -1);
-          } else if (trimRight) {
-            code = code.slice(0, -1);
+          if (trimRight) {
             trimNext = true;
           }
 
