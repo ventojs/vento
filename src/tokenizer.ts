@@ -10,7 +10,6 @@ export interface TokenizeResult {
 export default function tokenize(source: string): TokenizeResult {
   const tokens: Token[] = [];
   let type: TokenType = "string";
-  let trimNext = false;
   let position = 0;
 
   try {
@@ -19,12 +18,7 @@ export default function tokenize(source: string): TokenizeResult {
         const index = source.indexOf("{{");
         const code = index === -1 ? source : source.slice(0, index);
 
-        if (trimNext) {
-          tokens.push([type, code.trimStart(), position]);
-          trimNext = false;
-        } else {
-          tokens.push([type, code, position]);
-        }
+        tokens.push([type, code, position]);
 
         if (index === -1) {
           break;
@@ -58,35 +52,17 @@ export default function tokenize(source: string): TokenizeResult {
         let tag: Token | undefined;
 
         indexes.reduce((prev, curr, index) => {
-          let code = source.slice(prev, curr - 2);
+          const code = source.slice(prev, curr - 2);
 
           // Tag
           if (index === 1) {
-            // Left trim
-            if (code.startsWith("-")) {
-              code = code.slice(1);
-              const lastToken = tokens[tokens.length - 1];
-              lastToken[1] = lastToken[1].trimEnd();
-            }
-
-            // Right trim
-            if (code.endsWith("-") && index === lastIndex) {
-              code = code.slice(0, -1);
-              trimNext = true;
-            }
-            tag = [type, code.trim(), position];
+            tag = [type, code, position];
             tokens.push(tag);
             return curr;
           }
 
-          // Right trim
-          if (index === lastIndex && code.endsWith("-")) {
-            code = code.slice(0, -1);
-            trimNext = true;
-          }
-
           // Filters
-          tokens.push(["filter", code.trim()]);
+          tokens.push(["filter", code]);
           return curr;
         });
 
@@ -95,8 +71,8 @@ export default function tokenize(source: string): TokenizeResult {
         type = "string";
 
         // Search the closing echo tag {{ /echo }}
-        if (tag?.[1] === "echo") {
-          const end = source.match(/{{\s*\/echo\s*}}/);
+        if (tag?.[1].match(/^\-?\s*echo\s*\-?$/)) {
+          const end = source.match(/{{\-?\s*\/echo\s*\-?}}/);
 
           if (!end) {
             throw new Error("Unclosed echo tag");

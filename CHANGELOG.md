@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Preprocessor hooks [#33].
 - Support for query strings and hashes in the import paths [#33].
 
+### Changed
+- Internal: refactor tag trimming.
+
 ### Fixed
 - `escape` and `unescape` filters for non-string values [#36].
 
