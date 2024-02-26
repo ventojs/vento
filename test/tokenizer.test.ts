@@ -92,28 +92,32 @@ Deno.test("Tokenizer (both trims)", () => {
 });
 
 Deno.test("Tokenizer (auto left trim)", () => {
-  const code = `<h1> {{- message }} </h1>`;
-  const { tokens } = tokenize(code, { left: "all", right: false });
+  const code = `<h1> {{ message }} </h1>`;
+  const tokens = tmpl({ trimTags: { left: "all", right: false } }).tokenize(
+    code,
+  );
   assertEquals(tokens, [
     ["string", "<h1>", 0],
     ["tag", "message", 5],
-    ["string", " </h1>", 19],
+    ["string", " </h1>", 18],
   ]);
 });
 
 Deno.test("Tokenizer (auto right trim)", () => {
-  const code = `<h1> {{message -}} </h1>`;
-  const { tokens } = tokenize(code, { left: false, right: "all" });
+  const code = `<h1> {{message }} </h1>`;
+  const tokens = tmpl({ trimTags: { left: false, right: "all" } }).tokenize(
+    code,
+  );
   assertEquals(tokens, [
     ["string", "<h1> ", 0],
     ["tag", "message", 5],
-    ["string", "</h1>", 18],
+    ["string", "</h1>", 17],
   ]);
 });
 
 Deno.test("Tokenizer (auto both trims)", () => {
   const code = `<h1> {{ message }} </h1>`;
-  const { tokens } = tokenize(code, { left: "all", right: "all" });
+  const tokens = tmpl({ trimTags: "all" }).tokenize(code);
   assertEquals(tokens, [
     ["string", "<h1>", 0],
     ["tag", "message", 5],
@@ -123,7 +127,7 @@ Deno.test("Tokenizer (auto both trims)", () => {
 
 Deno.test("Tokenizer (preserve left)", () => {
   const code = `<h1>      {{+ message }} </h1>`;
-  const { tokens } = tokenize(code, { left: "all", right: "all" });
+  const tokens = tmpl({ trimTags: "all" }).tokenize(code);
   assertEquals(tokens, [
     ["string", "<h1>      ", 0],
     ["tag", "message", 10],
@@ -133,7 +137,7 @@ Deno.test("Tokenizer (preserve left)", () => {
 
 Deno.test("Tokenizer (preserve right)", () => {
   const code = `<h1>      {{ message +}} </h1>`;
-  const { tokens } = tokenize(code, { left: "all", right: "all" });
+  const tokens = tmpl({ trimTags: "all" }).tokenize(code);
   assertEquals(tokens, [
     ["string", "<h1>", 0],
     ["tag", "message", 10],
@@ -143,7 +147,7 @@ Deno.test("Tokenizer (preserve right)", () => {
 
 Deno.test("Tokenizer (preserve both)", () => {
   const code = `<h1>      {{+ message +}} </h1>`;
-  const { tokens } = tokenize(code, { left: "all", right: "all" });
+  const tokens = tmpl({ trimTags: "all" }).tokenize(code);
   assertEquals(tokens, [
     ["string", "<h1>      ", 0],
     ["tag", "message", 10],
