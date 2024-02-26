@@ -35,3 +35,33 @@ Deno.test("Escape by default", async () => {
     expected: "&lt;h1&gt;Hello world&lt;/h1&gt;",
   });
 });
+
+Deno.test("Escape non-string", async () => {
+  await test({
+    template: `
+    {{ 100 |> escape }}
+    `,
+    expected: "100",
+  });
+  testSync({
+    template: `
+    {{ 100 |> escape }}
+    `,
+    expected: "100",
+  });
+});
+
+Deno.test("Escape undefined", async () => {
+  await test({
+    template: `
+    {{ undefined |> escape }}
+    `,
+    expected: "",
+  });
+  testSync({
+    template: `
+    {{ undefined |> escape }}
+    `,
+    expected: "",
+  });
+});

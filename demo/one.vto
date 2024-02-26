@@ -6,7 +6,7 @@
 
   {{ echo "foo" |> toUpperCase }}
 
-  {{ for await key, file of Deno.readDir(".") }}
+  {{- for await key, file of Deno.readDir(".") -}}
     <div> {{key}}: {{file.name}}</div>
   {{ /for }}
 

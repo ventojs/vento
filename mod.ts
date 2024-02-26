@@ -12,8 +12,7 @@ import exportTag from "./plugins/export.ts";
 import echoTag from "./plugins/echo.ts";
 import escape from "./plugins/escape.ts";
 import unescape from "./plugins/unescape.ts";
-import { TrimTagOptions } from "./src/tokenizer.ts";
-import { TrimType } from "./src/tokenizer.ts";
+import trim, { TrimTagOptions, TrimType } from "./plugins/trim.ts";
 
 export interface Options {
   includes?: string | Loader;
@@ -33,10 +32,6 @@ export default function (options: Options = {}) {
     dataVarname: options.dataVarname || "it",
     autoescape: options.autoescape ?? false,
     useWith: options.useWith ?? true,
-    trimTags: typeof options.trimTags === "object" ? options.trimTags : {
-      left: options.trimTags ?? false,
-      right: options.trimTags ?? false,
-    },
   });
 
   // Register basic plugins
@@ -52,6 +47,12 @@ export default function (options: Options = {}) {
   env.use(echoTag());
   env.use(escape());
   env.use(unescape());
+  env.use(trim(
+    typeof options.trimTags === "object" ? options.trimTags : {
+      left: options.trimTags ?? false,
+      right: options.trimTags ?? false,
+    },
+  ));
 
   return env;
 }

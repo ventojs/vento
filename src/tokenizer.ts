@@ -7,16 +7,9 @@ export interface TokenizeResult {
   error: Error | undefined;
 }
 
-export type TrimType = "all" | false;
-export type TrimTagOptions = { left: TrimType; right: TrimType };
-
-export default function tokenize(
-  source: string,
-  trimOptions?: TrimTagOptions,
-): TokenizeResult {
+export default function tokenize(source: string): TokenizeResult {
   const tokens: Token[] = [];
   let type: TokenType = "string";
-  let trimNext = false;
   let position = 0;
 
   try {
@@ -25,12 +18,7 @@ export default function tokenize(
         const index = source.indexOf("{{");
         const code = index === -1 ? source : source.slice(0, index);
 
-        if (trimNext) {
-          tokens.push([type, code.trimStart(), position]);
-          trimNext = false;
-        } else {
-          tokens.push([type, code, position]);
-        }
+        tokens.push([type, code, position]);
 
         if (index === -1) {
           break;
@@ -64,40 +52,17 @@ export default function tokenize(
         let tag: Token | undefined;
 
         indexes.reduce((prev, curr, index) => {
-          let code = source.slice(prev, curr - 2);
-
-          const trimLeft = !code.startsWith("+") && 
-            (code.startsWith("-") || trimOptions?.left);
-          const trimRight = !code.endsWith("+") && 
-            (code.endsWith("-") || (trimOptions?.right && index === lastIndex));
-
-          code = code.replace(/^[\+\-]/, "").replace(/[\+\-]$/, "");
+          const code = source.slice(prev, curr - 2);
 
           // Tag
           if (index === 1) {
-            // Left trim
-            if (trimLeft) {
-              const lastToken = tokens[tokens.length - 1];
-              lastToken[1] = lastToken[1].trimEnd();
-            }
-
-            // Right trim
-            if (trimRight) {
-              trimNext = true;
-            }
-
-            tag = [type, code.trim(), position];
+            tag = [type, code, position];
             tokens.push(tag);
             return curr;
           }
 
-          // Right trim
-          if (trimRight) {
-            trimNext = true;
-          }
-
           // Filters
-          tokens.push(["filter", code.trim()]);
+          tokens.push(["filter", code]);
           return curr;
         });
 
@@ -106,8 +71,8 @@ export default function tokenize(
         type = "string";
 
         // Search the closing echo tag {{ /echo }}
-        if (tag?.[1] === "echo") {
-          const end = source.match(/{{\s*\/echo\s*}}/);
+        if (tag?.[1].match(/^\-?\s*echo\s*\-?$/)) {
+          const end = source.match(/{{\-?\s*\/echo\s*\-?}}/);
 
           if (!end) {
             throw new Error("Unclosed echo tag");

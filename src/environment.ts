@@ -1,7 +1,6 @@
 import tokenize, { Token } from "./tokenizer.ts";
 
 import type { Loader } from "./loader.ts";
-import { TrimTagOptions } from "./tokenizer.ts";
 
 export interface TemplateResult {
   content: string;
@@ -26,7 +25,7 @@ export type TokenPreprocessor = (
   env: Environment,
   tokens: Token[],
   path?: string,
-) => Token[] | undefined;
+) => Token[] | void;
 
 export type Tag = (
   env: Environment,
@@ -50,7 +49,6 @@ export interface Options {
   dataVarname: string;
   autoescape: boolean;
   useWith: boolean;
-  trimTags: TrimTagOptions;
 }
 
 export class Environment {
@@ -126,22 +124,7 @@ export class Environment {
     defaults?: Record<string, unknown>,
     sync = false,
   ): Template | TemplateSync {
-    const result = tokenize(source, this.options.trimTags);
-    let { tokens } = result;
-    const { position, error } = result;
-
-    if (error) {
-      throw this.createError(path || "unknown", source, position, error);
-    }
-
-    for (const tokenPreprocessor of this.tokenPreprocessors) {
-      const result = tokenPreprocessor(this, tokens, path);
-
-      if (result !== undefined) {
-        tokens = result;
-      }
-    }
-
+    const tokens = this.tokenize(source, path);
     const code = this.compileTokens(tokens).join("\n");
     const { dataVarname, useWith } = this.options;
     const constructor = new Function(
@@ -168,6 +151,26 @@ export class Environment {
     template.code = code;
     template.source = source;
     return template;
+  }
+
+  tokenize(source: string, path?: string): Token[] {
+    const result = tokenize(source);
+    let { tokens } = result;
+    const { position, error } = result;
+
+    if (error) {
+      throw this.createError(path || "unknown", source, position, error);
+    }
+
+    for (const tokenPreprocessor of this.tokenPreprocessors) {
+      const result = tokenPreprocessor(this, tokens, path);
+
+      if (result !== undefined) {
+        tokens = result;
+      }
+    }
+
+    return tokens;
   }
 
   async load(file: string, from?: string): Promise<Template> {
