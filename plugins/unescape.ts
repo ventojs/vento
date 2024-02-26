@@ -3,6 +3,8 @@ import type { Environment } from "../src/environment.ts";
 
 export default function () {
   return (env: Environment) => {
-    env.filters.unescape = html.unescape;
+    // deno-lint-ignore no-explicit-any
+    env.filters.unescape = (value: any) =>
+      value ? html.unescape(value.toString()) : "";
   };
 }
