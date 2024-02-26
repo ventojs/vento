@@ -47,12 +47,7 @@ export default function (options: Options = {}) {
   env.use(echoTag());
   env.use(escape());
   env.use(unescape());
-  env.use(trim(
-    typeof options.trimTags === "object" ? options.trimTags : {
-      left: options.trimTags ?? false,
-      right: options.trimTags ?? false,
-    },
-  ));
+  env.use(trim(options.trimTags));
 
   return env;
 }
