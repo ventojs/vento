@@ -9,7 +9,7 @@ if (!version) {
 }
 
 await build({
-  entryPoints: ["./mod.ts"],
+  entryPoints: ["./mod.ts", "./plugins/autoTrim.ts"],
   outDir: "./npm",
   shims: { deno: true },
   compilerOptions: { target: "ES2022" },
