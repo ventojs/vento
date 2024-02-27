@@ -14,8 +14,6 @@ import escape from "./plugins/escape.ts";
 import unescape from "./plugins/unescape.ts";
 import trim from "./plugins/trim.ts";
 
-export { default as autoTrim } from "./plugins/autoTrim.ts";
-
 export interface Options {
   includes?: string | Loader;
   useWith?: boolean;
