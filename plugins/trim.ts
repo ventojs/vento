@@ -1,24 +1,13 @@
 import type { Token } from "../src/tokenizer.ts";
 import type { Environment } from "../src/environment.ts";
 
-export type TrimType = "all" | false;
-export type TrimTagOptions = { left: TrimType; right: TrimType };
-
-export default function (options: TrimType | TrimTagOptions = false) {
-  const trimOptions = typeof options === "object"
-    ? options
-    : { left: options, right: options };
-
+export default function () {
   return (env: Environment) => {
-    env.tokenPreprocessors.push((e, tokens) => trim(e, tokens, trimOptions));
+    env.tokenPreprocessors.push(trim);
   };
 }
 
-export function trim(
-  _: Environment,
-  tokens: Token[],
-  options: TrimTagOptions,
-) {
+export function trim(_: Environment, tokens: Token[]) {
   for (let i = 0; i < tokens.length; i++) {
     const previous = tokens[i - 1];
     const token = tokens[i];
@@ -26,21 +15,14 @@ export function trim(
 
     let [type, code] = token;
 
-    if (type === "tag") {
-      const trimLeft = !code.startsWith("+") &&
-        (code.startsWith("-") || options.left);
-      const trimRight = !code.endsWith("+") &&
-        (code.endsWith("-") || (options.right));
+    if (type === "tag" && code.startsWith("-")) {
+      previous[1] = previous[1].trimEnd();
+      code = code.slice(1);
+    }
 
-      code = code.replace(/^[\+\-]/, "").replace(/[\+\-]$/, "");
-
-      if (trimLeft) {
-        previous[1] = previous[1].trimEnd();
-      }
-
-      if (trimRight) {
-        next[1] = next[1].trimStart();
-      }
+    if (type === "tag" && code.endsWith("-")) {
+      next[1] = next[1].trimStart();
+      code = code.slice(0, -1);
     }
 
     // Trim tag and filter code
