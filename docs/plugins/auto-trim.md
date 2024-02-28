@@ -9,8 +9,8 @@ By default, Vento doesn't automatically try to trim the whitespace from around t
 Simply import it and use it in your instance.
 
 ```js
-import autoTrim from "https://deno.land/x/vento@v0.10.3/plugins/autoTrim.ts";
-// import autoTrim from "ventojs/plugins/autoTrim.js";
+import autoTrim from "vento/plugins/auto_trim.ts";
+// import autoTrim from "ventojs/plugins/auto_trim.js";
 
 env.use(autoTrim());
 ```
@@ -21,7 +21,8 @@ By default, the tags that are trimmed are:
 If you want to add or remove tags from the list, you can pass an array of tags to the plugin.
 
 ```js
-import autoTrim, { defaultTags } from "https://deno.land/x/vento@v0.10.3/plugins/autoTrim.ts";
+import autoTrim, { defaultTags } from "vento/plugins/auto_trim.ts";
+// import autoTrim, { defaultTags } from "ventojs/plugins/auto_trim.js";
 
 env.use(autoTrim({
   tags: ["tag", ...defaultTags]

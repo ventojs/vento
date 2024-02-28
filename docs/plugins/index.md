@@ -1,6 +1,3 @@
----
-order: 100
----
 # Plugins
 
 Vento features a powerful plugin system that allows you to extend the engine

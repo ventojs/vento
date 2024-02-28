@@ -1,5 +1,5 @@
 import tmpl from "../mod.ts";
-import autoTrim from "../plugins/autoTrim.ts";
+import autoTrim from "../plugins/auto_trim.ts";
 import { assertEquals } from "https://deno.land/std@0.205.0/assert/assert_equals.ts";
 
 Deno.test("Autotrim (removes newlines correctly)", () => {
