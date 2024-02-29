@@ -84,30 +84,6 @@ const result = env.runString("{{ title |> safe }}", {
 
 The path of the directory that Vento will use to look for includes templates.
 
-### trimTags
-
-Configures the default whitespace control.
-
- - `false` - no trimming. This is the default.
- - `"all"` - remove all whitespace
-
-```js
-const env = vento({
-  trimTags: "all",
-});
-```
-
-You can also configure the left and right trims separately:
-
-```js
-const env = vento({
-  trimTags: {
-    left: "all",
-    right: false,
-  },
-});
-```
-
 ## Filters
 
 Filters are custom functions to transform the content.
