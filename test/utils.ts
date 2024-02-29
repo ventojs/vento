@@ -86,9 +86,9 @@ export class FileLoader implements Loader {
 
   resolve(from: string, file: string): string {
     if (file.startsWith(".")) {
-      return path.join(path.dirname(from), file);
+      return path.join(path.dirname(from), file).replace(/\\/g, "/");
     }
 
-    return path.join("/", file);
+    return path.join("/", file).replace(/\\/g, "/");
   }
 }
