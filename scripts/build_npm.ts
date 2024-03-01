@@ -9,7 +9,12 @@ if (!version) {
 }
 
 await build({
-  entryPoints: ["./mod.ts", "./plugins/auto_trim.ts"],
+  entryPoints: [
+    "./mod.ts",
+    "./src/environment.ts",
+    "./src/tokenizer.ts",
+    "./plugins/auto_trim.ts",
+  ],
   outDir: "./npm",
   shims: { deno: true },
   compilerOptions: { target: "ES2022" },
