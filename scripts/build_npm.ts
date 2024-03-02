@@ -12,6 +12,7 @@ await build({
   entryPoints: [
     "./mod.ts",
     "./src/environment.ts",
+    "./src/loader.ts",
     "./src/tokenizer.ts",
     "./plugins/auto_trim.ts",
   ],
