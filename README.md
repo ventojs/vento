@@ -8,8 +8,8 @@ Vento
 [![Tests](https://github.com/ventojs/vento/workflows/Tests/badge.svg?branch=main)](https://github.com/ventojs/vento/actions/workflows/deno.yml)
 [![Discord](https://img.shields.io/badge/join-chat-blue?logo=discord&logoColor=white)](https://discord.gg/YbTmpACHWB)
 
-A minimal, ergonomic template engine inspired by other great engines like Nunjucks, 
-Liquid, Mustache, and EJS.
+A minimal, ergonomic template engine inspired by other great engines like
+Nunjucks, Liquid, Mustache, and EJS.
 
 <br>
 
@@ -21,16 +21,20 @@ Liquid, Mustache, and EJS.
 
 - Minimal, fast runtime. 🔥
 - Ergonomic by design. All tags and outputs are written with `{{` and `}}`.
-- Write JavaScript anywhere. `{{ await user.getName() }}` is real JS executed at runtime.
-- Built-in tags like `if`, `for`, `include`, `layout` and [more](https://vento.js.org).
+- Write JavaScript anywhere. `{{ await user.getName() }}` is real JS executed at
+  runtime.
+- Built-in tags like `if`, `for`, `include`, `layout` and
+  [more](https://vento.js.org).
 - Filters, using the `|>` pipeline operator. Inspired by the
   [F# pipeline operator proposal](https://github.com/valtech-nyc/proposal-fsharp-pipelines)
 - Async friendly. No need to use special tags.
-- Flexible plugin system. Nearly all of Vento's features and tags are implemented as plugins.
+- Flexible plugin system. Nearly all of Vento's features and tags are
+  implemented as plugins.
 
 ## Getting started
 
-See [Getting started](https://vento.js.org/getting-started/) in the docs for examples and guidance.
+See [Getting started](https://vento.js.org/getting-started/) in the docs for
+examples and guidance.
 
 ## Editor support
 
