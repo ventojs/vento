@@ -1,12 +1,46 @@
-# Vento
+<h1>
+<img align="left" width="40" src="https://raw.githubusercontent.com/ventojs/vento/main/docs/icon.svg"></img>
+Vento
+</h1>
 
-This is a minimal template engine inspired by other great engines like Nunjucks,
+[![Deno](https://deno.land/badge/vento/version)](https://deno.land/x/vento)
+[![NPM](https://img.shields.io/npm/v/ventojs)](https://www.npmjs.com/package/ventojs)
+[![Tests](https://github.com/ventojs/vento/workflows/Tests/badge.svg?branch=main)](https://github.com/ventojs/vento/actions/workflows/deno.yml)
+[![Discord](https://img.shields.io/badge/join-chat-blue?logo=discord&logoColor=white)](https://discord.gg/YbTmpACHWB)
+
+A minimal, ergonomic template engine inspired by other great engines like Nunjucks, 
 Liquid, Mustache, and EJS.
+
+<br>
+
+<p align="center" style="text-align: center">
+  <img width="450" src="https://github.com/ventojs/vento/assets/7478134/8e9fc1f2-2ea7-43a1-be08-f190fee681ea">
+</p>
+
+## Features
+
+- Minimal, fast runtime. 🔥
+- Ergonomic by design. All tags and outputs are written with `{{` and `}}`.
+- Write JavaScript anywhere. `{{ await user.getName() }}` is real JS executed at runtime.
+- Built-in tags like `if`, `for`, `include`, `layout` and [more](https://vento.js.org).
+- Filters, using the `|>` pipeline operator. Inspired by the
+  [F# pipeline operator proposal](https://github.com/valtech-nyc/proposal-fsharp-pipelines)
+- Async friendly. No need to use special tags.
+- Flexible plugin system. Nearly all of Vento's features and tags are implemented as plugins.
+
+## Getting started
+
+See [Getting started](https://vento.js.org/getting-started/) in the docs for examples and guidance.
+
+## Editor support
+
+See [Editor integrations](https://vento.js.org/editor-integrations/) in the
+docs.
 
 ## Why another template engine?
 
-Because I couldn't find the "perfect" template engine for me (probably this one
-neither is). The issues I found in existing template engines:
+Because I couldn't find the "perfect" template engine for me (this one
+probably isn't either). The issues I found in existing template engines:
 
 ### Nunjucks
 
@@ -63,38 +97,3 @@ neither is). The issues I found in existing template engines:
   - Partials. It's not easy to include them dynamically.
   - The data context is a bit confusing to me.
   - Very uncomfortable to work with filters.
-
-### What this new template engine has to offer?
-
-First, let's take a look at this syntax example:
-
-```
-{{ if printName }}
-  {{ await user.getName("full") |> toUpperCase }}
-{{ /if }}
-```
-
-- Everything is between `{{` and `}}` tags. Unlike Nunjucks or Liquid, there's
-  no distinction between tags `{% tag %}` and printing variables `{{ var }}`.
-- The closed tag is done by prepending the `/` character (like Mustache).
-- Async friendly.
-- Like EJS, you can use real JavaScript code everywhere.
-  `await user.getName("full")` is real JS code that will be executed at runtime.
-- Filters are applied using the
-  [pipeline operator](https://github.com/tc39/proposal-pipeline-operator)
-  (`|>`). Note: this is not exactly like the last proposal for JavaScript, it's
-  inspired by
-  ([the previous proposal](https://github.com/valtech-nyc/proposal-fsharp-pipelines)
-  that was rejected but it's way more simple and fits better for filters.
-- Filters can run prototype methods. In this example `users.getName("full")`
-  returns a string, so the `toUpperCase` is a method of the `String` object.
-  It's the same as `users.getName("full").toUpperCase()`.
-
-## Getting started
-
-See [Getting started](https://vento.js.org/getting-started/) on the docs.
-
-## Editor support
-
-See [Editor integrations](https://vento.js.org/editor-integrations/) on the
-docs.
