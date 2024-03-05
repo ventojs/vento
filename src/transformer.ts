@@ -104,7 +104,7 @@ class ScopeTracker {
     }
   }
 
-  pushPatterns(patterns: ESTree.Pattern[], global?: boolean) {
+  pushPatternBindings(patterns: ESTree.Pattern[], global?: boolean) {
     for (const pattern of patterns) {
       this.pushPatternBinding(pattern, global);
     }
@@ -167,7 +167,7 @@ export function transformTemplateCode(
         // Track variable declarations
         case "VariableDeclaration":
           // "var" declarations are scoped to the function/global scope.
-          tracker.pushPatterns(
+          tracker.pushPatternBindings(
             node.declarations.map((d) => d.id),
             node.kind === "var",
           );
@@ -182,12 +182,12 @@ export function transformTemplateCode(
             tracker.pushBinding(node.id.name);
           }
           tracker.pushScope(true);
-          tracker.pushPatterns(node.params);
+          tracker.pushPatternBindings(node.params);
           break;
 
         case "ArrowFunctionExpression":
           tracker.pushScope();
-          tracker.pushPatterns(node.params);
+          tracker.pushPatternBindings(node.params);
           break;
       }
     },
