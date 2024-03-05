@@ -1,4 +1,4 @@
-import { ESTree, astring, meriyah, walker } from "../deps.ts";
+import { astring, ESTree, meriyah, walker } from "../deps.ts";
 
 // List of identifiers that are in globalThis
 // but should be accessed as templateState.identifier
@@ -9,12 +9,12 @@ const INCLUDE_GLOBAL = [
 // List of identifiers that should be ignored
 // when transforming the code
 const DEFAULT_EXCLUDES = [
-    "globalThis",
-    "self",
-    "global",
-    "this",
-    "undefined",
-    "null",
+  "globalThis",
+  "self",
+  "global",
+  "this",
+  "undefined",
+  "null",
 ];
 
 type Scope = {
