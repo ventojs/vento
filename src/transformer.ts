@@ -29,7 +29,6 @@ class ScopeTracker {
 
   // The index of the global/function scope
   private globalScope = 0;
-  globalDeclaration = false;
 
   includes(val: string): boolean {
     for (let i = this.scopes.length - 1; i >= 0; i--) {
@@ -59,32 +58,32 @@ class ScopeTracker {
     this.scopes.pop();
   }
 
-  pushBinding(val: string) {
+  pushBinding(val: string, global?: boolean) {
     if (this.scopes.length === 0) {
       this.scopes.push({ globalScope: this.globalScope, stack: [] });
     }
 
-    if (this.globalDeclaration) {
+    if (global) {
       this.scopes[this.globalScope].stack.push(val);
     } else {
       this.scopes[this.scopes.length - 1].stack.push(val);
     }
   }
 
-  pushPatternBinding(pattern: ESTree.Pattern) {
+  pushPatternBinding(pattern: ESTree.Pattern, global?: boolean) {
     switch (pattern.type) {
       case "Identifier":
-        this.pushBinding(pattern.name);
+        this.pushBinding(pattern.name, global);
         break;
 
       case "RestElement":
-        this.pushPatternBinding(pattern.argument);
+        this.pushPatternBinding(pattern.argument, global);
         break;
 
       case "ArrayPattern":
         for (const element of pattern.elements) {
           if (element) {
-            this.pushPatternBinding(element);
+            this.pushPatternBinding(element, global);
           }
         }
         break;
@@ -92,22 +91,22 @@ class ScopeTracker {
       case "ObjectPattern":
         for (const prop of pattern.properties) {
           if (prop.type === "RestElement") {
-            this.pushPatternBinding(prop.argument);
+            this.pushPatternBinding(prop.argument, global);
           } else {
-            this.pushPatternBinding(prop.value);
+            this.pushPatternBinding(prop.value, global);
           }
         }
         break;
 
       case "AssignmentPattern":
-        this.pushPatternBinding(pattern.left);
+        this.pushPatternBinding(pattern.left, global);
         break;
     }
   }
 
-  pushPatterns(patterns: ESTree.Pattern[]) {
+  pushPatterns(patterns: ESTree.Pattern[], global?: boolean) {
     for (const pattern of patterns) {
-      this.pushPatternBinding(pattern);
+      this.pushPatternBinding(pattern, global);
     }
   }
 }
@@ -132,6 +131,11 @@ export function transformTemplateCode(
     throw new Error("Empty program");
   }
 
+  // Transforms an identifier to a MemberExpression
+  // if it's not in the exclude list
+  //
+  // Example:
+  // Transforms {{ name }} to {{ id.name }}
   function transformIdentifier(
     id: ESTree.Identifier,
   ): ESTree.MemberExpression | ESTree.Identifier {
@@ -160,12 +164,18 @@ export function transformTemplateCode(
   walker.walk(parsed, {
     enter(node) {
       switch (node.type) {
+        // Track variable declarations
         case "VariableDeclaration":
-          tracker.globalDeclaration = node.kind === "var";
-          tracker.pushPatterns(node.declarations.map((d) => d.id));
-          tracker.globalDeclaration = false;
+          // "var" declarations are scoped to the function/global scope.
+          tracker.pushPatterns(
+            node.declarations.map((d) => d.id),
+            node.kind === "var",
+          );
           break;
 
+        // Track function declarations, and
+        // function parameters.
+        // Also track the scope.
         case "FunctionDeclaration":
         case "FunctionExpression":
           if (node.id) {
@@ -183,6 +193,7 @@ export function transformTemplateCode(
     },
     leave(node, parent) {
       switch (node.type) {
+        // Pop the scope when leaving a function
         case "FunctionDeclaration":
         case "FunctionExpression":
         case "ArrowFunctionExpression":
@@ -190,9 +201,13 @@ export function transformTemplateCode(
           break;
 
         case "Identifier":
+          // Don't transform identifiers that aren't at the start of a MemberExpression
+          // ie. don't transform `bar` or `baz` in `foo.bar.baz`
           if (parent?.type === "MemberExpression" && parent.property === node) {
             return;
           }
+
+          // Don't transform identifiers that are keys in an object
           if (parent?.type === "Property" && parent.key === node) {
             return;
           }
