@@ -18,16 +18,7 @@ await build({
   ],
   scriptModule: false,
   outDir: "./npm",
-  shims: {
-    deno: true,
-    custom: [{
-      package: {
-        name: "@types/estree",
-        version: "^1.0.0",
-      },
-      globalNames: [],
-    }],
-  },
+  shims: { deno: true },
   compilerOptions: { target: "ES2022" },
   typeCheck: "both",
   package: {
@@ -38,6 +29,9 @@ await build({
     repository: "github:oscarotero/vento",
     homepage: "https://vento.js.org/",
     bugs: "https://github.com/oscarotero/vento/issues",
+    devDependencies: {
+      "@types/estree": "^1.0.0",
+    },
   },
   mappings: {
     "npm:@types/estree": "estree",
