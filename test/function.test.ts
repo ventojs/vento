@@ -63,3 +63,56 @@ Deno.test("Function tag (async)", async () => {
     },
   });
 });
+
+Deno.test("Function scope is respected", async () => {
+  await test({
+    template: `
+    {{ export function hello }}
+    {{ > const message = "Hello world" }}
+    {{ /export }}
+
+    {{ message }}
+    `,
+    expected: "",
+  });
+
+  await test({
+    template: `
+    {{ function hello }}
+    {{ > const message = "I shouldn't print" }}
+    {{ /function }}
+
+    {{> const message = "Hello world" }}
+
+    {{ message }}
+    `,
+    expected: "Hello world",
+  });
+
+  await test({
+    template: `
+    {{ function hello }}
+      {{ function inner }}
+        {{> const message = "I shouldn't print" }}
+      {{ /function }}
+    {{ /function }}
+
+    {{> const message = "Hello world" }}
+
+    {{ message }} / {{ inner ?? "Doesn't exist" }} / {{ hello ? "Exists" : "Doesn't exist" }}
+    `,
+    expected: "Hello world / Doesn't exist / Exists",
+  });
+
+  await test({
+    template: `
+    {{ function hello(name) -}}
+    {{> name = "Hello world!" }}
+    {{- name -}}
+    {{ /function }}
+
+    {{ name ?? "No name" }} / {{ hello("world") }}
+    `,
+    expected: "No name / Hello world!",
+  });
+});
