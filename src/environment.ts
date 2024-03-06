@@ -1,6 +1,7 @@
 import tokenize, { Token } from "./tokenizer.ts";
 
 import type { Loader } from "./loader.ts";
+import { transformTemplateCode } from "./transformer.ts";
 
 export interface TemplateResult {
   content: string;
@@ -125,8 +126,14 @@ export class Environment {
     sync = false,
   ): Template | TemplateSync {
     const tokens = this.tokenize(source, path);
-    const code = this.compileTokens(tokens).join("\n");
+    let code = this.compileTokens(tokens).join("\n");
+
     const { dataVarname, useWith } = this.options;
+
+    if (useWith) {
+      code = transformTemplateCode(code, dataVarname);
+    }
+
     const constructor = new Function(
       "__file",
       "__env",
@@ -136,7 +143,7 @@ export class Environment {
         try {
           ${dataVarname} = Object.assign({}, __defaults, ${dataVarname});
           const __exports = { content: "" };
-          ${useWith ? `with (${dataVarname}) {${code}}` : code}
+          ${code}
           return __exports;
         } catch (cause) {
           const template = __env.cache.get(__file);

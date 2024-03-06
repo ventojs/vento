@@ -16,6 +16,7 @@ await build({
     "./src/tokenizer.ts",
     "./plugins/auto_trim.ts",
   ],
+  scriptModule: false,
   outDir: "./npm",
   shims: { deno: true },
   compilerOptions: { target: "ES2022" },
@@ -28,6 +29,12 @@ await build({
     repository: "github:oscarotero/vento",
     homepage: "https://vento.js.org/",
     bugs: "https://github.com/oscarotero/vento/issues",
+    devDependencies: {
+      "@types/estree": "^1.0.0",
+    },
+  },
+  mappings: {
+    "npm:@types/estree": "estree",
   },
   postBuild() {
     Deno.copyFileSync("LICENSE", "npm/LICENSE");
