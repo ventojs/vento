@@ -132,3 +132,51 @@ Deno.test({
     });
   },
 });
+
+// Test for https://github.com/oscarotero/vento/issues/26
+Deno.test({
+  name: "Print ternary",
+  fn: async () => {
+    await test({
+      template: `{{ message ? "yes" : "no" }}`,
+      expected: "yes",
+      data: { message: "yes" },
+    });
+
+    await test({
+      template: `{{ message ? "yes" : "no" }}`,
+      expected: "no",
+      data: { message: false },
+    });
+
+    await test({
+      template: `{{ message ? "yes" : "no" }}`,
+      expected: "no",
+      data: { message: null },
+    });
+
+    await test({
+      template: `{{ message ? "yes" : "no" }}`,
+      expected: "no",
+      data: {},
+    });
+  }
+});
+
+// Test for https://github.com/oscarotero/vento/issues/26
+Deno.test({
+  name: "Print nullish coalescing",
+  fn: async () => {
+    await test({
+      template: `{{ message ?? "no" }}`,
+      expected: "yes",
+      data: { message: "yes" },
+    });
+
+    await test({
+      template: `{{ message ?? "no" }}`,
+      expected: "no",
+      data: {},
+    });
+  }
+});
