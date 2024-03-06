@@ -160,7 +160,7 @@ Deno.test({
       expected: "no",
       data: {},
     });
-  }
+  },
 });
 
 // Test for https://github.com/oscarotero/vento/issues/26
@@ -178,5 +178,5 @@ Deno.test({
       expected: "no",
       data: {},
     });
-  }
+  },
 });
