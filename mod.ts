@@ -16,6 +16,7 @@ import trim from "./plugins/trim.ts";
 
 export interface Options {
   includes?: string | Loader;
+  /** @deprecated */
   useWith?: boolean;
   dataVarname?: string;
   autoescape?: boolean;
