@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Deprecated
 - `useWith` option.
 
+### Fixed
+- Updated dependencies.
+
 ## [0.11.0] - 2024-02-29
 ### Added
 - Preprocessor hooks [#33].
