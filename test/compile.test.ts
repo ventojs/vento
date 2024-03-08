@@ -24,3 +24,18 @@ Deno.test("Strings with dangerous characters", async () => {
     expected: "\\`",
   });
 });
+
+Deno.test("Empty string", async () => {
+  await test({
+    template: "",
+    expected: "",
+  });
+  await test({
+    template: "{{> /* empty */}}",
+    expected: "",
+  });
+  await test({
+    template: "{{# empty #}}",
+    expected: "",
+  });
+});

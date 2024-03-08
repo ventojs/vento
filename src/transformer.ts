@@ -115,6 +115,10 @@ export function transformTemplateCode(
   code: string,
   templateState: string,
 ): string {
+  if (!code.trim()) {
+    return code;
+  }
+
   const parsed = meriyah.parseScript(code, { module: true }) as ESTree.Program;
   const tracker = new ScopeTracker();
 
