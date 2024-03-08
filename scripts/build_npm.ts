@@ -30,11 +30,11 @@ await build({
     homepage: "https://vento.js.org/",
     bugs: "https://github.com/oscarotero/vento/issues",
     devDependencies: {
-      "@types/estree": "^1.0.0",
+      "@types/estree": "1.0.5",
     },
   },
   mappings: {
-    "npm:@types/estree": "estree",
+    "npm:@types/estree@1.0.5": "estree",
   },
   postBuild() {
     Deno.copyFileSync("LICENSE", "npm/LICENSE");
