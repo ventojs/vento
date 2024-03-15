@@ -27,7 +27,10 @@ function layoutTag(
 
   const [_, file, data] = match;
 
-  const varname = "__content";
+  const varname = output.startsWith("__layout")
+    ? output + "_layout"
+    : "__layout";
+
   const compiled: string[] = [];
   const compiledFilters = env.compileFilters(tokens, varname);
 
