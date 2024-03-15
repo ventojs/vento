@@ -60,3 +60,15 @@ Deno.test("Layout tag (with extra data and filters)", async () => {
     },
   });
 });
+
+Deno.test("Nested layout tags", async () => {
+  await test({
+    template: `
+    {{ layout "/my-file.tmpl" }}{{ layout "/my-file.tmpl" }}Hello world{{ /layout }}{{ /layout }}
+    `,
+    expected: "<h1><h1>Hello world</h1></h1>",
+    includes: {
+      "/my-file.tmpl": "<h1>{{ content }}</h1>",
+    },
+  });
+});
