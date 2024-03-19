@@ -15,3 +15,27 @@ extension enables syntax highlighting and provides some useful snippets.
 ### Open VSX Registry
 
 [Vento plugin is also available in Open VSX](https://open-vsx.org/extension/oscarotero/vento-syntax), for variants of `vscodium`.
+
+## Neovim
+
+Vento syntax highlighting is available for Neovim through [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter).
+
+To use it, add the "vento" filetype
+
+```javascript
+vim.filetype.add({
+    extension = {
+        vto = "vento",
+    }
+})
+```
+
+And install the "vento" parser with `TSInstall`, or add it to the `ensure_installed` list in the `setup` function.
+
+It's also recommended to install "javascript" and "html" parsers to get better syntax highlighting inside vento files.
+
+```javascript
+require("nvim-treesitter.configs").setup({
+    ensure_installed = { "vento", "html", "javascript", "..." },
+})
+```
