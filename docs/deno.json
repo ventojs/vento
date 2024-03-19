@@ -6,6 +6,11 @@
   },
   "lock": false,
   "imports": {
-    "lume/": "https://deno.land/x/lume@v2.0.1/"
+    "lume/": "https://deno.land/x/lume@v2.1.2/"
+  },
+  "compilerOptions": {
+    "types": [
+      "lume/types.ts"
+    ]
   }
 }
