@@ -33,8 +33,10 @@ Or an async operation (using `await`):
 
 ## Autoescaping
 
-If autoescaping is enabled
-[See Configuration for more info](../configuration.md#autoescape), any HTML
+> [!important]
+> Autoescaping is **disabled by default**. [See configuration](../configuration.md#autoescape) to learn how to enable it.
+
+If autoescaping is enabled any HTML
 content will be escaped automatically. For example:
 
 ```vento
@@ -52,6 +54,7 @@ To mark this variable as trust, use the `safe` filter:
 ```vento
 {{ "<h1>Hello, world!</h1>" |> safe }}
 ```
+
 
 ## Trimming the previous/next content
 
@@ -88,6 +91,9 @@ The result is:
 ```html
 <h1>Hello, world!</h1>
 ```
+
+> [!tip]
+> The [plugin autoTrim](../plugins/auto-trim.md) can trim automatically some tags.
 
 ## Pipes
 

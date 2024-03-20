@@ -90,7 +90,7 @@ Filters are custom functions to transform the content.
 
 For example, let's create a function to make text italic:
 
-```ts
+```js
 function italic(text: string) {
   return `<em>${text}</em>`;
 }
@@ -98,7 +98,7 @@ function italic(text: string) {
 
 And we can register that with Vento:
 
-```ts
+```js
 env.filters.italic = italic;
 ```
 

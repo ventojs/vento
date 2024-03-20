@@ -1,7 +1,7 @@
 # Fragments
 
-**⚠️ This is a third-party plugin.
-[Source code](https://github.com/wrapperup/vento-plugin-fragments).**
+> [!warning]
+> This is a third-party plugin. [Source code](https://github.com/wrapperup/vento-plugin-fragments).
 
 Adds support for
 [template fragments](https://htmx.org/essays/template-fragments), which allows

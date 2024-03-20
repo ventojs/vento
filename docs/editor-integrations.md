@@ -10,11 +10,11 @@ The
 [Vento for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=oscarotero.vento-syntax)
 extension enables syntax highlighting and provides some useful snippets.
 
-[**Quick Install**](vscode:extension/oscarotero.vento-syntax){role="button" .button}
+[**Quick Install**](vscode:extension/oscarotero.vento-syntax){.button .is-primary}
 
 ### Open VSX Registry
 
-[Vento plugin is also available in Open VSX](https://open-vsx.org/extension/oscarotero/vento-syntax), for variants of `vscodium`.
+[Vento plugin is also available in Open VSX](https://open-vsx.org/extension/oscarotero/vento-syntax).
 
 ## Neovim
 
@@ -22,7 +22,7 @@ Vento syntax highlighting is available for Neovim through [nvim-treesitter](http
 
 To use it, add the "vento" filetype
 
-```javascript
+```js
 vim.filetype.add({
     extension = {
         vto = "vento",
@@ -34,7 +34,7 @@ And install the "vento" parser with `TSInstall`, or add it to the `ensure_instal
 
 It's also recommended to install "javascript" and "html" parsers to get better syntax highlighting inside vento files.
 
-```javascript
+```js
 require("nvim-treesitter.configs").setup({
     ensure_installed = { "vento", "html", "javascript", "..." },
 })
