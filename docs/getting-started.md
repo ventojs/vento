@@ -25,11 +25,7 @@ npm install ventojs
 And then import Vento:
 
 ```js
-// ESM:
 import vento from "ventojs";
-
-// CJS:
-const vento = require("ventojs");
 ```
 
 ## Usage
