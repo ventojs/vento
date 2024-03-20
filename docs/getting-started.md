@@ -41,7 +41,7 @@ const env = vento();
 You can use `load` to load and compile a template from a path. The compiled
 templates are stored in an internal cache, so they are only compiled once.
 
-```ts
+```js
 const template = await env.load("my-template.vto");
 const result = await template({ title: "Hello, world!" });
 ```
@@ -50,7 +50,7 @@ const result = await template({ title: "Hello, world!" });
 
 Alternatively, you can load and run the template file in a single call:
 
-```ts
+```js
 const result = await env.run("my-template.vto", { title: "Hello, world!" });
 ```
 
@@ -58,7 +58,7 @@ const result = await env.run("my-template.vto", { title: "Hello, world!" });
 
 If the template code is not a file, you can run it directly:
 
-```ts
+```js
 const result = await env.runString("<h1>{{ title }}</h1>", {
   title: "Hello, world!",
 });
