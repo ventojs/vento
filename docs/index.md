@@ -1,5 +1,5 @@
 ---
-logo: /icon.svg
+logo: /favicon.svg
 ---
 
 # 🌬 Vento

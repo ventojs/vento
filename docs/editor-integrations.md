@@ -10,7 +10,7 @@ The
 [Vento for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=oscarotero.vento-syntax)
 extension enables syntax highlighting and provides some useful snippets.
 
-[**Quick Install**](vscode:extension/oscarotero.vento-syntax){.button .is-primary}
+[**Quick Install**](vscode:extension/oscarotero.vento-syntax){.button .is-secondary}
 
 ### Open VSX Registry
 

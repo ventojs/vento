@@ -6,7 +6,8 @@
   },
   "lock": false,
   "imports": {
-    "lume/": "https://deno.land/x/lume@v2.1.2/"
+    "lume/": "https://deno.land/x/lume@v2.1.2/",
+    "wiki/": "https://deno.land/x/lume_theme_simple_wiki@v0.8.0/"
   },
   "compilerOptions": {
     "types": [
