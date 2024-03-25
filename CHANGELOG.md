@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [0.12.2] - Unreleased
+## [0.12.2] - 2024-03-25
 ### Fixed
 - Nested layouts [#46].
 - `set` tags don't work with `useWith` if the variable is already defined.
@@ -203,7 +203,7 @@ First version
 [#44]: https://github.com/oscarotero/vento/issues/44
 [#46]: https://github.com/oscarotero/vento/issues/46
 
-[0.12.2]: https://github.com/oscarotero/vento/compare/v0.12.1...HEAD
+[0.12.2]: https://github.com/oscarotero/vento/compare/v0.12.1...v0.12.2
 [0.12.1]: https://github.com/oscarotero/vento/compare/v0.12.0...v0.12.1
 [0.12.0]: https://github.com/oscarotero/vento/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/oscarotero/vento/compare/v0.10.2...v0.11.0
