@@ -108,4 +108,21 @@ Deno.test("Set tag with includes", async () => {
       toUpperCase: (text: string) => text.toUpperCase(),
     },
   });
+  await test({
+    template: `
+    {{- set recursive = true -}}
+    {{- include "/my-file.tmpl" -}}
+    `,
+    expected: "Hello WorldHello World",
+    includes: {
+      "/my-file.tmpl": `
+      {{- set text = "Hello World" -}}
+      {{- text -}}
+      {{- if it.recursive -}}
+      {{- set recursive = false -}}
+      {{- include "./my-file.tmpl" -}}
+      {{- /if -}}
+      `,
+    },
+  });
 });

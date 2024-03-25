@@ -218,7 +218,9 @@ export class Environment {
       }
 
       if (type === "string") {
-        compiled.push(`${outputVar} += ${JSON.stringify(code)};`);
+        if (code !== "") {
+          compiled.push(`${outputVar} += ${JSON.stringify(code)};`);
+        }
         continue;
       }
 

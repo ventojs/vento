@@ -31,12 +31,9 @@ function setTag(
     const [, variable, value] = match;
     const val = env.compileFilters(tokens, value);
 
-    return `if (${dataVarname}.hasOwnProperty("${variable}")) {
-      ${variable} = ${val};
-    } else {
-      var ${variable} = ${val};
-    }
-    ${dataVarname}["${variable}"] = ${variable};
+    return `
+    ${dataVarname}["${variable}"] = ${val};
+    var ${variable} = ${val};
     `;
   }
 

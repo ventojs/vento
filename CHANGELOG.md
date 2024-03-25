@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.12.2] - Unreleased
 ### Fixed
 - Nested layouts [#46].
+- `set` tags don't work with `useWith` if the variable is already defined.
+- Clean all `__output += ""` code outputs.
 
 ## [0.12.1] - 2024-03-08
 ### Fixed
