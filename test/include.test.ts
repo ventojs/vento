@@ -239,4 +239,17 @@ Deno.test("Include tag dynamically", async () => {
       file: "my-file",
     },
   });
+  await test({
+    template: `
+    {{ include \`/\${file}.tmpl\` { name: name } }}
+    `,
+    expected: "Hello World",
+    includes: {
+      "/my-file.tmpl": "Hello {{ name }}",
+    },
+    data: {
+      file: "my-file",
+      name: "World",
+    },
+  });
 });

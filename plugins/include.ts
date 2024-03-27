@@ -1,3 +1,4 @@
+import analyze from "../src/js.ts";
 import type { Token } from "../src/tokenizer.ts";
 import type { Environment } from "../src/environment.ts";
 
@@ -17,20 +18,23 @@ function includeTag(
     return;
   }
 
-  const match = code?.match(
-    /^include\s+([^{]+|`[^`]+`)+(?:\{([\s|\S]*)\})?$/,
-  );
+  const tagCode = code.substring(7).trim();
+  let index: number | undefined = undefined;
+  analyze(tagCode, (type, i) => {
+    if (type === "open-bracket") {
+      index = i - 1;
+      return false;
+    }
+  });
 
-  if (!match) {
-    throw new Error(`Invalid include: ${code}`);
-  }
-
-  const [_, file, data] = match;
+  const file = index === undefined
+    ? tagCode.trim()
+    : tagCode.slice(0, index).trim();
+  const data = index === undefined ? "" : tagCode.slice(index).trim();
   const { dataVarname } = env.options;
-
   return `{
     const __tmp = await __env.run(${file},
-      {...${dataVarname}${data ? `, ${data}` : ""}},
+      {...${dataVarname}${data ? `, ...${data}` : ""}},
       __file
     );
     ${output} += ${env.compileFilters(tokens, "__tmp.content")};
