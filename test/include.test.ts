@@ -253,3 +253,19 @@ Deno.test("Include tag dynamically", async () => {
     },
   });
 });
+
+// Test for https://github.com/ventojs/vento/issues/49
+Deno.test("Include tag with object shorthand syntax", async () => {
+  await test({
+    template: `
+    {{ include "/my-file.tmpl" { name } }}
+    `,
+    expected: "Hello Vento",
+    includes: {
+      "/my-file.tmpl": "Hello {{ name }}",
+    },
+    data: {
+      name: "Vento",
+    },
+  });
+});
