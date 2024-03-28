@@ -193,6 +193,20 @@ export function transformTemplateCode(
           tracker.pushScope();
           tracker.pushPatternBindings(node.params);
           break;
+
+        case "Property":
+          if (node.shorthand && node.key.type === "Identifier") {
+            this.replace({
+              type: "Property",
+              key: node.key,
+              value: transformIdentifier(node.key),
+              kind: "init",
+              computed: false,
+              method: false,
+              shorthand: false,
+            });
+          }
+          break;
       }
     },
     leave(node, parent) {
