@@ -1,7 +1,7 @@
 import vento from "../mod.ts";
 import nunjucks from "npm:nunjucks@3.2.4";
-import { Liquid } from "npm:liquidjs@10.10.1";
-import { Eta } from "https://deno.land/x/eta@v3.2.0/src/index.ts";
+import { Liquid } from "npm:liquidjs@10.10.2";
+import { Eta } from "https://deno.land/x/eta@v3.4.0/src/index.ts";
 
 const env = vento({
   useWith: true,

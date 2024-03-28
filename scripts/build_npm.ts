@@ -1,4 +1,5 @@
-import { build, emptyDir } from "https://deno.land/x/dnt@0.40.0/mod.ts";
+import { build } from "jsr:@deno/dnt@0.41.1";
+import { emptyDir } from "jsr:@std/fs@0.221.0/empty-dir";
 
 await emptyDir("./npm");
 
