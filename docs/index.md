@@ -73,5 +73,6 @@ First, let's take a look to the following example:
 ---
 
 - Created by [Óscar Otero](https://github.com/oscarotero)
-- [GitHub repository](https://github.com/oscarotero/vento)
+- [GitHub repository](https://github.com/ventojs/vento)
 - [Deno module](https://deno.land/x/vento)
+- [NPM module](https://www.npmjs.com/package/ventojs)
