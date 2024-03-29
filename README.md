@@ -1,5 +1,5 @@
 <h1>
-<img align="left" width="40" src="https://raw.githubusercontent.com/ventojs/vento/main/docs/icon.svg"></img>
+<img align="left" width="40" src="https://raw.githubusercontent.com/ventojs/vento/main/docs/favicon.svg"></img>
 Vento
 </h1>
 
