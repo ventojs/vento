@@ -2,9 +2,9 @@
 order: 4
 ---
 
-## Formatter
+# Formatter
 
-### markup_fmt with dprint
+## markup_fmt with dprint
 
 [markup_fmt](https://github.com/g-plane/markup_fmt) can format Vento templates. This can be used in dprint as a plugin.
 You can also install other dprint plugins that can format JavaScript code, so the expressions in templates can get formatted.
@@ -20,7 +20,7 @@ dprint config add typescript
 
 Then, update the `dprint.json` as below:
 
-```json
+```jsonc
 {
   // ...
   "plugins": [
