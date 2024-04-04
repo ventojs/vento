@@ -43,12 +43,13 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v2
-      
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
           path: 'docs/_site'
 
       - name: Deploy to GitHub Pages
+        if: ${{ github.event_name == 'push' }}
         id: deployment
         uses: actions/deploy-pages@v1
