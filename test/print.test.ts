@@ -180,3 +180,20 @@ Deno.test({
     });
   },
 });
+
+Deno.test({
+  name: "Print key variables",
+  fn: async () => {
+    await test({
+      // It should work like {{ message[it.key] }}
+      template: `{{ message[key] }}`,
+      expected: "It works!",
+      data: {
+        message: {
+          foo: "It works!",
+        },
+        key: "foo",
+      },
+    });
+  },
+});
