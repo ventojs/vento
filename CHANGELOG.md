@@ -4,10 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.12.5] - 2024-04-06
+### Fixed
+- Array access syntax [#55], [#56].
+
 ## [0.12.4] - 2024-03-28
 ### Fixed
 - Parsing dynamic includes with extra data, example:
-  ````
+  ```
   {{ include `${filename}.vto` { name: "value" } }}
   ```
 - Object property shorthand [#50]
@@ -212,7 +216,10 @@ First version
 [#44]: https://github.com/oscarotero/vento/issues/44
 [#46]: https://github.com/oscarotero/vento/issues/46
 [#50]: https://github.com/oscarotero/vento/issues/50
+[#55]: https://github.com/oscarotero/vento/issues/55
+[#56]: https://github.com/oscarotero/vento/issues/56
 
+[0.12.5]: https://github.com/oscarotero/vento/compare/v0.12.4...v0.12.5
 [0.12.4]: https://github.com/oscarotero/vento/compare/v0.12.2...v0.12.4
 [0.12.2]: https://github.com/oscarotero/vento/compare/v0.12.1...v0.12.2
 [0.12.1]: https://github.com/oscarotero/vento/compare/v0.12.0...v0.12.1
