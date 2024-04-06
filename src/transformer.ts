@@ -221,7 +221,10 @@ export function transformTemplateCode(
         case "Identifier":
           // Don't transform identifiers that aren't at the start of a MemberExpression
           // ie. don't transform `bar` or `baz` in `foo.bar.baz`
-          if (parent?.type === "MemberExpression" && parent.property === node) {
+          if (
+            parent?.type === "MemberExpression" && parent.property === node &&
+            parent.computed === false
+          ) {
             return;
           }
 
