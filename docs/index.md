@@ -21,7 +21,7 @@ drawbacks and none of them meets all my requirements, so I've created Vento.
   previous version in 2020.
 - It's not async-friendly. For example, you have some tags to work with sync
   values (like `for` and `if`) and others for async values (like `asyncEach` and
-  `ifAysnc`). Some features don't work in async contexts.
+  `ifAsync`). Some features don't work in async contexts.
 - To me, it's very uncomfortable to have to type the delimiters `{%` and `%}`
   all the time (especially the `%` character).
 - By default, all variables are escaped, so you have to remember to use the
