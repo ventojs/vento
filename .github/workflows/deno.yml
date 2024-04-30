@@ -37,9 +37,8 @@ jobs:
         run: deno task bench
 
       - name: Build docs
-        run: |
-          cd docs
-          deno task build
+        working-directory: docs
+        run: deno task build
 
       - name: Setup Pages
         uses: actions/configure-pages@v2
