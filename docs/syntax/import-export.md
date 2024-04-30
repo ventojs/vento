@@ -90,7 +90,7 @@ Or a function:
 ```
 
 The imported variables are specified between curly brackets (For example
-`{ message }`). You can import all elements from a template by omiting the
+`{ message }`). You can import all elements from a template by omitting the
 brackets.
 
 ```vento

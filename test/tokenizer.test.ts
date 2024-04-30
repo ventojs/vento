@@ -21,7 +21,7 @@ Deno.test("Basic tokenizer", () => {
   ]);
 });
 
-Deno.test("Tokenizer (doble quotes)", () => {
+Deno.test("Tokenizer (double quotes)", () => {
   const code = `<h1>{{ message + "{{}}" }}</h1>`;
   const tokens = tmpl().tokenize(code);
   assertEquals(tokens, [

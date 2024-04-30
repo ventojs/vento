@@ -66,7 +66,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - The following use cases are now correctly parsed:
   - Starting comments inside other comment: `/* This /* is a comment */`
-  - Regular expressions including quotes or brakets: `"Hello's".replace(/'/, "")`
+  - Regular expressions including quotes or brackets: `"Hello's".replace(/'/, "")`
 - The Javascript tag allows a linebreak after the `>` character and support line comments.
   Example:
   ```
