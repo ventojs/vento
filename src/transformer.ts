@@ -25,7 +25,7 @@ type Scope = {
 // Tracks the scope of the code
 // and the variables that should be ignored
 class ScopeTracker {
-  private scopes: Scope[] = [];
+  private scopes: Scope[] = [{ globalScope: 0, stack: [] }];
 
   // The index of the global/function scope
   private globalScope = 0;
@@ -54,8 +54,8 @@ class ScopeTracker {
   }
 
   popScope() {
-    this.globalScope = this.scopes[this.scopes.length - 1].globalScope;
     this.scopes.pop();
+    this.globalScope = this.scopes[this.scopes.length - 1].globalScope;
   }
 
   pushBinding(val: string, global?: boolean) {
