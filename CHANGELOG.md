@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.12.7] - Unreleased
+### Fixed
+- Updated dependencies.
+
 ## [0.12.6] - 2024-05-22
 ### Fixed
 - Fix code transformation [#64].
@@ -225,6 +229,7 @@ First version
 [#56]: https://github.com/oscarotero/vento/issues/56
 [#64]: https://github.com/oscarotero/vento/issues/64
 
+[0.12.7]: https://github.com/oscarotero/vento/compare/v0.12.6...HEAD
 [0.12.6]: https://github.com/oscarotero/vento/compare/v0.12.5...v0.12.6
 [0.12.5]: https://github.com/oscarotero/vento/compare/v0.12.4...v0.12.5
 [0.12.4]: https://github.com/oscarotero/vento/compare/v0.12.2...v0.12.4
