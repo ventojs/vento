@@ -3,7 +3,7 @@
     "test": "deno test --allow-read test",
     "bench": "deno bench --allow-read",
     "docs": "cd docs && deno task serve",
-    "build": "deno run --allow-run=npm --allow-env --allow-sys --allow-read --allow-write --allow-net=deno.land scripts/build_npm.ts",
+    "build": "deno run --allow-run=npm --allow-env --allow-sys --allow-read --allow-write --allow-net=jsr.io scripts/build_npm.ts",
     "update-deps": "rm -rf npm && deno run -A 'https://deno.land/x/nudd@v0.2.4/cli.ts' update deno.json **/*.ts"
   },
   "lock": false,
