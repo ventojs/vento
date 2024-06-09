@@ -20,7 +20,7 @@ export function trim(_: Environment, tokens: Token[]) {
       code = code.slice(1);
     }
 
-    if (type === "tag" && code.endsWith("-")) {
+    if ((type === "tag" || type === "filter") && code.endsWith("-")) {
       next[1] = next[1].trimStart();
       code = code.slice(0, -1);
     }

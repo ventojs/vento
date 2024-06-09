@@ -96,6 +96,23 @@ Deno.test("Print trim", async () => {
   });
 });
 
+Deno.test("Print trim with filter", async () => {
+  await test({
+    template: `Hello {{- "World" |> toUpperCase }} !`,
+    expected: "HelloWORLD !",
+  });
+
+  await test({
+    template: `Hello {{ "World" |> toUpperCase -}} !`,
+    expected: "Hello WORLD!",
+  });
+
+  await test({
+    template: `Hello {{- "World" |> toUpperCase -}} !`,
+    expected: "HelloWORLD!",
+  });
+});
+
 Deno.test({
   name: "Print async filters",
   // @ts-ignore only used to detect node.js
