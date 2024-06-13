@@ -1,7 +1,7 @@
 import { build } from "jsr:@deno/dnt@0.41.2";
 import { emptyDir } from "jsr:@std/fs@0.229.2/empty-dir";
 
-await emptyDir("./npm");
+await emptyDir("./_npm");
 
 const version = Deno.args[0]?.replace(/^v/, "");
 
@@ -18,7 +18,7 @@ await build({
     "./plugins/auto_trim.ts",
   ],
   scriptModule: false,
-  outDir: "./npm",
+  outDir: "./_npm",
   shims: { deno: true },
   compilerOptions: { target: "ES2022" },
   typeCheck: "both",
@@ -38,7 +38,7 @@ await build({
     "npm:@types/estree@1.0.5": "estree",
   },
   postBuild() {
-    Deno.copyFileSync("LICENSE", "npm/LICENSE");
-    Deno.copyFileSync("README.md", "npm/README.md");
+    Deno.copyFileSync("LICENSE", "_npm/LICENSE");
+    Deno.copyFileSync("README.md", "_npm/README.md");
   },
 });
