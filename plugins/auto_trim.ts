@@ -1,5 +1,5 @@
 import type { Token } from "../src/tokenizer.ts";
-import type { Environment } from "../src/environment.ts";
+import type { Environment, Plugin } from "../src/environment.ts";
 
 export const defaultTags = [
   ">",
@@ -21,7 +21,9 @@ export const defaultTags = [
 
 export type AutoTrimOptions = { tags: string[] };
 
-export default function (options: AutoTrimOptions = { tags: defaultTags }) {
+export default function (
+  options: AutoTrimOptions = { tags: defaultTags },
+): Plugin {
   return (env: Environment) => {
     env.tokenPreprocessors.push((_, tokens) => autoTrim(tokens, options));
   };

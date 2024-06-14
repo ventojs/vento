@@ -1,8 +1,8 @@
 import analyze from "../src/js.ts";
 import type { Token } from "../src/tokenizer.ts";
-import type { Environment } from "../src/environment.ts";
+import type { Environment, Plugin } from "../src/environment.ts";
 
-export default function () {
+export default function (): Plugin {
   return (env: Environment) => {
     env.tags.push(includeTag);
   };

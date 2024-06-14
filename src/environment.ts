@@ -53,7 +53,7 @@ export interface Options {
 }
 
 export class Environment {
-  cache = new Map<string, Template>();
+  cache: Map<string, Template> = new Map();
   options: Options;
   tags: Tag[] = [];
   tokenPreprocessors: TokenPreprocessor[] = [];
