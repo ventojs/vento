@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.12.8] - Unreleased
+### Added
+- Allow the trimming syntax in comments [#70].
+
 ### Fixed
 - Updated dependencies.
 - Improved types.
@@ -236,6 +239,7 @@ First version
 [#56]: https://github.com/oscarotero/vento/issues/56
 [#64]: https://github.com/oscarotero/vento/issues/64
 [#65]: https://github.com/oscarotero/vento/issues/65
+[#70]: https://github.com/oscarotero/vento/issues/70
 
 [0.12.8]: https://github.com/oscarotero/vento/compare/v0.12.7...HEAD
 [0.12.7]: https://github.com/oscarotero/vento/compare/v0.12.6...v0.12.7
