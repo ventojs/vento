@@ -97,15 +97,6 @@ export default function tokenize(source: string): TokenizeResult {
   return { tokens, position, error: undefined };
 }
 
-type status =
-  | "single-quote"
-  | "double-quote"
-  | "regex"
-  | "literal"
-  | "bracket"
-  | "comment"
-  | "line-comment";
-
 /**
  * Parse a tag and return the indexes of the start and end brackets, and the filters between.
  * For example: {{ tag |> filter1 |> filter2 }} => [2, 9, 20, 31]
