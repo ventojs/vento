@@ -15,12 +15,12 @@ export function trim(_: Environment, tokens: Token[]) {
 
     let [type, code] = token;
 
-    if (type === "tag" && code.startsWith("-")) {
+    if (["tag", "comment"].includes(type) && code.startsWith("-")) {
       previous[1] = previous[1].trimEnd();
       code = code.slice(1);
     }
 
-    if ((type === "tag" || type === "filter") && code.endsWith("-")) {
+    if (["tag", "filter", "comment"].includes(type) && code.endsWith("-")) {
       next[1] = next[1].trimStart();
       code = code.slice(0, -1);
     }

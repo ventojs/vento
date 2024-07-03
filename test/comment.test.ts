@@ -20,3 +20,18 @@ Deno.test("Comment tag", async () => {
     expected: "<h1> ",
   });
 });
+
+Deno.test("Comment tag with trimming", async () => {
+  await test({
+    template: `
+    <h1> {{#- #}} </h1>
+    `,
+    expected: "<h1> </h1>",
+  });
+  await test({
+    template: `
+    <h1> {{#- -#}} </h1>
+    `,
+    expected: "<h1></h1>",
+  });
+});
