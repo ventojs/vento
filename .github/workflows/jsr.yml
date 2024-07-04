@@ -25,4 +25,4 @@ jobs:
       - name: Publish to JSR
         run: |
           deno task build-jsr
-          deno publish
+          deno publish --allow-dirty
