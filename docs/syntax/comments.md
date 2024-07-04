@@ -10,3 +10,19 @@ ignored by Vento.
 ```vento
 {{# This is a comment! #}}
 ```
+
+## Trimming spaces
+
+Like other tags, it's possible to trim the space after and/or before a comment using the `-` character.
+
+```vento
+<h1>
+  {{#- This is a comment! -#}}
+</h1>
+```
+
+The result is:
+
+```vento
+<h1></h1>
+```
