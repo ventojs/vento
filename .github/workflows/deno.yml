@@ -41,14 +41,14 @@ jobs:
         run: deno task build
 
       - name: Setup Pages
-        uses: actions/configure-pages@v2
+        uses: actions/configure-pages@v5
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
           path: 'docs/_site'
 
       - name: Deploy to GitHub Pages
         if: ${{ github.event_name == 'push' }}
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4
