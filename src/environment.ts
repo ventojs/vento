@@ -181,7 +181,7 @@ export class Environment {
   }
 
   async load(file: string, from?: string): Promise<Template> {
-    const path = this.options.loader.resolve(from || ".", file);
+    const path = this.options.loader.resolve(from || "", file);
 
     if (!this.cache.has(path)) {
       // Remove query and hash params from path before loading

@@ -28,6 +28,10 @@ export class FileLoader implements Loader {
       return path.join(path.dirname(from), file);
     }
 
+    if (file.startsWith(this.#root)) {
+      return file;
+    }
+
     return path.join(this.#root, file);
   }
 }
