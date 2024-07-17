@@ -42,7 +42,9 @@ export function autoTrim(tokens: Token[], options: AutoTrimOptions) {
       previous[1] = previous[1].replace(/[ \t]*$/, "");
 
       // Remove trailing horizontal space + newline
-      next[1] = next[1].replace(/^[ \t]*(?:\r\n|\n)/, "");
+      if (next) {
+        next[1] = next[1].replace(/^[ \t]*(?:\r\n|\n)/, "");
+      }
     }
   }
 }

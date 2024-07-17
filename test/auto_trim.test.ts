@@ -40,3 +40,19 @@ Deno.test("Autotrim (removes newlines correctly)", () => {
     ["string", "   ", 205],
   ]);
 });
+
+// https://github.com/ventojs/vento/issues/73
+Deno.test("Autotrim (no next tokens)", () => {
+  const code = "{{ if 1 }}it works{{ /if }}";
+
+  const env = tmpl();
+  env.use(autoTrim());
+
+  const tokens = env.tokenize(code);
+  assertEquals(tokens, [
+    ["string", "", 0],
+    ["tag", "if 1", 0],
+    ["string", "it works", 10],
+    ["tag", "/if", 18],
+  ]);
+});
