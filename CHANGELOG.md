@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.12.10] - 2024-07-17
+### Fixed
+- `auto_trim` plugin throws if there are no next tokens [#73].
+- Updated `std` dependencies.
+
 ## [0.12.9] - 2024-07-12
 ### Fixed
 - Includes when the inital url is not specified fails [#72].
@@ -245,7 +250,9 @@ First version
 [#65]: https://github.com/oscarotero/vento/issues/65
 [#70]: https://github.com/oscarotero/vento/issues/70
 [#72]: https://github.com/oscarotero/vento/issues/72
+[#73]: https://github.com/oscarotero/vento/issues/73
 
+[1.12.10]: https://github.com/oscarotero/vento/compare/v0.12.9...v1.12.10
 [0.12.9]: https://github.com/oscarotero/vento/compare/v0.12.8...v0.12.9
 [0.12.8]: https://github.com/oscarotero/vento/compare/v0.12.7...v0.12.8
 [0.12.7]: https://github.com/oscarotero/vento/compare/v0.12.6...v0.12.7
