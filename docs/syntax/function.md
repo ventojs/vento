@@ -1,3 +1,6 @@
+---
+order: 8
+---
 # Function
 
 Functions are similar to JavaScript functions and allow you to define reusable
