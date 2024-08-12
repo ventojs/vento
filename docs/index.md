@@ -69,10 +69,3 @@ First, let's take a look to the following example:
   prepending the `/` character (like Mustache).
 - It's async friendly, you can use `await` everywhere.
 - Filters are applied using the pipeline operator.
-
----
-
-- Created by [Óscar Otero](https://github.com/oscarotero)
-- [GitHub repository](https://github.com/ventojs/vento)
-- [Deno module](https://deno.land/x/vento)
-- [NPM module](https://www.npmjs.com/package/ventojs)

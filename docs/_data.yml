@@ -1,0 +1,10 @@
+menu_links:
+  - text: GitHub repository
+    href: https://github.com/ventojs/vento
+    icon: github-logo
+  - text: Deno module
+    href: https://deno.land/x/vento
+    icon: package
+  - text: NPM module
+    href: https://www.npmjs.com/package/ventojs
+    icon: package
