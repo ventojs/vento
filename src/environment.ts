@@ -125,6 +125,11 @@ export class Environment {
     defaults?: Record<string, unknown>,
     sync = false,
   ): Template | TemplateSync {
+    if (typeof source !== "string") {
+      throw new Error(
+        `The source code of "${path}" must be a string. Got ${typeof source}`,
+      );
+    }
     const tokens = this.tokenize(source, path);
     let code = this.compileTokens(tokens).join("\n");
 
