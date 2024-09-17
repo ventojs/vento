@@ -1,4 +1,7 @@
 menu_links:
+  - text: <strong>Playground</strong>
+    href: https://livecodes.io/?x=id/73yk4hggvwz
+    icon: play
   - text: GitHub repository
     href: https://github.com/ventojs/vento
     icon: github-logo
