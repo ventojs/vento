@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.12.11] - Unreleased
 ### Fixed
 - Improved error if the source is not a string.
+- Wrong function name [#74].
 
 ## [1.12.10] - 2024-07-17
 ### Fixed
@@ -255,6 +256,7 @@ First version
 [#70]: https://github.com/oscarotero/vento/issues/70
 [#72]: https://github.com/oscarotero/vento/issues/72
 [#73]: https://github.com/oscarotero/vento/issues/73
+[#74]: https://github.com/oscarotero/vento/issues/74
 
 [1.12.11]: https://github.com/oscarotero/vento/compare/v1.12.10...HEAD
 [1.12.10]: https://github.com/oscarotero/vento/compare/v0.12.9...v1.12.10
