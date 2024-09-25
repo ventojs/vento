@@ -3,11 +3,11 @@ import type { Environment, Plugin } from "../src/environment.ts";
 
 export default function (): Plugin {
   return (env: Environment) => {
-    env.tags.push(setTag);
+    env.tags.push(echoTag);
   };
 }
 
-function setTag(
+function echoTag(
   env: Environment,
   code: string,
   output: string,
