@@ -91,7 +91,7 @@ export default function tokenize(source: string): TokenizeResult {
       }
     }
   } catch (error) {
-    return { tokens, position, error };
+    return { tokens, position, error: error as Error | undefined };
   }
 
   return { tokens, position, error: undefined };
