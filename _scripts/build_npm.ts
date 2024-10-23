@@ -1,5 +1,5 @@
-import { build } from "jsr:@deno/dnt@0.41.2";
-import { emptyDir } from "jsr:@std/fs@0.229.3/empty-dir";
+import { build } from "jsr:@deno/dnt@0.41.3";
+import { emptyDir } from "jsr:@std/fs@1.0.4/empty-dir";
 
 await emptyDir("./_npm");
 
@@ -35,7 +35,7 @@ await build({
     },
   },
   mappings: {
-    "npm:@types/estree@1.0.5": "estree",
+    "npm:@types/estree@1.0.6": "estree",
   },
   postBuild() {
     Deno.copyFileSync("LICENSE", "_npm/LICENSE");
