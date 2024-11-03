@@ -1,4 +1,4 @@
-import { build } from "jsr:@deno/dnt@0.41.3";
+import { build } from "jsr:@deno/dnt@0.41.2";
 import { emptyDir } from "jsr:@std/fs@1.0.5/empty-dir";
 
 await emptyDir("./_npm");
