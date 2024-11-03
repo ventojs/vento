@@ -43,15 +43,15 @@ Now you can use the `global` variable:
 
 ### useWith
 
-Vento use
-[`with` statement](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/with)
-to convert the variables from `it` to global. For example, instead of
-`{{ it.title }}` you can simply write `{{ title }}`.
+Vento can append automatically the `it.` prefix to your variables. For example, instead of
+`{{ it.title }}` you can simply write `{{ title }}`. This avoid errors like _(ReferenceError: title is
+not defined)_ when you're trying to print a variable that doesn't exist.
 
-Note that if the variable doesn't exist, the error _(ReferenceError: title is
-not defined)_ is thrown.
+In early versions, Vento used the [`with` statement](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/with) to allow to use variables from the `it` object as global. But due `with` is no longer recommended and can affect to performance, starting from Vento 0.12 this has changed and now Vento transforms the code and appends the `it.` prefix to all variables that need it.
 
-You can disable the `with` behavior by setting this option to `false`:
+The name of this option remains `useWith` for backward compatibility but it will be changed in the next major version.
+
+You can disable this behavior by setting this option to `false`:
 
 ```js
 const env = vento({

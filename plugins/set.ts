@@ -41,14 +41,9 @@ function setTag(
   const compiled: string[] = [];
   const compiledFilters = env.compileFilters(tokens, expression);
 
-  compiled.push(`if (${dataVarname}.hasOwnProperty("${expression}")) {
-    ${expression} = "";
-  } else {
-    var ${expression} = "";
-  }
-  `);
-
+  compiled.push(`var ${expression} = "";`);
   compiled.push(...env.compileTokens(tokens, expression, ["/set"]));
+  compiled.push(`${dataVarname}["${expression}"] = ${expression};`);
 
   if (tokens.length && (tokens[0][0] !== "tag" || tokens[0][1] !== "/set")) {
     throw new Error(`Missing closing tag for set tag: ${code}`);

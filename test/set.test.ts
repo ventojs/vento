@@ -126,3 +126,29 @@ Deno.test("Set tag with includes", async () => {
     },
   });
 });
+
+Deno.test("Set tag in a loop", async () => {
+  await test({
+    template: `
+    {{- for item of items -}}
+    <div>
+      {{- set description -}}
+        <p>{{ item.description }}</p>
+      {{- /set -}}
+
+      <h1>{{ item.name }}</h1>
+      {{- description -}}
+    </div>
+    {{- /for -}}
+    `,
+    expected:
+      "<div><h1>Name 1</h1><p>Description 1</p></div><div><h1>Name 2</h1><p>Description 2</p></div><div><h1>Name 3</h1><p>Description 3</p></div>",
+    data: {
+      items: [
+        { name: "Name 1", description: "Description 1" },
+        { name: "Name 2", description: "Description 2" },
+        { name: "Name 3", description: "Description 3" },
+      ],
+    },
+  });
+});

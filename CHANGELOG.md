@@ -6,8 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.12.11] - Unreleased
 ### Fixed
+- `set` tag in block mode inside loops.
 - Improved error if the source is not a string.
 - Wrong function name [#74].
+- Updated dependencies: `std`, `merijah`.
 
 ## [1.12.10] - 2024-07-17
 ### Fixed
