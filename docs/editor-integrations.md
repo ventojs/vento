@@ -39,3 +39,10 @@ require("nvim-treesitter.configs").setup({
     ensure_installed = { "vento", "html", "javascript", "..." },
 })
 ```
+
+## Zed
+
+The
+[Vento extension for Zed](https://github.com/dz4k/zed-vento)
+provides syntax highlighting. It can be installed from the Zed
+[extensions gallery](https://zed.dev/docs/extensions/installing-extensions).
