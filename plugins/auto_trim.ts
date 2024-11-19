@@ -45,6 +45,8 @@ export function autoTrim(tokens: Token[], options: AutoTrimOptions) {
       if (next) {
         next[1] = next[1].replace(/^[ \t]*(?:\r\n|\n)/, "");
       }
+    } else if (type === "comment") {
+      previous[1] = previous[1].replace(/(?:\r\n|\n)[ \t]*$/, "");
     }
   }
 }
