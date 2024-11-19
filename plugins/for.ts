@@ -59,9 +59,7 @@ function toIterator(
   }
 
   if (Array.isArray(item)) {
-    return withKeys
-      ? Object.entries(item).map(([key, value]) => [parseInt(key, 10), value])
-      : item;
+    return withKeys ? item.map((value, i) => [i, value]) : item;
   }
 
   if (typeof item === "function") {
