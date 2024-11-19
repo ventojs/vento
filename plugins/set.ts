@@ -32,8 +32,8 @@ function setTag(
     const val = env.compileFilters(tokens, value);
 
     return `
-    ${dataVarname}["${variable}"] = ${val};
     var ${variable} = ${val};
+    ${dataVarname}["${variable}"] = ${variable};
     `;
   }
 

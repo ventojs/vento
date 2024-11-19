@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.12.12] - Unreleased
 ### Fixed
 - `auto_trim` plugin: Trim comments.
+- `set` evaluates the expression twice.
 
 ## [1.12.11] - 2024-11-03
 ### Fixed
