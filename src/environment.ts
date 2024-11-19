@@ -49,7 +49,7 @@ export interface Options {
   loader: Loader;
   dataVarname: string;
   autoescape: boolean;
-  useWith: boolean;
+  autoDataVarname: boolean;
 }
 
 export class Environment {
@@ -133,9 +133,9 @@ export class Environment {
     const tokens = this.tokenize(source, path);
     let code = this.compileTokens(tokens).join("\n");
 
-    const { dataVarname, useWith } = this.options;
+    const { dataVarname, autoDataVarname } = this.options;
 
-    if (useWith) {
+    if (autoDataVarname) {
       code = transformTemplateCode(code, dataVarname);
     }
 

@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.12.12] - Unreleased
+### Added
+- New option `autoDataVarname` to replace `useWith`.
+  `useWith` is keept as an alias for backward compatibility but will be removed in the future.
+
 ### Fixed
 - `auto_trim` plugin: Trim comments.
 - `set` evaluates the expression twice.

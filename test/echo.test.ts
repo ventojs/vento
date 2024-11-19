@@ -72,7 +72,7 @@ Deno.test("Echo tag", async () => {
 
   testThrows({
     options: {
-      useWith: false,
+      autoDataVarname: false,
     },
     template: `
     Hello {{ world }}

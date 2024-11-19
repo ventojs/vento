@@ -16,8 +16,9 @@ import trim from "./plugins/trim.ts";
 
 export interface Options {
   includes?: string | Loader;
-  /** @deprecated */
+  /** @deprecated Use autoDataVarname */
   useWith?: boolean;
+  autoDataVarname?: boolean;
   dataVarname?: string;
   autoescape?: boolean;
 }
@@ -31,7 +32,7 @@ export default function (options: Options = {}): Environment {
     loader,
     dataVarname: options.dataVarname || "it",
     autoescape: options.autoescape ?? false,
-    useWith: options.useWith ?? true,
+    autoDataVarname: options.autoDataVarname ?? options.useWith ?? true,
   });
 
   // Register basic plugins

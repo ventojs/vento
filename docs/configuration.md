@@ -12,7 +12,7 @@ Pass an options object to the `vento()` function to customize Vento.
 // Example with the default options:
 const env = vento({
   dataVarname: "it",
-  useWith: true,
+  autoDataVarname: true,
   includes: Deno.cwd(),
   autoescape: false,
 });
@@ -41,23 +41,22 @@ Now you can use the `global` variable:
 {{ global.title }}
 ```
 
-### useWith
+### autoDataVarname
 
-Vento can append automatically the `it.` prefix to your variables. For example, instead of
-`{{ it.title }}` you can simply write `{{ title }}`. This avoid errors like _(ReferenceError: title is
-not defined)_ when you're trying to print a variable that doesn't exist.
+Vento can append automatically the `dataVarname` prefix (which by default is `.it`) to any variable that need it. For example, instead of
+`{{ it.title }}` you can simply write `{{ title }}` and vento automatically convert it to `{{ it.title }}`.
 
-In early versions, Vento used the [`with` statement](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/with) to allow to use variables from the `it` object as global. But due `with` is no longer recommended and can affect to performance, starting from Vento 0.12 this has changed and now Vento transforms the code and appends the `it.` prefix to all variables that need it.
-
-The name of this option remains `useWith` for backward compatibility but it will be changed in the next major version.
-
-You can disable this behavior by setting this option to `false`:
+You can disable this behavior by setting the `autoDataVarname` option to `false`:
 
 ```js
 const env = vento({
-  useWith: false,
+  autoDataVarname: false,
 });
 ```
+
+> [!warning]
+>
+> The `useWith` option is an alias for backward compatibility ([when `with` was used](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/with)) but it will be removed in the future.
 
 ### autoescape
 
