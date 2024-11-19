@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - `auto_trim` plugin: Trim comments.
 - `set` evaluates the expression twice.
+- `for`: Make sure key values of an array are always numbers [#83].
 
 ## [1.12.11] - 2024-11-03
 ### Fixed
@@ -264,6 +265,7 @@ First version
 [#72]: https://github.com/oscarotero/vento/issues/72
 [#73]: https://github.com/oscarotero/vento/issues/73
 [#74]: https://github.com/oscarotero/vento/issues/74
+[#83]: https://github.com/oscarotero/vento/issues/83
 
 [1.12.12]: https://github.com/oscarotero/vento/compare/v1.12.11...HEAD
 [1.12.11]: https://github.com/oscarotero/vento/compare/v1.12.10...v1.12.11

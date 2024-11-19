@@ -46,6 +46,13 @@ Deno.test("For tag (array)", async () => {
     `,
     expected: "1(0)-2(1)-3(2)-4(3)-",
   });
+  // Fix for issue https://github.com/ventojs/vento/issues/83
+  await test({
+    template: `
+    {{ for key, name of [0, 1, 2, 3] }}{{key == name}}{{key === name}}{{ /for }}
+    `,
+    expected: "truetruetruetruetruetruetruetrue",
+  });
 });
 
 Deno.test("For tag (object)", async () => {
@@ -71,6 +78,27 @@ Deno.test("For tag (object)", async () => {
     {{ for key, name of { one: "1", two: "2" } }}{{name}}({{key}})-{{ /for }}
     `,
     expected: "1(one)-2(two)-",
+  });
+
+  await test({
+    template: `
+    {{ for name of names }}{{people[name].surname}}{{ /for }}
+    `,
+    expected: "OteroRubio",
+    data: {
+      names: [
+        "Óscar",
+        "Laura",
+      ],
+      people: {
+        "Óscar": {
+          surname: "Otero",
+        },
+        "Laura": {
+          surname: "Rubio",
+        },
+      },
+    },
   });
 });
 
