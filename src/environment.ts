@@ -136,7 +136,28 @@ export class Environment {
     const { dataVarname, autoDataVarname } = this.options;
 
     if (autoDataVarname) {
-      code = transformTemplateCode(code, dataVarname);
+      try {
+        code = transformTemplateCode(code, dataVarname);
+      } catch (error) {
+        const end = (error as ParseError).start;
+        const lastPos = code.slice(0, end).lastIndexOf("__pos = ");
+        const lastPosEnd = code.slice(lastPos).indexOf(";");
+
+        if (lastPos > -1 && lastPosEnd > lastPos) {
+          const pos = parseInt(
+            code.slice(lastPos + 8, lastPos + lastPosEnd),
+            10,
+          );
+          throw this.createError(
+            path || "",
+            source,
+            pos,
+            new Error((error as ParseError).message),
+          );
+        }
+
+        throw error;
+      }
     }
 
     const constructor = new Function(
@@ -364,4 +385,10 @@ export function errorLine(
 
 function checkAsync(fn: () => unknown): boolean {
   return fn.constructor?.name === "AsyncFunction";
+}
+
+interface ParseError extends Error {
+  start: number;
+  end: number;
+  range: [number, number];
 }
