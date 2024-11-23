@@ -166,7 +166,7 @@ export function transformTemplateCode(
   }
 
   walker.walk(parsed, {
-    enter(node) {
+    enter(node: ESTree.Node) {
       switch (node.type) {
         // Track variable declarations
         case "VariableDeclaration":
