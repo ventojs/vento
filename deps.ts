@@ -1,4 +1,4 @@
-export * as path from "jsr:@std/path@1.0.8";
+export * as path from "https://deno.land/std@0.224.0/path/mod.ts";
 export * as html from "jsr:@std/html@1.0.3";
 
 export * as astring from "jsr:@davidbonnet/astring@1.8.6";
