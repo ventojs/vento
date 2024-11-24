@@ -1,5 +1,15 @@
 import { astring, ESTree, meriyah, walker } from "../deps.ts";
 
+// Declare types
+export interface ParseError extends Error {
+  start: number;
+  end: number;
+  range: [number, number];
+  loc: Record<'start' | 'end', Record<'line' | 'column', number>>;
+  description: string;
+  annotation?: string;
+}
+
 // List of identifiers that are in globalThis
 // but should be accessed as templateState.identifier
 const INCLUDE_GLOBAL = [

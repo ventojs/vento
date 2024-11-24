@@ -1,7 +1,7 @@
 import tokenize, { Token } from "./tokenizer.ts";
 
 import type { Loader } from "./loader.ts";
-import { transformTemplateCode } from "./transformer.ts";
+import { transformTemplateCode, type ParseError} from "./transformer.ts";
 
 export interface TemplateResult {
   content: string;
@@ -387,8 +387,4 @@ function checkAsync(fn: () => unknown): boolean {
   return fn.constructor?.name === "AsyncFunction";
 }
 
-interface ParseError extends Error {
-  start: number;
-  end: number;
-  range: [number, number];
-}
+
