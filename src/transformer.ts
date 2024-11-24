@@ -129,7 +129,25 @@ export function transformTemplateCode(
     return code;
   }
 
-  const parsed = meriyah.parseScript(code, { module: true }) as ESTree.Program;
+  let parsed;
+  try {
+    parsed = meriyah.parseScript(code, { module: true }) as ESTree.Program;
+  } catch (error) {
+    const { loc } = error as ParseError;
+
+    const lines = code.split('\n');
+
+    lines.splice(loc.start.line, 0, `${' '.repeat(loc.start.column)}\x1b[31m^\x1b[0m`)
+      
+    const annotation = lines.slice(Math.min(0, loc.start.line - 2), Math.min(loc.end.line + 3, lines.length))
+      .join('\n');
+    
+    throw Object.assign(error as ParseError, {
+      message: 'Failed to parse template function',
+      annotation
+    })
+  }
+
   const tracker = new ScopeTracker();
 
   const exclude = [

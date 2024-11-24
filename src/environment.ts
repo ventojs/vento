@@ -139,8 +139,9 @@ export class Environment {
       try {
         code = transformTemplateCode(code, dataVarname);
       } catch (error) {
-        const end = (error as ParseError).start;
-        const lastPos = code.slice(0, end).lastIndexOf("__pos = ");
+        let { start: errorStart, message, annotation } = error as ParseError;
+        
+        const lastPos = code.slice(0, errorStart).lastIndexOf("__pos = ");
         const lastPosEnd = code.slice(lastPos).indexOf(";");
 
         if (lastPos > -1 && lastPosEnd > lastPos) {
@@ -148,11 +149,16 @@ export class Environment {
             code.slice(lastPos + 8, lastPos + lastPosEnd),
             10,
           );
+
+          if (annotation) {
+            message += `\n\nAttempted to parse:\n\n${annotation}`
+          }
+
           throw this.createError(
             path || "",
             source,
             pos,
-            new Error((error as ParseError).message),
+            new Error(message),
           );
         }
 
