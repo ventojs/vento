@@ -5,9 +5,8 @@ export interface ParseError extends Error {
   start: number;
   end: number;
   range: [number, number];
-  loc: Record<'start' | 'end', Record<'line' | 'column', number>>;
+  loc: Record<"start" | "end", Record<"line" | "column", number>>;
   description: string;
-  annotation?: string;
 }
 
 // List of identifiers that are in globalThis
@@ -133,19 +132,15 @@ export function transformTemplateCode(
   try {
     parsed = meriyah.parseScript(code, { module: true }) as ESTree.Program;
   } catch (error) {
-    const { loc } = error as ParseError;
+    const { message, loc: { start } } = error as ParseError;
 
-    const lines = code.split('\n');
+    const annotation = code.split("\n")[start.line - 1] + "\n" +
+      " ".repeat(start.column) + "\x1b[31m^\x1b[0m";
 
-    lines.splice(loc.start.line, 0, `${' '.repeat(loc.start.column)}\x1b[31m^\x1b[0m`)
-      
-    const annotation = lines.slice(Math.min(0, loc.start.line - 2), Math.min(loc.end.line + 3, lines.length))
-      .join('\n');
-    
     throw Object.assign(error as ParseError, {
-      message: 'Failed to parse template function',
-      annotation
-    })
+      message:
+        `Failed to parse template function internally. <template>:${message}\n\n${annotation}`,
+    });
   }
 
   const tracker = new ScopeTracker();

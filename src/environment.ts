@@ -1,7 +1,7 @@
 import tokenize, { Token } from "./tokenizer.ts";
 
 import type { Loader } from "./loader.ts";
-import { transformTemplateCode, type ParseError} from "./transformer.ts";
+import { type ParseError, transformTemplateCode } from "./transformer.ts";
 
 export interface TemplateResult {
   content: string;
@@ -139,8 +139,8 @@ export class Environment {
       try {
         code = transformTemplateCode(code, dataVarname);
       } catch (error) {
-        let { start: errorStart, message, annotation } = error as ParseError;
-        
+        const { start: errorStart, message } = error as ParseError;
+
         const lastPos = code.slice(0, errorStart).lastIndexOf("__pos = ");
         const lastPosEnd = code.slice(lastPos).indexOf(";");
 
@@ -149,10 +149,6 @@ export class Environment {
             code.slice(lastPos + 8, lastPos + lastPosEnd),
             10,
           );
-
-          if (annotation) {
-            message += `\n\nAttempted to parse:\n\n${annotation}`
-          }
 
           throw this.createError(
             path || "",
@@ -392,5 +388,3 @@ export function errorLine(
 function checkAsync(fn: () => unknown): boolean {
   return fn.constructor?.name === "AsyncFunction";
 }
-
-
