@@ -157,7 +157,7 @@ export function transformTemplateCode(
 
     throw new TransformError({
       message:
-        `Failed to transform template function internally.\n${message} while transforming:\n\n${annotation}`,
+        `Error transforming template function.\n${message} while transforming:\n\n${annotation}`,
       cause: error as ParseError,
       pos,
     });
