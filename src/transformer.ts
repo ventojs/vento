@@ -9,18 +9,16 @@ interface ParseError extends Error {
   description: string;
 }
 
-interface TransformErrorOptions {
-  message: string;
-  pos: number;
-  cause: Error;
+interface TransformErrorOptions extends ErrorOptions {
+  pos?: number;
 }
 
 export class TransformError extends Error {
-  pos: number;
-  constructor(options: TransformErrorOptions) {
-    super(options.message, { cause: options.cause });
+  pos?: number;
+  constructor(message: string, options?: TransformErrorOptions) {
+    super(message);
     this.name = "TransformError";
-    this.pos = options.pos;
+    this.pos = options?.pos;
   }
 }
 
@@ -155,12 +153,10 @@ export function transformTemplateCode(
     const posMatches = [...code.slice(0, start).matchAll(/__pos = (\d+);/g)];
     const pos = Number(posMatches.at(-1)?.[1]);
 
-    throw new TransformError({
-      message:
-        `Error transforming template function.\n${message} while transforming:\n\n${annotation}`,
-      cause: error as ParseError,
-      pos,
-    });
+    throw new TransformError(
+      `Error transforming template function.\n${message} while transforming:\n\n${annotation}`,
+      { cause: error as ParseError, pos },
+    );
   }
 
   const tracker = new ScopeTracker();

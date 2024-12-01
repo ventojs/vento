@@ -320,7 +320,9 @@ export class Environment {
     const [line, column, code] = errorLine(source, position);
 
     return new Error(
-      `Error in the template ${path}:${line}:${column}\n\n${code.trim()}\n\n${cause.message.replaceAll(/^/gm, '> ')}\n`,
+      `Error in the template ${path}:${line}:${column}\n\n${code.trim()}\n\n${
+        cause.message.replaceAll(/^/gm, "> ")
+      }\n`,
       { cause },
     );
   }
