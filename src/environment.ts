@@ -140,7 +140,7 @@ export class Environment {
         code = transformTemplateCode(code, dataVarname);
       } catch (error) {
         if (error instanceof TransformError) {
-          throw this.createError(path || "", source, error.pos, error);
+          throw this.createError(path, source, error.pos, error);
         }
 
         throw error;
@@ -179,7 +179,7 @@ export class Environment {
     const { position, error } = result;
 
     if (error) {
-      throw this.createError(path || "unknown", source, position, error);
+      throw this.createError(path, source, position, error);
     }
 
     for (const tokenPreprocessor of this.tokenPreprocessors) {
@@ -312,15 +312,11 @@ export class Environment {
   }
 
   createError(
-    path: string,
-    source: string,
-    position: number,
+    path: string = "unknown",
+    source: string = "<empty file>",
+    position: number = 0,
     cause: Error,
   ): Error {
-    if (!source) {
-      return cause;
-    }
-
     const [line, column, code] = errorLine(source, position);
 
     return new Error(
