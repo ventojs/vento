@@ -147,9 +147,14 @@ export function transformTemplateCode(
   } catch (error) {
     const { message, start, loc } = error as ParseError;
 
+    // Use information from `meriyah` to annotate the part of
+    // the compiled template function that triggered the ParseError
     const annotation = code.split("\n")[loc.start.line - 1] + "\n" +
       " ".repeat(loc.start.column) + "\x1b[31m^\x1b[0m";
 
+    // Grab the last instance of Vento's `__pos` variable before the
+    // error was thrown. Pass this back to Vento's createError to
+    // tie this error with problmatic template code
     const matches = [...code.slice(0, start).matchAll(/__pos = (\d+);/g)];
     const pos = Number(matches.at(-1)?.[1]);
 
