@@ -150,8 +150,8 @@ export function transformTemplateCode(
     const annotation = code.split("\n")[loc.start.line - 1] + "\n" +
       " ".repeat(loc.start.column) + "\x1b[31m^\x1b[0m";
 
-    const posMatches = [...code.slice(0, start).matchAll(/__pos = (\d+);/g)];
-    const pos = Number(posMatches.at(-1)?.[1]);
+    const matches = [...code.slice(0, start).matchAll(/__pos = (\d+);/g)];
+    const pos = Number(matches.at(-1)?.[1]);
 
     throw new TransformError(
       `Error transforming template function.\n${message} while transforming:\n\n${annotation}`,
