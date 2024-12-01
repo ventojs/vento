@@ -1,7 +1,7 @@
 import tokenize, { Token } from "./tokenizer.ts";
 
 import type { Loader } from "./loader.ts";
-import { type ParseError, transformTemplateCode } from "./transformer.ts";
+import { TransformError, transformTemplateCode } from "./transformer.ts";
 
 export interface TemplateResult {
   content: string;
@@ -139,23 +139,8 @@ export class Environment {
       try {
         code = transformTemplateCode(code, dataVarname);
       } catch (error) {
-        const { start: errorStart, message } = error as ParseError;
-
-        const lastPos = code.slice(0, errorStart).lastIndexOf("__pos = ");
-        const lastPosEnd = code.slice(lastPos).indexOf(";");
-
-        if (lastPos > -1 && lastPosEnd > lastPos) {
-          const pos = parseInt(
-            code.slice(lastPos + 8, lastPos + lastPosEnd),
-            10,
-          );
-
-          throw this.createError(
-            path || "",
-            source,
-            pos,
-            new Error(message),
-          );
+        if (error instanceof TransformError) {
+          throw this.createError(path || "", source, error.pos, error);
         }
 
         throw error;

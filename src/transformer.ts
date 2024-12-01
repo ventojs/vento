@@ -1,12 +1,27 @@
 import { astring, ESTree, meriyah, walker } from "../deps.ts";
 
 // Declare types
-export interface ParseError extends Error {
+interface ParseError extends Error {
   start: number;
   end: number;
   range: [number, number];
   loc: Record<"start" | "end", Record<"line" | "column", number>>;
   description: string;
+}
+
+interface TransformErrorOptions {
+  message: string;
+  pos: number;
+  cause: Error;
+}
+
+export class TransformError extends Error {
+  pos: number;
+  constructor(options: TransformErrorOptions) {
+    super(options.message, { cause: options.cause });
+    this.name = "TransformError";
+    this.pos = options.pos;
+  }
 }
 
 // List of identifiers that are in globalThis
@@ -132,14 +147,19 @@ export function transformTemplateCode(
   try {
     parsed = meriyah.parseScript(code, { module: true }) as ESTree.Program;
   } catch (error) {
-    const { message, loc: { start } } = error as ParseError;
+    const { message, start, loc } = error as ParseError;
 
-    const annotation = code.split("\n")[start.line - 1] + "\n" +
-      " ".repeat(start.column) + "\x1b[31m^\x1b[0m";
+    const annotation = code.split("\n")[loc.start.line - 1] + "\n" +
+      " ".repeat(loc.start.column) + "\x1b[31m^\x1b[0m";
 
-    throw Object.assign(error as ParseError, {
+    const posMatches = [...code.slice(0, start).matchAll(/__pos = (\d+);/g)];
+    const pos = Number(posMatches.at(-1)?.[1]);
+
+    throw new TransformError({
       message:
-        `Failed to parse template function internally. <template>:${message}\n\n${annotation}`,
+        `Failed to transform template function internally.\n${message} while transforming:\n\n${annotation}`,
+      cause: error as ParseError,
+      pos,
     });
   }
 
