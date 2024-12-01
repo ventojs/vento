@@ -154,8 +154,8 @@ export function transformTemplateCode(
     const pos = Number(matches.at(-1)?.[1]);
 
     throw new TransformError(
-      `Error transforming template function.\n${message} while transforming:\n\n${annotation}`,
-      { cause: error as ParseError, pos },
+      `[meriyah] ${message}\nthrown while parsing compiled template function:\n\n${annotation}`,
+      { pos },
     );
   }
 
@@ -167,11 +167,11 @@ export function transformTemplateCode(
   ];
 
   if (parsed.type !== "Program") {
-    throw new Error("Expected a program");
+    throw new TransformError("[meriyah] Expected a program");
   }
 
   if (parsed.body.length === 0) {
-    throw new Error("Empty program");
+    throw new TransformError("[meriyah] Empty program");
   }
 
   // Transforms an identifier to a MemberExpression
