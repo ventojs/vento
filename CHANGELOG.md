@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.12.13] - Unreleased
 ### Fixed
+- Improved errors [#88]
 - Improved the code of iterator with an array.
 
 ## [1.12.12] - 2024-11-19
@@ -274,6 +275,7 @@ First version
 [#73]: https://github.com/oscarotero/vento/issues/73
 [#74]: https://github.com/oscarotero/vento/issues/74
 [#83]: https://github.com/oscarotero/vento/issues/83
+[#88]: https://github.com/oscarotero/vento/issues/88
 
 [1.12.13]: https://github.com/oscarotero/vento/compare/v1.12.12...HEAD
 [1.12.12]: https://github.com/oscarotero/vento/compare/v1.12.11...v1.12.12
