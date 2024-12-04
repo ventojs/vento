@@ -1,5 +1,27 @@
 import { astring, ESTree, meriyah, walker } from "../deps.ts";
 
+// Declare types
+interface ParseError extends Error {
+  start: number;
+  end: number;
+  range: [number, number];
+  loc: Record<"start" | "end", Record<"line" | "column", number>>;
+  description: string;
+}
+
+interface TransformErrorOptions extends ErrorOptions {
+  pos?: number;
+}
+
+export class TransformError extends Error {
+  pos?: number;
+  constructor(message: string, options?: TransformErrorOptions) {
+    super(message);
+    this.name = "TransformError";
+    this.pos = options?.pos;
+  }
+}
+
 // List of identifiers that are in globalThis
 // but should be accessed as templateState.identifier
 const INCLUDE_GLOBAL = [
@@ -119,7 +141,29 @@ export function transformTemplateCode(
     return code;
   }
 
-  const parsed = meriyah.parseScript(code, { module: true }) as ESTree.Program;
+  let parsed;
+  try {
+    parsed = meriyah.parseScript(code, { module: true }) as ESTree.Program;
+  } catch (error) {
+    const { message, start, loc } = error as ParseError;
+
+    // Use information from `meriyah` to annotate the part of
+    // the compiled template function that triggered the ParseError
+    const annotation = code.split("\n")[loc.start.line - 1] + "\n" +
+      " ".repeat(loc.start.column) + "\x1b[31m^\x1b[0m";
+
+    // Grab the last instance of Vento's `__pos` variable before the
+    // error was thrown. Pass this back to Vento's createError to
+    // tie this error with problmatic template code
+    const matches = [...code.slice(0, start).matchAll(/__pos = (\d+);/g)];
+    const pos = Number(matches.at(-1)?.[1]);
+
+    throw new TransformError(
+      `[meriyah] ${message}\nthrown while parsing compiled template function:\n\n${annotation}`,
+      { pos },
+    );
+  }
+
   const tracker = new ScopeTracker();
 
   const exclude = [
@@ -128,11 +172,11 @@ export function transformTemplateCode(
   ];
 
   if (parsed.type !== "Program") {
-    throw new Error("Expected a program");
+    throw new TransformError("[meriyah] Expected a program");
   }
 
   if (parsed.body.length === 0) {
-    throw new Error("Empty program");
+    throw new TransformError("[meriyah] Empty program");
   }
 
   // Transforms an identifier to a MemberExpression
@@ -166,7 +210,7 @@ export function transformTemplateCode(
   }
 
   walker.walk(parsed, {
-    enter(node) {
+    enter(node: ESTree.Node) {
       switch (node.type) {
         // Track variable declarations
         case "VariableDeclaration":

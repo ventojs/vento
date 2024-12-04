@@ -1,7 +1,7 @@
 import tokenize, { Token } from "./tokenizer.ts";
 
 import type { Loader } from "./loader.ts";
-import { transformTemplateCode } from "./transformer.ts";
+import { TransformError, transformTemplateCode } from "./transformer.ts";
 
 export interface TemplateResult {
   content: string;
@@ -139,21 +139,8 @@ export class Environment {
       try {
         code = transformTemplateCode(code, dataVarname);
       } catch (error) {
-        const end = (error as ParseError).start;
-        const lastPos = code.slice(0, end).lastIndexOf("__pos = ");
-        const lastPosEnd = code.slice(lastPos).indexOf(";");
-
-        if (lastPos > -1 && lastPosEnd > lastPos) {
-          const pos = parseInt(
-            code.slice(lastPos + 8, lastPos + lastPosEnd),
-            10,
-          );
-          throw this.createError(
-            path || "",
-            source,
-            pos,
-            new Error((error as ParseError).message),
-          );
+        if (error instanceof TransformError) {
+          throw this.createError(path, source, error.pos, error);
         }
 
         throw error;
@@ -192,7 +179,7 @@ export class Environment {
     const { position, error } = result;
 
     if (error) {
-      throw this.createError(path || "unknown", source, position, error);
+      throw this.createError(path, source, position, error);
     }
 
     for (const tokenPreprocessor of this.tokenPreprocessors) {
@@ -325,19 +312,17 @@ export class Environment {
   }
 
   createError(
-    path: string,
-    source: string,
-    position: number,
+    path: string = "unknown",
+    source: string = "<empty file>",
+    position: number = 0,
     cause: Error,
   ): Error {
-    if (!source) {
-      return cause;
-    }
-
     const [line, column, code] = errorLine(source, position);
 
     return new Error(
-      `Error in the template ${path}:${line}:${column}\n\n${code.trim()}\n\n> ${cause.message}\n`,
+      `Error in the template ${path}:${line}:${column}\n\n${code.trim()}\n\n${
+        cause.message.replaceAll(/^/gm, "> ")
+      }\n`,
       { cause },
     );
   }
@@ -385,10 +370,4 @@ export function errorLine(
 
 function checkAsync(fn: () => unknown): boolean {
   return fn.constructor?.name === "AsyncFunction";
-}
-
-interface ParseError extends Error {
-  start: number;
-  end: number;
-  range: [number, number];
 }
