@@ -1,25 +1,13 @@
 import { astring, ESTree, meriyah, walker } from "../deps.ts";
+import { TransformError } from "./errors.ts";
 
-// Declare types
+// Declare meriyah's ParseError since it isn't exported
 interface ParseError extends Error {
   start: number;
   end: number;
   range: [number, number];
   loc: Record<"start" | "end", Record<"line" | "column", number>>;
   description: string;
-}
-
-interface TransformErrorOptions extends ErrorOptions {
-  pos?: number;
-}
-
-export class TransformError extends Error {
-  pos?: number;
-  constructor(message: string, options?: TransformErrorOptions) {
-    super(message);
-    this.name = "TransformError";
-    this.pos = options?.pos;
-  }
 }
 
 // List of identifiers that are in globalThis
@@ -149,18 +137,19 @@ export function transformTemplateCode(
 
     // Use information from `meriyah` to annotate the part of
     // the compiled template function that triggered the ParseError
-    const annotation = code.split("\n")[loc.start.line - 1] + "\n" +
-      " ".repeat(loc.start.column) + "\x1b[31m^\x1b[0m";
+    const annotation = `\u001B[2m${loc.start.line}\u001B[0m ` +
+      code.split("\n")[loc.start.line - 1] +
+      `\n${" ".repeat(loc.start.column)}\u001B[31m^\u001B[39m`;
 
     // Grab the last instance of Vento's `__pos` variable before the
-    // error was thrown. Pass this back to Vento's createError to
+    // error was thrown. Pass this back to Vento to
     // tie this error with problmatic template code
     const matches = [...code.slice(0, start).matchAll(/__pos = (\d+);/g)];
-    const pos = Number(matches.at(-1)?.[1]);
+    const position = Number(matches.at(-1)?.[1]);
 
     throw new TransformError(
-      `[meriyah] ${message}\nthrown while parsing compiled template function:\n\n${annotation}`,
-      { pos },
+      `[meriyah] ${message} while parsing compiled template function:\n\n${annotation}`,
+      position,
     );
   }
 
