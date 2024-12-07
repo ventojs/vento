@@ -1,15 +1,8 @@
-class VentoError extends Error {
-  constructor(
-    message?: string,
-    public override cause?: Error,
-  ) {
-    super(message);
-    Error?.captureStackTrace(this, this.constructor);
-    this.name = this.constructor.name;
-  }
+class VentoBaseError extends Error {
+  override name = this.constructor.name;
 }
 
-export class TemplateError extends VentoError {
+export class TemplateError extends VentoBaseError {
   constructor(
     public path: string = "<unknown>",
     public source: string = "<empty file>",
@@ -19,7 +12,7 @@ export class TemplateError extends VentoError {
     const { line, column, code } = errorLine(source, position);
     super(
       `Error in template ${path}:${line}:${column}\n\n${code.trim()}\n\n`,
-      cause,
+      { cause },
     );
 
     if (cause) {
@@ -28,13 +21,13 @@ export class TemplateError extends VentoError {
   }
 }
 
-export class TransformError extends VentoError {
+export class TransformError extends VentoBaseError {
   constructor(
     message: string,
     public position: number = 0,
     cause?: Error,
   ) {
-    super(message, cause);
+    super(message, { cause });
   }
 }
 
