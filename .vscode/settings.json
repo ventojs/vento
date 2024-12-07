@@ -2,5 +2,6 @@
   "deno.enable": true,
   "deno.unstable": true,
   "deno.importMap": "./docs/deno.json",
-  "prettier.enable": false
+  "prettier.enable": false,
+  "editor.defaultFormatter": "denoland.vscode-deno"
 }

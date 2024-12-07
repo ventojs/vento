@@ -1,7 +1,8 @@
 import tokenize, { Token } from "./tokenizer.ts";
 
 import type { Loader } from "./loader.ts";
-import { TransformError, transformTemplateCode } from "./transformer.ts";
+import { transformTemplateCode } from "./transformer.ts";
+import { TemplateError, TransformError } from "./errors.ts";
 
 export interface TemplateResult {
   content: string;
@@ -138,12 +139,12 @@ export class Environment {
     if (autoDataVarname) {
       try {
         code = transformTemplateCode(code, dataVarname);
-      } catch (error) {
-        if (error instanceof TransformError) {
-          throw this.createError(path, source, error.pos, error);
+      } catch (cause) {
+        if (cause instanceof TransformError) {
+          throw new TemplateError(path, source, cause.position, cause);
         }
 
-        throw error;
+        throw new Error(`Unknown error while transforming ${path}`, { cause });
       }
     }
 
@@ -151,6 +152,7 @@ export class Environment {
       "__file",
       "__env",
       "__defaults",
+      "__err",
       `return${sync ? "" : " async"} function (${dataVarname}) {
         let __pos = 0;
         try {
@@ -160,13 +162,13 @@ export class Environment {
           return __exports;
         } catch (cause) {
           const template = __env.cache.get(__file);
-          throw __env.createError(__file, template?.source || "", __pos, cause);
+          throw new __err(__file, template?.source, __pos, cause);
         }
       }
       `,
     );
 
-    const template: Template = constructor(path, this, defaults);
+    const template: Template = constructor(path, this, defaults, TemplateError);
     template.file = path;
     template.code = code;
     template.source = source;
@@ -179,7 +181,7 @@ export class Environment {
     const { position, error } = result;
 
     if (error) {
-      throw this.createError(path, source, position, error);
+      throw new TemplateError(path, source, position, error);
     }
 
     for (const tokenPreprocessor of this.tokenPreprocessors) {
@@ -310,22 +312,6 @@ export class Environment {
 
     return output;
   }
-
-  createError(
-    path: string = "unknown",
-    source: string = "<empty file>",
-    position: number = 0,
-    cause: Error,
-  ): Error {
-    const [line, column, code] = errorLine(source, position);
-
-    return new Error(
-      `Error in the template ${path}:${line}:${column}\n\n${code.trim()}\n\n${
-        cause.message.replaceAll(/^/gm, "> ")
-      }\n`,
-      { cause },
-    );
-  }
 }
 
 function isGlobal(name: string) {
@@ -339,33 +325,6 @@ function isGlobal(name: string) {
     // @ts-ignore TS doesn't know about globalThis
     return typeof globalThis[obj]?.[prop] === "function";
   }
-}
-
-/** Returns the number and code of the errored line */
-export function errorLine(
-  source: string,
-  pos: number,
-): [number, number, string] {
-  let line = 1;
-  let column = 1;
-
-  for (let index = 0; index < pos; index++) {
-    if (
-      source[index] === "\n" ||
-      (source[index] === "\r" && source[index + 1] === "\n")
-    ) {
-      line++;
-      column = 1;
-
-      if (source[index] === "\r") {
-        index++;
-      }
-    } else {
-      column++;
-    }
-  }
-
-  return [line, column, source.split("\n")[line - 1]];
 }
 
 function checkAsync(fn: () => unknown): boolean {
