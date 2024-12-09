@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Improved errors [#88].
 - Moved error classes to a different module [#89].
 - Improved the code of iterator with an array.
+- Updated dependencies.
 
 ## [1.12.12] - 2024-11-19
 ### Added
