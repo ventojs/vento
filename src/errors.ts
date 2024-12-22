@@ -14,10 +14,6 @@ export class TemplateError extends VentoBaseError {
       `Error in template ${path}:${line}:${column}\n\n${code.trim()}\n\n`,
       { cause },
     );
-
-    if (cause) {
-      this.message += `(via ${cause.name})\n`;
-    }
   }
 }
 
