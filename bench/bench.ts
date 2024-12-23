@@ -1,6 +1,6 @@
 import vento from "../mod.ts";
 import nunjucks from "npm:nunjucks@3.2.4";
-import { Liquid } from "npm:liquidjs@10.19.0";
+import { Liquid } from "npm:liquidjs@10.19.1";
 import { Eta } from "https://deno.land/x/eta@v3.5.0/src/index.ts";
 
 const env = vento({
