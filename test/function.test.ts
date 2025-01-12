@@ -34,6 +34,15 @@ Deno.test("Function tag", async () => {
     `,
     expected: "Hello World / Hello Vento",
   });
+
+  await test({
+    template: `
+    {{ function hello ({name = "World"} = {}) }}Hello {{ name }}{{ /function }}
+
+    {{ hello() }} / {{ hello({ name: "Vento" }) }}
+    `,
+    expected: "Hello World / Hello Vento",
+  });
 });
 
 Deno.test("Function tag (async)", async () => {
