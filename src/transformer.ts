@@ -228,11 +228,13 @@ export function transformTemplateCode(
           break;
 
         case "Property":
-          if (node.shorthand && node.key.type === "Identifier") {
+          // Value is implicitly the same as the key if it's just an
+          // identifier, so we only transform the value (not the key)
+          if (node.shorthand && node.value.type === "Identifier") {
             this.replace({
               type: "Property",
               key: node.key,
-              value: transformIdentifier(node.key),
+              value: transformIdentifier(node.value),
               kind: "init",
               computed: false,
               method: false,

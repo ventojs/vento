@@ -79,4 +79,12 @@ Deno.test("> tag", async () => {
     `,
     expected: "Hello s",
   });
+
+  await test({
+    template: `
+    {{> const { a = 2 } = {}; }}
+    {{ JSON.stringify(a) }}
+    `,
+    expected: "2",
+  });
 });
