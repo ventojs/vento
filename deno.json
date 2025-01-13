@@ -5,7 +5,7 @@
     "docs": "cd docs && deno task serve",
     "build-npm": "deno run --allow-run=npm --allow-env --allow-sys --allow-read --allow-write --allow-net=jsr.io,deno.land _scripts/build_npm.ts",
     "build-jsr": "deno run -A https://deno.land/x/jsrx@v0.1.1/mod.ts --name=@vento/vento",
-    "update-deps": "rm -rf npm && deno run -A 'https://deno.land/x/nudd@v0.2.8/cli.ts' update deno.json **/*.ts"
+    "update-deps": "rm -rf npm && deno run -A 'https://deno.land/x/nudd@v0.2.9/cli.ts' update deno.json **/*.ts"
   },
   "lock": false,
   "fmt": {

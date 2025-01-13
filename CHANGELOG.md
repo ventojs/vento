@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.12.15] - 2025-01-13
+### Fixed
+- Property destruct [#92], [#93]
+- Updated depepencies.
+
 ## [1.12.14] - 2024-12-23
 ### Fixed
 - Removed redundant error message [#90].
@@ -285,7 +290,10 @@ First version
 [#88]: https://github.com/oscarotero/vento/issues/88
 [#89]: https://github.com/oscarotero/vento/issues/89
 [#90]: https://github.com/oscarotero/vento/issues/90
+[#92]: https://github.com/oscarotero/vento/issues/92
+[#93]: https://github.com/oscarotero/vento/issues/93
 
+[1.12.15]: https://github.com/oscarotero/vento/compare/v1.12.14...v1.12.15
 [1.12.14]: https://github.com/oscarotero/vento/compare/v1.12.13...v1.12.14
 [1.12.13]: https://github.com/oscarotero/vento/compare/v1.12.12...v1.12.13
 [1.12.12]: https://github.com/oscarotero/vento/compare/v1.12.11...v1.12.12
