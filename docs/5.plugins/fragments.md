@@ -1,6 +1,8 @@
 # Fragments
 
-> [!warning] This is a third-party plugin.
+> [!warning]
+> 
+> This is a third-party plugin.
 > [Source code](https://github.com/wrapperup/vento-plugin-fragments).
 
 Adds support for
