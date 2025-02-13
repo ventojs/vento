@@ -197,3 +197,14 @@ Deno.test({
     });
   },
 });
+
+Deno.test({
+  name: "Print array",
+  fn: async () => {
+    await test({
+      template: `{{ messages[0] }}`,
+      expected: "yes",
+      data: { messages: ["yes", "no"] },
+    });
+  },
+});
