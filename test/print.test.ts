@@ -208,3 +208,14 @@ Deno.test({
     });
   },
 });
+
+Deno.test({
+  name: "Print global",
+  fn: async () => {
+    await test({
+      template: `{{ global.foo }}`,
+      expected: "bar",
+      data: { global: { foo: "bar" } },
+    });
+  },
+});

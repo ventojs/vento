@@ -21,7 +21,6 @@ const INCLUDE_GLOBAL = [
 const DEFAULT_EXCLUDES = [
   "globalThis",
   "self",
-  "global",
   "this",
   "undefined",
   "null",

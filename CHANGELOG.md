@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.12.16] - Unreleased
+### Fixed
+- Removed `global` from the list of ignored global variables [#99].
+
 ## [1.12.15] - 2025-01-13
 ### Fixed
 - Property destruct [#92], [#93]
@@ -292,7 +296,9 @@ First version
 [#90]: https://github.com/oscarotero/vento/issues/90
 [#92]: https://github.com/oscarotero/vento/issues/92
 [#93]: https://github.com/oscarotero/vento/issues/93
+[#99]: https://github.com/oscarotero/vento/issues/99
 
+[1.12.16]: https://github.com/oscarotero/vento/compare/v1.12.15...HEAD
 [1.12.15]: https://github.com/oscarotero/vento/compare/v1.12.14...v1.12.15
 [1.12.14]: https://github.com/oscarotero/vento/compare/v1.12.13...v1.12.14
 [1.12.13]: https://github.com/oscarotero/vento/compare/v1.12.12...v1.12.13
