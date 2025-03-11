@@ -1,5 +1,5 @@
+import create, {Options as BareOptions} from "./bare.ts";
 import { Environment } from "./src/environment.ts";
-import { FileLoader, Loader } from "./src/loader.ts";
 import ifTag from "./plugins/if.ts";
 import forTag from "./plugins/for.ts";
 import includeTag from "./plugins/include.ts";
@@ -14,44 +14,31 @@ import escape from "./plugins/escape.ts";
 import unescape from "./plugins/unescape.ts";
 import trim from "./plugins/trim.ts";
 
-export interface Options {
-  includes?: string | Loader;
+export interface Options extends BareOptions {
   /** @deprecated Use autoDataVarname */
   useWith?: boolean;
-  autoDataVarname?: boolean;
-  dataVarname?: string;
-  autoescape?: boolean;
-  bare?: boolean;
 }
 
 export default function (options: Options = {}): Environment {
-  const loader = typeof options.includes === "object"
-    ? options.includes
-    : new FileLoader(options.includes || Deno.cwd());
-
-  const env = new Environment({
-    loader,
-    dataVarname: options.dataVarname || "it",
-    autoescape: options.autoescape ?? false,
+  const env = create({
+    ...options,
     autoDataVarname: options.autoDataVarname ?? options.useWith ?? true,
   });
 
-  if (!options.bare) {
-    // Register basic plugins
-    env.use(ifTag());
-    env.use(forTag());
-    env.use(jsTag());
-    env.use(includeTag());
-    env.use(setTag());
-    env.use(layoutTag());
-    env.use(functionTag());
-    env.use(importTag());
-    env.use(exportTag());
-    env.use(echoTag());
-    env.use(escape());
-    env.use(unescape());
-    env.use(trim());
-  }
+  // Register basic plugins
+  env.use(ifTag());
+  env.use(forTag());
+  env.use(jsTag());
+  env.use(includeTag());
+  env.use(setTag());
+  env.use(layoutTag());
+  env.use(functionTag());
+  env.use(importTag());
+  env.use(exportTag());
+  env.use(echoTag());
+  env.use(escape());
+  env.use(unescape());
+  env.use(trim());
 
   return env;
 }
