@@ -21,6 +21,7 @@ export interface Options {
   autoDataVarname?: boolean;
   dataVarname?: string;
   autoescape?: boolean;
+  bare?: boolean;
 }
 
 export default function (options: Options = {}): Environment {
@@ -35,20 +36,22 @@ export default function (options: Options = {}): Environment {
     autoDataVarname: options.autoDataVarname ?? options.useWith ?? true,
   });
 
-  // Register basic plugins
-  env.use(ifTag());
-  env.use(forTag());
-  env.use(jsTag());
-  env.use(includeTag());
-  env.use(setTag());
-  env.use(layoutTag());
-  env.use(functionTag());
-  env.use(importTag());
-  env.use(exportTag());
-  env.use(echoTag());
-  env.use(escape());
-  env.use(unescape());
-  env.use(trim());
+  if (!options.bare) {
+    // Register basic plugins
+    env.use(ifTag());
+    env.use(forTag());
+    env.use(jsTag());
+    env.use(includeTag());
+    env.use(setTag());
+    env.use(layoutTag());
+    env.use(functionTag());
+    env.use(importTag());
+    env.use(exportTag());
+    env.use(echoTag());
+    env.use(escape());
+    env.use(unescape());
+    env.use(trim());
+  }
 
   return env;
 }
