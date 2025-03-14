@@ -1,4 +1,4 @@
-import create, {Options as BareOptions} from "./bare.ts";
+import create, { Options as BareOptions } from "./bare.ts";
 import { Environment } from "./src/environment.ts";
 import ifTag from "./plugins/if.ts";
 import forTag from "./plugins/for.ts";
