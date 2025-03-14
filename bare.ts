@@ -1,5 +1,5 @@
 import { Environment } from "./src/environment.ts";
-import { FileLoader, Loader } from "./src/loader.ts";
+import { FileLoader, type Loader } from "./src/loader.ts";
 
 export interface Options {
   includes?: string | Loader;
