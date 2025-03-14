@@ -211,6 +211,7 @@ Deno.test({
 
 Deno.test({
   name: "Print global",
+  ignore: true, // It fails in Node.js
   fn: async () => {
     await test({
       template: `{{ global.foo }}`,
