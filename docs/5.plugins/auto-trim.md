@@ -10,7 +10,6 @@ additional packages. Simply import it and use it in your instance.
 
 ```js
 import autoTrim from "vento/plugins/auto_trim.ts";
-// import autoTrim from "ventojs/plugins/auto_trim.js";
 
 env.use(autoTrim());
 ```
@@ -23,7 +22,6 @@ to the plugin.
 
 ```js
 import autoTrim, { defaultTags } from "vento/plugins/auto_trim.ts";
-// import autoTrim, { defaultTags } from "ventojs/plugins/auto_trim.js";
 
 env.use(autoTrim({
   tags: ["tag", ...defaultTags],
@@ -52,5 +50,8 @@ Hello, Name!
 Instead of the following:
 
 ```
+
 Hello, Name!
+
+
 ```
