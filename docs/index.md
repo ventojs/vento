@@ -5,7 +5,7 @@ logo: /favicon.svg
 # 🌬 Vento
 
 Vento is the [Galician](https://en.wikipedia.org/wiki/Galician_language) word
-for _wind_ but also a new template engine for Deno. It's inspired by other
+for _wind_ but also a new template engine for Deno and Node. It's inspired by other
 engines, such as [Nunjucks](https://mozilla.github.io/nunjucks/),
 [Liquid](https://liquidjs.com/), [Eta](https://eta.js.org/), and
 [Mustache](https://mustache.github.io/).
