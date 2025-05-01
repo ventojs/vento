@@ -1,4 +1,6 @@
-import { path } from "../deps.ts";
+import path from "node:path";
+import fs from "node:fs/promises";
+import process from "node:process";
 
 export interface TemplateSource {
   source: string;
@@ -13,13 +15,13 @@ export interface Loader {
 export class FileLoader implements Loader {
   #root: string;
 
-  constructor(root = Deno.cwd()) {
+  constructor(root = process.cwd()) {
     this.#root = root;
   }
 
   async load(file: string): Promise<TemplateSource> {
     return {
-      source: await Deno.readTextFile(file),
+      source: await fs.readFile(file, { encoding: "utf-8" }),
     };
   }
 

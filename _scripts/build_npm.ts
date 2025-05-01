@@ -19,7 +19,7 @@ await build({
   ],
   scriptModule: false,
   outDir: "./_npm",
-  shims: { deno: true },
+  shims: { deno: "dev" },
   compilerOptions: { target: "ES2022" },
   typeCheck: "both",
   package: {
@@ -36,6 +36,7 @@ await build({
   },
   mappings: {
     "npm:@types/estree@1.0.6": "estree",
+    "./src/loader.ts": "./src/loader.node.ts",
   },
   postBuild() {
     Deno.copyFileSync("LICENSE", "_npm/LICENSE");

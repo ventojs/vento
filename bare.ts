@@ -11,7 +11,7 @@ export interface Options {
 export default function (options: Options = {}): Environment {
   const loader = typeof options.includes === "object"
     ? options.includes
-    : new FileLoader(options.includes || Deno.cwd());
+    : new FileLoader(options.includes);
 
   const env = new Environment({
     loader,
