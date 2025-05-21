@@ -13,7 +13,7 @@ export interface Loader {
 export class FileLoader implements Loader {
   #root: string;
 
-  constructor(root = Deno.cwd()) {
+  constructor(root: string = Deno.cwd()) {
     this.#root = root;
   }
 

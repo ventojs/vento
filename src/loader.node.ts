@@ -15,7 +15,7 @@ export interface Loader {
 export class FileLoader implements Loader {
   #root: string;
 
-  constructor(root = process.cwd()) {
+  constructor(root: string = process.cwd()) {
     this.#root = root;
   }
 
