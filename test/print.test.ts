@@ -60,10 +60,17 @@ Deno.test("Print tag with filters", async () => {
 
   await test({
     template: `
-    {{ message |> toUpperCase }}
+    {{ message |> toString |> toUpperCase }}
+    `,
+    expected: "12",
+    data: { message: 12 },
+  });
+
+  await test({
+    template: `
+    {{ message |> toString |> toUpperCase }}
     `,
     expected: "",
-    data: { message: 12 },
   });
 
   await test({

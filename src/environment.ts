@@ -59,7 +59,9 @@ export class Environment {
   tags: Tag[] = [];
   tokenPreprocessors: TokenPreprocessor[] = [];
   filters: Record<string, Filter> = {};
-  utils: Record<string, unknown> = {};
+  utils: Record<string, unknown> = {
+    callMethod,
+  };
 
   constructor(options: Options) {
     this.options = options;
@@ -280,7 +282,7 @@ export class Environment {
 
       const [_, isAsync, name, args] = match;
 
-      if (!this.filters[name]) {
+      if (!Object.hasOwn(this.filters, name)) {
         if (name === "safe") {
           unescaped = true;
         } else if (isGlobal(name)) {
@@ -290,9 +292,9 @@ export class Environment {
           })`;
         } else {
           // It's a prototype's method (e.g. `String.toUpperCase()`)
-          output = `${isAsync ? "await " : ""}(${output})?.${name}?.(${
-            args ? args : ""
-          })`;
+          output = `${
+            isAsync ? "await " : ""
+          }__env.utils.callMethod(${output}, "${name}", ${args ? args : ""})`;
         }
       } else {
         // It's a filter (e.g. filters.upper())
@@ -316,15 +318,30 @@ export class Environment {
 
 function isGlobal(name: string) {
   // @ts-ignore TS doesn't know about globalThis
-  if (globalThis[name]) {
+  if (Object.hasOwn(globalThis, name)) {
     return true;
   }
 
   if (name.includes(".")) {
     const [obj, prop] = name.split(".");
     // @ts-ignore TS doesn't know about globalThis
-    return typeof globalThis[obj]?.[prop] === "function";
+    return Object.hasOwn(globalThis[obj], prop);
   }
+}
+
+// deno-lint-ignore no-explicit-any
+function callMethod(thisObject: any, method: string, ...args: unknown[]) {
+  if (thisObject === null || thisObject === undefined) {
+    return thisObject;
+  }
+
+  if (typeof thisObject[method] === "function") {
+    return thisObject[method](...args);
+  }
+
+  throw new Error(
+    `"${method}" is not a valid filter, global object or a method of a ${typeof thisObject} variable`,
+  );
 }
 
 function checkAsync(fn: () => unknown): boolean {

@@ -4,9 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [1.12.17] - Unreleased
+## [1.13.0] - 2025-05-21
+### Changed
+- Invalid pipes now throw errors. Previously, they were silenced.
+  For example consider the following example: `{{ "foo" |> bar }}`:
+  - In previous version, if `bar` is not a valid filter or method, it returns undefined.
+  - As of version 1.13 it throws an error.
+  - The only exception is `null` or `undefined` that don't fail: `{{ undefined |> bar }}` returns `undefined`.
+
 ### Fixed
-- Removed the Deno shim for NPM.
+- Better detection of prototype methods. Example: `{{ 23 |> toString }}`
+  - In previous version, it returns `[object Undefined]` because `toString` is detected as a global function (`globalThis.toString() exists`).
+  - Now it's correctly detected as a method of the number `23`. That's because global functions are now detected with `Object.hasOwn(globalThis, methodName)`.
+- Removed the Deno shim for NPM, making the package lighter on Node.
 
 ## [1.12.16] - 2025-03-14
 ### Added
@@ -306,7 +316,7 @@ First version
 [#99]: https://github.com/oscarotero/vento/issues/99
 [#102]: https://github.com/oscarotero/vento/issues/102
 
-[1.12.17]: https://github.com/oscarotero/vento/compare/v1.12.16...HEAD
+[1.13.0]: https://github.com/oscarotero/vento/compare/v1.12.16...v1.13.0
 [1.12.16]: https://github.com/oscarotero/vento/compare/v1.12.15...v1.12.16
 [1.12.15]: https://github.com/oscarotero/vento/compare/v1.12.14...v1.12.15
 [1.12.14]: https://github.com/oscarotero/vento/compare/v1.12.13...v1.12.14
