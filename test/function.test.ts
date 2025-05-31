@@ -43,6 +43,15 @@ Deno.test("Function tag", async () => {
     `,
     expected: "Hello World / Hello Vento",
   });
+
+  await test({
+    template: `
+    {{ echo }}
+    function foo(a, b, c) {return a + b - c;}
+    {{ /echo }}
+    `,
+    expected: "function foo(a, b, c) {return a + b - c;}",
+  });
 });
 
 Deno.test("Function tag (async)", async () => {

@@ -4,8 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [1.13.1] - Unreleased
+## [1.13.1] - 2025-05-31
 ### Fixed
+- function tag was incorrectly detected [#106].
 - Autotrim: Don't trim inlined tags. For example:
   ```
   <a {{ if rel }}rel={{rel}}{{/if}}>
@@ -329,8 +330,9 @@ First version
 [#93]: https://github.com/oscarotero/vento/issues/93
 [#99]: https://github.com/oscarotero/vento/issues/99
 [#102]: https://github.com/oscarotero/vento/issues/102
+[#106]: https://github.com/oscarotero/vento/issues/106
 
-[1.13.1]: https://github.com/oscarotero/vento/compare/v1.13.0...HEAD
+[1.13.1]: https://github.com/oscarotero/vento/compare/v1.13.0...v1.13.1
 [1.13.0]: https://github.com/oscarotero/vento/compare/v1.12.16...v1.13.0
 [1.12.16]: https://github.com/oscarotero/vento/compare/v1.12.15...v1.12.16
 [1.12.15]: https://github.com/oscarotero/vento/compare/v1.12.14...v1.12.15

@@ -13,7 +13,7 @@ function functionTag(
   _output: string,
   tokens: Token[],
 ): string | undefined {
-  if (!code.match(/(export\s+)?(async\s+)?function\s/)) {
+  if (!code.match(/^(export\s+)?(async\s+)?function\s/)) {
     return;
   }
 
