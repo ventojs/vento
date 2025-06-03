@@ -18,6 +18,14 @@ Deno.test("Set tag", async () => {
     `,
     expected: "Hello world",
   });
+  await test({
+    template: `
+    {{> url = 'abc' }}
+    {{ if path }}{{ set url = path }}{{ /if }}
+    My url value is {{ url }}
+    `,
+    expected: "My url value is abc",
+  });
 });
 
 Deno.test("Set tag with complex", async () => {

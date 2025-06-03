@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.13.2] - Unreleased
+### Fixed
+- `set` tag declares the function twice [#108]
+
 ## [1.13.1] - 2025-05-31
 ### Fixed
 - function tag was incorrectly detected [#106].
@@ -331,7 +335,9 @@ First version
 [#99]: https://github.com/oscarotero/vento/issues/99
 [#102]: https://github.com/oscarotero/vento/issues/102
 [#106]: https://github.com/oscarotero/vento/issues/106
+[#108]: https://github.com/oscarotero/vento/issues/108
 
+[1.13.2]: https://github.com/oscarotero/vento/compare/v1.13.1...HEAD
 [1.13.1]: https://github.com/oscarotero/vento/compare/v1.13.0...v1.13.1
 [1.13.0]: https://github.com/oscarotero/vento/compare/v1.12.16...v1.13.0
 [1.12.16]: https://github.com/oscarotero/vento/compare/v1.12.15...v1.12.16

@@ -31,26 +31,22 @@ function setTag(
     const [, variable, value] = match;
     const val = env.compileFilters(tokens, value);
 
-    return `
-    var ${variable} = ${val};
-    ${dataVarname}["${variable}"] = ${variable};
-    `;
+    return `${dataVarname}["${variable}"] = ${val};`;
   }
 
   // Value is captured (eg: {{ set foo }}bar{{ /set }})
   const compiled: string[] = [];
-  const compiledFilters = env.compileFilters(tokens, expression);
+  const subvarName = `${dataVarname}["${expression.trim()}"]`;
+  const compiledFilters = env.compileFilters(tokens, subvarName);
 
-  compiled.push(`var ${expression} = "";`);
-  compiled.push(...env.compileTokens(tokens, expression, ["/set"]));
-  compiled.push(`${dataVarname}["${expression}"] = ${expression};`);
+  compiled.push(`${subvarName} = "";`);
+  compiled.push(...env.compileTokens(tokens, subvarName, ["/set"]));
 
   if (tokens.length && (tokens[0][0] !== "tag" || tokens[0][1] !== "/set")) {
     throw new Error(`Missing closing tag for set tag: ${code}`);
   }
 
   tokens.shift();
-  compiled.push(`${expression} = ${compiledFilters};`);
-  compiled.push(`${dataVarname}["${expression.trim()}"] = ${expression};`);
+  compiled.push(`${subvarName} = ${compiledFilters};`);
   return compiled.join("\n");
 }
