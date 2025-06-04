@@ -1,16 +1,10 @@
 import path from "node:path";
 import fs from "node:fs/promises";
 import process from "node:process";
+import type { Loader, TemplateSource } from "./environment.ts";
 
-export interface TemplateSource {
-  source: string;
-  data?: Record<string, unknown>;
-}
-
-export interface Loader {
-  load(file: string): TemplateSource | Promise<TemplateSource>;
-  resolve(from: string, file: string): string;
-}
+// Export for backward compatibility
+export type { Loader, TemplateSource };
 
 export class FileLoader implements Loader {
   #root: string;

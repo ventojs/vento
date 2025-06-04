@@ -1,6 +1,5 @@
 import tokenize, { Token } from "./tokenizer.ts";
 
-import type { Loader } from "./loader.ts";
 import { transformTemplateCode } from "./transformer.ts";
 import { TemplateError, TransformError } from "./errors.ts";
 
@@ -45,6 +44,16 @@ export type FilterThis = {
 export type Filter = (this: FilterThis, ...args: any[]) => any;
 
 export type Plugin = (env: Environment) => void;
+
+export interface TemplateSource {
+  source: string;
+  data?: Record<string, unknown>;
+}
+
+export interface Loader {
+  load(file: string): TemplateSource | Promise<TemplateSource>;
+  resolve(from: string, file: string): string;
+}
 
 export interface Options {
   loader: Loader;
