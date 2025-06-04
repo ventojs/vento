@@ -134,3 +134,16 @@ Deno.test("Function scope is respected", async () => {
     expected: "No name / Hello world!",
   });
 });
+
+Deno.test("Function with filters", async () => {
+  await test({
+    template: `
+    {{ export function hello |> toUpperCase }}
+    Hello world
+    {{ /export }}
+
+    {{ hello() }}
+    `,
+    expected: "HELLO WORLD",
+  });
+});

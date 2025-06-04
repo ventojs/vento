@@ -30,6 +30,7 @@ function functionTag(
   const compiled: string[] = [];
   compiled.push(`${as || ""} function ${name} ${args || "()"} {`);
   compiled.push(`let __output = "";`);
+  const result = env.compileFilters(tokens, "__output");
 
   if (exp) {
     compiled.push(...env.compileTokens(tokens, "__output", ["/export"]));
@@ -51,7 +52,7 @@ function functionTag(
 
   tokens.shift();
 
-  compiled.push(`return __output;`);
+  compiled.push(`return ${result};`);
   compiled.push(`}`);
 
   if (exp) {

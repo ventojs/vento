@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   ```vto
   {{ if 4 |> isOdd }}
   ```
+- Support for pipes in `function` tags. For example:
+  ```vto
+  {{ function getText () |> toUpperCase }}
+  ```
 
 ## [1.13.2] - 2025-06-03
 ### Fixed
