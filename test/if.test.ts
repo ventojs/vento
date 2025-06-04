@@ -83,3 +83,16 @@ Deno.test("If / else if condition", async () => {
     data: { name: "Laura" },
   });
 });
+
+Deno.test("If tag with pipes", async () => {
+  await test({
+    template: `
+    {{ if "one" |> isOne }}<p>True</p>{{ /if }}
+    {{ if "two" |> isOne }}<p>True</p>{{ /if }}
+    `,
+    filters: {
+      isOne: (value: string) => value === "one",
+    },
+    expected: "<p>True</p>",
+  });
+});

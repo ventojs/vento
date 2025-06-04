@@ -20,7 +20,8 @@ function ifTag(
   const condition = code.replace(/^if\s+/, "").trim();
   const compiled: string[] = [];
 
-  compiled.push(`if (${condition}) {`);
+  const val = env.compileFilters(tokens, condition);
+  compiled.push(`if (${val}) {`);
   compiled.push(...env.compileTokens(tokens, output, ["/if"]));
   tokens.shift();
   compiled.push("}");

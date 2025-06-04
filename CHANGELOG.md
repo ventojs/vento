@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   {{ for index, [name, age] of people }}
   ```
 - New tags `{{ continue }}` and `{{ break }}` to control loops.
+- Support for pipes in `if` tags. For example:
+  ```vto
+  {{ if 4 |> isOdd }}
+  ```
 
 ## [1.13.2] - 2025-06-03
 ### Fixed
