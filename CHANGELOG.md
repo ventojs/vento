@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   {{ for [name, age] of people }}
   {{ for index, [name, age] of people }}
   ```
+- New tags `{{ continue }}` and `{{ break }}` to control loops.
 
 ## [1.13.2] - 2025-06-03
 ### Fixed

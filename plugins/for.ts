@@ -14,6 +14,10 @@ function forTag(
   output: string,
   tokens: Token[],
 ): string | undefined {
+  if (code === "break" || code === "continue") {
+    return `${code};`;
+  }
+
   if (!code.startsWith("for ")) {
     return;
   }
