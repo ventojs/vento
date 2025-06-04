@@ -20,7 +20,7 @@ function forTag(
 
   const compiled: string[] = [];
   const match = code.match(
-    /^for\s+(await\s+)?(\w+)(?:,\s*(\w+))?\s+of\s+([\s|\S]+)$/,
+    /^for\s+(await\s+)?(\w+|\{[^}]+\}|\[[^}]+\])(?:,\s*(\w+|\{[^}]+\}|\[[^}]+\]))?\s+of\s+([\s|\S]+)$/,
   );
 
   if (!match) {

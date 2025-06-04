@@ -210,3 +210,61 @@ Deno.test("For tag (with filters)", async () => {
     },
   });
 });
+
+Deno.test("For tag (destructured)", async () => {
+  await test({
+    template: `
+    {{ for {name, value} of items }}{{ name }}:{{ value }}-{{ /for }}
+    `,
+    expected: "one:2-two:4-three:6-",
+    data: {
+      items: [
+        { name: "one", value: 2 },
+        { name: "two", value: 4 },
+        { name: "three", value: 6 },
+      ],
+    },
+  });
+
+  await test({
+    template: `
+    {{ for index, {name, value} of items }}{{ index }}{{ name }}:{{ value }}-{{ /for }}
+    `,
+    expected: "0one:2-1two:4-2three:6-",
+    data: {
+      items: [
+        { name: "one", value: 2 },
+        { name: "two", value: 4 },
+        { name: "three", value: 6 },
+      ],
+    },
+  });
+
+  await test({
+    template: `
+    {{ for [name, value] of items }}{{ name }}:{{ value }}-{{ /for }}
+    `,
+    expected: "one:2-two:4-three:6-",
+    data: {
+      items: [
+        ["one", 2],
+        ["two", 4],
+        ["three", 6],
+      ],
+    },
+  });
+
+  await test({
+    template: `
+    {{ for index, [name, value] of items }}{{ index }}{{ name }}:{{ value }}-{{ /for }}
+    `,
+    expected: "0one:2-1two:4-2three:6-",
+    data: {
+      items: [
+        ["one", 2],
+        ["two", 4],
+        ["three", 6],
+      ],
+    },
+  });
+});

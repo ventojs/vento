@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.14.0] - Unreleased
 ### Added
 - New `url_loader.ts` to load templates from URLs.
+- Support for destructuring in `for`. For example:
+  ```vto
+  {{ for {name, age} of people }}
+  {{ for index, {name, age} of people }}
+  {{ for [name, age] of people }}
+  {{ for index, [name, age] of people }}
+  ```
 
 ## [1.13.2] - 2025-06-03
 ### Fixed
