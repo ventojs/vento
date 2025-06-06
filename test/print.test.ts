@@ -101,6 +101,14 @@ Deno.test("Print trim", async () => {
     template: `Hello {{- "World" -}} !`,
     expected: "HelloWorld!",
   });
+
+  await test({
+    template: `
+    {{> let foo = -2 }}
+    1 + 1 = {{--foo}}
+    `,
+    expected: "1 + 1 =2",
+  });
 });
 
 Deno.test("Print trim with filter", async () => {
