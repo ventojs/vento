@@ -1,3 +1,4 @@
+import analyze from "../src/js.ts";
 import type { Token } from "../src/tokenizer.ts";
 import type { Environment, Plugin } from "../src/environment.ts";
 
@@ -23,14 +24,50 @@ function forTag(
   }
 
   const compiled: string[] = [];
+
   const match = code.match(
-    /^for\s+(await\s+)?(\w+|\{[^}]+\}|\[[^}]+\])(?:,\s*(\w+|\{[^}]+\}|\[[^}]+\]))?\s+of\s+([\s|\S]+)$/,
+    /^for\s+(await\s+)?([\s\S]*)$/,
   );
 
   if (!match) {
     throw new Error(`Invalid for loop: ${code}`);
   }
-  const [_, aw, var1, var2, collection] = match;
+
+  let [, aw, tagCode] = match;
+  let var1: string;
+  let var2: string | undefined = undefined;
+  let collection = "";
+
+  if (tagCode.startsWith("[") || tagCode.startsWith("{")) {
+    [var1, tagCode] = getDestructureContent(tagCode);
+  } else {
+    const parts = tagCode.match(/(^[^\s,]+)([\s|\S]+)$/);
+    if (!parts) {
+      throw new Error(`Invalid for loop variable: ${tagCode}`);
+    }
+
+    var1 = parts[1].trim();
+    tagCode = parts[2].trim();
+  }
+
+  if (tagCode.startsWith(",")) {
+    tagCode = tagCode.slice(1).trim();
+
+    if (tagCode.startsWith("[") || tagCode.startsWith("{")) {
+      [var2, tagCode] = getDestructureContent(tagCode);
+      collection = tagCode.slice(3).trim(); // Remove "of " from the start
+    } else {
+      const parts = tagCode.match(/^([\w]+)\s+of\s+([\s|\S]+)$/);
+      if (!parts) {
+        throw new Error(`Invalid for loop variable: ${tagCode}`);
+      }
+
+      var2 = parts[1].trim();
+      collection = parts[2].trim();
+    }
+  } else if (tagCode.startsWith("of ")) {
+    collection = tagCode.slice(3).trim();
+  }
 
   if (var2) {
     compiled.push(
@@ -116,4 +153,20 @@ async function* asyncIterableToEntries(
   for await (const value of iterator) {
     yield [i++, value];
   }
+}
+
+function getDestructureContent(code: string): [string, string] {
+  let index = 0;
+
+  analyze(code, (type, i) => {
+    if (type === "close") {
+      index = i;
+      return false;
+    }
+  });
+
+  return [
+    code.slice(0, index).trim(),
+    code.slice(index + 1).trim(),
+  ];
 }

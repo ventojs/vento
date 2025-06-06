@@ -267,6 +267,18 @@ Deno.test("For tag (destructured)", async () => {
       ],
     },
   });
+  await test({
+    template: `
+    {{ for [[n]] of [[[1]], [[2]]] }}{{ n }}{{ /for }}
+    `,
+    expected: "12",
+  });
+  await test({
+    template: `
+    {{ for i, [[n]] of [[[1]], [[2]]] }}{{ i }}{{ n }}{{ /for }}
+    `,
+    expected: "0112",
+  });
 });
 
 Deno.test("For tag with break and continue", async () => {

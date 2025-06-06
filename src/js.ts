@@ -11,6 +11,7 @@ type status =
   | "regex-bracket"
   | "literal"
   | "bracket"
+  | "square-bracket"
   | "comment"
   | "line-comment";
 
@@ -25,185 +26,206 @@ export default function analyze(source: string, visitor: Visitor) {
     const char = source.charAt(index++);
 
     switch (char) {
-      // Detect start brackets
       case "{": {
-        const status = statuses[0];
+        switch (statuses[0]) {
+          // String interpolation `${...}`
+          case "literal":
+            if (
+              source.charAt(index - 2) === "$" &&
+              source.charAt(index - 3) !== "\\"
+            ) {
+              statuses.unshift("bracket");
+            }
+            break;
 
-        if (
-          status === "literal" &&
-          source.charAt(index - 2) === "$" &&
-          source.charAt(index - 3) !== "\\"
-        ) {
-          statuses.unshift("bracket");
-        } else if (
-          status !== "comment" && status !== "single-quote" &&
-          status !== "double-quote" && status !== "literal" &&
-          status !== "regex" && status !== "line-comment" &&
-          status !== "regex-bracket"
-        ) {
-          if (
-            statuses.length === 0 && visitor("open-bracket", index) === false
-          ) {
-            return;
-          }
-          statuses.unshift("bracket");
+          // Open bracket
+          case undefined:
+          case "square-bracket":
+          case "bracket":
+            if (!statuses.length && visitor("open-bracket", index) === false) {
+              return;
+            }
+            statuses.unshift("bracket");
+            break;
         }
         break;
       }
 
       // Detect end brackets
       case "}": {
-        const status = statuses[0];
+        switch (statuses[0]) {
+          // Close a bracket
+          case "bracket":
+            statuses.shift();
 
-        if (status === "bracket") {
-          statuses.shift();
-
-          if (statuses.length === 0 && visitor("close", index) === false) {
-            return;
-          }
+            if (statuses.length === 0 && visitor("close", index) === false) {
+              return;
+            }
+            break;
         }
         break;
       }
 
-      // Detect double quotes
       case '"': {
-        const status = statuses[0];
-        if (status === "double-quote") {
-          statuses.shift();
-        } else if (
-          status !== "comment" &&
-          status !== "single-quote" &&
-          status !== "literal" &&
-          status !== "regex" &&
-          status !== "regex-bracket" &&
-          status !== "line-comment"
-        ) {
-          statuses.unshift("double-quote");
+        switch (statuses[0]) {
+          // Close double quotes
+          case "double-quote":
+            statuses.shift();
+            break;
+
+          // Open double quotes
+          case undefined:
+          case "square-bracket":
+          case "bracket":
+            statuses.unshift("double-quote");
+            break;
         }
         break;
       }
 
-      // Detect single quotes
       case "'": {
-        const status = statuses[0];
-        if (status === "single-quote") {
-          statuses.shift();
-        } else if (
-          status !== "comment" &&
-          status !== "double-quote" &&
-          status !== "literal" &&
-          status !== "regex" &&
-          status !== "regex-bracket" &&
-          status !== "line-comment"
-        ) {
-          statuses.unshift("single-quote");
+        switch (statuses[0]) {
+          // Close single quotes
+          case "single-quote":
+            statuses.shift();
+            break;
+
+          // Open single quotes
+          case undefined:
+          case "square-bracket":
+          case "bracket":
+            statuses.unshift("single-quote");
+            break;
         }
         break;
       }
 
-      // Detect literals
       case "`": {
-        const status = statuses[0];
-        if (status === "literal") {
-          statuses.shift();
-        } else if (
-          status !== "comment" &&
-          status !== "double-quote" &&
-          status !== "single-quote" &&
-          status !== "regex" &&
-          status !== "regex-bracket" &&
-          status !== "line-comment"
-        ) {
-          statuses.unshift("literal");
+        switch (statuses[0]) {
+          // Close literal
+          case "literal":
+            statuses.shift();
+            break;
+
+          // Open literal
+          case undefined:
+          case "square-bracket":
+          case "bracket":
+            statuses.unshift("literal");
+            break;
         }
         break;
       }
 
-      // Detect regex bracket /[]/
       case "[": {
-        const status = statuses[0];
+        switch (statuses[0]) {
+          // Open a square bracket in a regex
+          case "regex":
+            if (source.charAt(index - 2) !== "\\") {
+              statuses.unshift("regex-bracket");
+            }
+            break;
 
-        if (status === "regex" && source.charAt(index - 2) !== "\\") {
-          statuses.unshift("regex-bracket");
+          // Open a square bracket
+          case undefined:
+          case "square-bracket":
+          case "bracket":
+            if (!statuses.length && visitor("open-bracket", index) === false) {
+              return;
+            }
+            statuses.unshift("square-bracket");
+            break;
         }
         break;
       }
 
-      // Detect regex end bracket /[]/
       case "]": {
-        const status = statuses[0];
+        switch (statuses[0]) {
+          // Close a square bracket in a regex
+          case "regex-bracket":
+            if (source.charAt(index - 2) !== "\\") {
+              statuses.shift();
+            }
+            break;
 
-        if (status === "regex-bracket" && source.charAt(index - 2) !== "\\") {
-          statuses.shift();
+          // Close a square bracket
+          case "square-bracket":
+            statuses.shift();
+
+            if (statuses.length === 0 && visitor("close", index) === false) {
+              return;
+            }
+            break;
         }
         break;
       }
 
-      // Detect comments and regex
       case "/": {
-        const status = statuses[0];
-        if (
-          status === "single-quote" || status === "double-quote" ||
-          status === "literal" || status === "line-comment" ||
-          status === "regex-bracket"
-        ) {
-          break;
-        }
+        switch (statuses[0]) {
+          // Close a comment
+          case "comment":
+            if (source.charAt(index - 2) === "*") {
+              statuses.shift();
+            }
+            break;
 
-        // We are in a comment: close or ignore
-        if (status === "comment") {
-          if (source.charAt(index - 2) === "*") {
-            statuses.shift();
-          }
-          break;
-        }
+          // Close a regular expression
+          case "regex":
+            if (source.charAt(index - 2) !== "\\") {
+              statuses.shift();
+            }
+            break;
 
-        // We are in a regex: close or ignore
-        if (status === "regex") {
-          if (source.charAt(index - 2) !== "\\") {
-            statuses.shift();
-          }
-          break;
-        }
+          case undefined:
+          case "square-bracket":
+          case "bracket":
+            // Open a new comment
+            if (source.charAt(index) === "*") {
+              statuses.unshift("comment");
+              break;
+            }
 
-        // Start a new comment
-        if (source.charAt(index) === "*") {
-          statuses.unshift("comment");
-          break;
-        }
+            // Open a new line comment
+            if (source.charAt(index - 2) === "/") {
+              statuses.unshift("line-comment");
+              break;
+            }
 
-        // Start a new line comment
-        if (source.charAt(index - 2) === "/") {
-          statuses.unshift("line-comment");
-          break;
-        }
-
-        // Start a new regex
-        const prev = prevChar(source, index - 1);
-
-        if (["(", "=", ":", ",", "?", "&", "!"].includes(prev)) {
-          statuses.unshift("regex");
+            // Open a new regex
+            if (
+              ["(", "=", ":", ",", "?", "&", "!"].includes(
+                prevChar(source, index - 1),
+              )
+            ) {
+              statuses.unshift("regex");
+              break;
+            }
+            break;
         }
         break;
       }
 
-      // Detect end of line comments
       case "\n": {
-        const status = statuses[0];
-        if (status === "line-comment") {
-          statuses.shift();
+        switch (statuses[0]) {
+          // Close a line comment
+          case "line-comment":
+            statuses.shift();
+            break;
         }
         break;
       }
 
-      // Detect filters
       case "|": {
-        const status = statuses[0];
-        if (
-          status === "bracket" && source.charAt(index) === ">" &&
-          visitor("new-filter", index + 1) === false
-        ) {
-          return;
+        switch (statuses[0]) {
+          // New pipeline
+          case "bracket":
+            if (
+              source.charAt(index) === ">" &&
+              visitor("new-filter", index + 1) === false
+            ) {
+              return;
+            }
+            break;
         }
         break;
       }
