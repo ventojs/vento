@@ -121,6 +121,15 @@ Deno.test("Tokenizer (literal 2)", () => {
   ]);
 });
 
+Deno.test("Tokenizer (literal 3)", () => {
+  const code = "{{ `\\${{` }}";
+  const tokens = tmpl().tokenize(code);
+  assertEquals(tokens, [
+    ["string", "", 0],
+    ["tag", "`\\${{`", 0],
+  ]);
+});
+
 Deno.test("Tokenizer (filter)", () => {
   const code = "{{ url |> await fetch |> await json |> stringify }}";
   const tokens = tmpl().tokenize(code);
@@ -130,5 +139,14 @@ Deno.test("Tokenizer (filter)", () => {
     ["filter", "await fetch"],
     ["filter", "await json"],
     ["filter", "stringify"],
+  ]);
+});
+
+Deno.test("Tokenizer (regexp)", () => {
+  const code = "{{ !/}}/.test(foo) }}";
+  const tokens = tmpl().tokenize(code);
+  assertEquals(tokens, [
+    ["string", "", 0],
+    ["tag", "!/}}/.test(foo)", 0],
   ]);
 });

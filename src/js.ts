@@ -8,6 +8,7 @@ type status =
   | "single-quote"
   | "double-quote"
   | "regex"
+  | "regex-bracket"
   | "literal"
   | "bracket"
   | "comment"
@@ -28,12 +29,17 @@ export default function analyze(source: string, visitor: Visitor) {
       case "{": {
         const status = statuses[0];
 
-        if (status === "literal" && source.charAt(index - 2) === "$") {
+        if (
+          status === "literal" &&
+          source.charAt(index - 2) === "$" &&
+          source.charAt(index - 3) !== "\\"
+        ) {
           statuses.unshift("bracket");
         } else if (
           status !== "comment" && status !== "single-quote" &&
           status !== "double-quote" && status !== "literal" &&
-          status !== "regex" && status !== "line-comment"
+          status !== "regex" && status !== "line-comment" &&
+          status !== "regex-bracket"
         ) {
           if (
             statuses.length === 0 && visitor("open-bracket", index) === false
@@ -69,6 +75,7 @@ export default function analyze(source: string, visitor: Visitor) {
           status !== "single-quote" &&
           status !== "literal" &&
           status !== "regex" &&
+          status !== "regex-bracket" &&
           status !== "line-comment"
         ) {
           statuses.unshift("double-quote");
@@ -86,6 +93,7 @@ export default function analyze(source: string, visitor: Visitor) {
           status !== "double-quote" &&
           status !== "literal" &&
           status !== "regex" &&
+          status !== "regex-bracket" &&
           status !== "line-comment"
         ) {
           statuses.unshift("single-quote");
@@ -103,9 +111,30 @@ export default function analyze(source: string, visitor: Visitor) {
           status !== "double-quote" &&
           status !== "single-quote" &&
           status !== "regex" &&
+          status !== "regex-bracket" &&
           status !== "line-comment"
         ) {
           statuses.unshift("literal");
+        }
+        break;
+      }
+
+      // Detect regex bracket /[]/
+      case "[": {
+        const status = statuses[0];
+
+        if (status === "regex" && source.charAt(index - 2) !== "\\") {
+          statuses.unshift("regex-bracket");
+        }
+        break;
+      }
+
+      // Detect regex end bracket /[]/
+      case "]": {
+        const status = statuses[0];
+
+        if (status === "regex-bracket" && source.charAt(index - 2) !== "\\") {
+          statuses.shift();
         }
         break;
       }
@@ -115,7 +144,8 @@ export default function analyze(source: string, visitor: Visitor) {
         const status = statuses[0];
         if (
           status === "single-quote" || status === "double-quote" ||
-          status === "literal" || status === "line-comment"
+          status === "literal" || status === "line-comment" ||
+          status === "regex-bracket"
         ) {
           break;
         }
@@ -150,7 +180,8 @@ export default function analyze(source: string, visitor: Visitor) {
 
         // Start a new regex
         const prev = prevChar(source, index - 1);
-        if (prev === "(" || prev === "=" || prev === ":" || prev === ",") {
+
+        if (["(", "=", ":", ",", "?", "&", "!"].includes(prev)) {
           statuses.unshift("regex");
         }
         break;
