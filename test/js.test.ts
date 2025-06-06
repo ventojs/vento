@@ -29,6 +29,15 @@ Deno.test("> tag", async () => {
     `,
     expected: "Hello world",
   });
+  await test({
+    template: `
+    {{> // This is a comment }}
+      const message = "Hello world"
+    }}
+    {{ message }}
+    `,
+    expected: "Hello world",
+  });
 
   await test({
     template: `
