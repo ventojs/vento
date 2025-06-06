@@ -279,6 +279,12 @@ Deno.test("For tag (destructured)", async () => {
     `,
     expected: "0112",
   });
+  await test({
+    template: `
+    {{ for [{foo: faa}] of [[{foo: 2}]] }}{{ faa }}{{ /for }}
+    `,
+    expected: "2",
+  });
 });
 
 Deno.test("For tag with break and continue", async () => {
