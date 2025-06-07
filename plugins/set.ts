@@ -31,7 +31,7 @@ function setTag(
     const [, variable, value] = match;
     const val = env.compileFilters(tokens, value);
 
-    return `${dataVarname}["${variable}"] = ${val};`;
+    return `${variable} = ${val};`;
   }
 
   // Value is captured (eg: {{ set foo }}bar{{ /set }})
