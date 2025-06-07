@@ -147,27 +147,27 @@ export class Environment {
 
     const { dataVarname, autoDataVarname } = this.options;
 
-    if (autoDataVarname) {
-      try {
-        code = transformTemplateCode(code, dataVarname);
-      } catch (cause) {
-        if (cause instanceof TransformError) {
-          throw new TemplateError(path, source, cause.position, cause);
-        }
-
-        throw new Error(`Unknown error while transforming ${path}`, { cause });
-      }
-    }
+    const variables = (() => {
+      const shape = /(?<=(?:(?:function|const|let|var)\s|[^\w\s\\.]|^)\s*)[a-zA-Z_]\w*/g
+      const matches = code.match(shape)
+      const set = new Set(matches)
+      const reserved = ["function", "let", "var", "const", "typeof", "instanceof",
+        "true", "false", "undefined", "null", "NaN", "window", "globalThis", "self",
+        "return", "if", "else", "for", "do", "while", "new", "async", "await",
+        "__file", "__env", "__defaults", "__err",
+      ]
+      for(const name of reserved) set.delete(name)
+      return [...set]
+    })()
 
     const constructor = new Function(
       "__file",
       "__env",
       "__defaults",
       "__err",
-      `return${sync ? "" : " async"} function (${dataVarname}) {
+      `return${sync ? "" : " async"} function ({${variables}} = {}) {{
         let __pos = 0;
         try {
-          ${dataVarname} = Object.assign({}, __defaults, ${dataVarname});
           const __exports = { content: "" };
           ${code}
           return __exports;
@@ -175,9 +175,10 @@ export class Environment {
           const template = __env.cache.get(__file);
           throw new __err(__file, template?.source, __pos, cause);
         }
-      }
+      }}
       `,
     );
+
 
     const template: Template = constructor(path, this, defaults, TemplateError);
     template.file = path;
