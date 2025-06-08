@@ -104,6 +104,8 @@ export default function tokenize(source: string): TokenizeResult {
 export function parseTag(source: string): number[] {
   const indexes: number[] = [2];
 
+  const keywords = new Set<string>();
+
   analyze(source, (type, index) => {
     if (type === "close") {
       indexes.push(index);
@@ -115,7 +117,8 @@ export function parseTag(source: string): number[] {
     } else if (type === "unclosed") {
       throw new Error("Unclosed tag");
     }
-  });
+  }, keywords);
 
+  console.log("Tag indexes:", keywords);
   return indexes;
 }

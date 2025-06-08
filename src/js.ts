@@ -13,14 +13,23 @@ type status =
   | "bracket"
   | "square-bracket"
   | "comment"
+  | "keyword"
   | "line-comment";
 
 type Visitor = (type: breakpoints, index: number) => false | void;
 
-export default function analyze(source: string, visitor: Visitor) {
+const alpha = /^[a-zA-Z_]$/;
+const alphanum = /^\w$/;
+
+export default function analyze(
+  source: string,
+  visitor: Visitor,
+  keywords = new Set<string>(),
+) {
   const length = source.length;
   const statuses: status[] = [];
   let index = 0;
+  let keyword = "";
 
   while (index < length) {
     const char = source.charAt(index++);
@@ -228,6 +237,31 @@ export default function analyze(source: string, visitor: Visitor) {
             break;
         }
         break;
+      }
+
+      default: {
+        switch (statuses[0]) {
+          case undefined:
+          case "bracket":
+            if (alpha.test(char)) {
+              // Open a keyword
+              statuses.unshift("keyword");
+              keyword = char;
+            }
+            break;
+          case "keyword": {
+            // Continue a keyword
+            if (alphanum.test(char)) {
+              keyword += char;
+              break;
+            }
+
+            // Close a keyword
+            statuses.shift();
+            keywords.add(keyword);
+            break;
+          }
+        }
       }
     }
   }
