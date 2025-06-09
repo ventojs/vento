@@ -13,13 +13,87 @@ type status =
   | "bracket"
   | "square-bracket"
   | "comment"
-  | "keyword"
   | "line-comment";
 
 type Visitor = (type: breakpoints, index: number) => false | void;
 
-const alpha = /^[a-zA-Z_]$/;
-const alphanum = /^\w$/;
+const alpha = /^[a-zA-Z_$]$/;
+const alphanum = /^[\w$]$/;
+
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#keywords
+const reservedKeywords = new Set([
+  "abstract",
+  "arguments",
+  "as",
+  "async",
+  "await",
+  "boolean",
+  "break",
+  "byte",
+  "case",
+  "catch",
+  "char",
+  "class",
+  "const",
+  "continue",
+  "debugger",
+  "default",
+  "delete",
+  "do",
+  "double",
+  "else",
+  "enum",
+  "eval",
+  "export",
+  "extends",
+  "false",
+  "final",
+  "finally",
+  "float",
+  "for",
+  "from",
+  "function",
+  "get",
+  "goto",
+  "if",
+  "implements",
+  "import",
+  "in",
+  "instanceof",
+  "int",
+  "interface",
+  "let",
+  "long",
+  "native",
+  "new",
+  "null",
+  "of",
+  "package",
+  "private",
+  "protected",
+  "public",
+  "return",
+  "set",
+  "short",
+  "static",
+  "super",
+  "synchronized",
+  "switch",
+  "this",
+  "throw",
+  "throws",
+  "transient",
+  "true",
+  "try",
+  "typeof",
+  "undefined",
+  "var",
+  "void",
+  "volatile",
+  "while",
+  "with",
+  "yield",
+]);
 
 export default function analyze(
   source: string,
@@ -29,7 +103,6 @@ export default function analyze(
   const length = source.length;
   const statuses: status[] = [];
   let index = 0;
-  let keyword = "";
 
   while (index < length) {
     const char = source.charAt(index++);
@@ -242,23 +315,30 @@ export default function analyze(
       default: {
         switch (statuses[0]) {
           case undefined:
-          case "bracket":
-            if (alpha.test(char)) {
-              // Open a keyword
-              statuses.unshift("keyword");
-              keyword = char;
-            }
-            break;
-          case "keyword": {
-            // Continue a keyword
-            if (alphanum.test(char)) {
-              keyword += char;
-              break;
-            }
+          case "square-bracket":
+          case "bracket": {
+            // It's a keyword
+            const prev = source.charAt(index - 2);
+            if (alpha.test(char) && !alphanum.test(prev) && prev !== ".") {
+              let keyword = char;
 
-            // Close a keyword
-            statuses.shift();
-            keywords.add(keyword);
+              while (index < length) {
+                const char = source.charAt(index);
+                if (!alphanum.test(char)) {
+                  break;
+                }
+                keyword += char;
+                index++;
+              }
+
+              // If the keyword is not reserved and not a global property, add it to the keywords set
+              if (
+                !reservedKeywords.has(keyword) &&
+                !Object.hasOwn(globalThis, keyword)
+              ) {
+                keywords.add(keyword);
+              }
+            }
             break;
           }
         }

@@ -19,6 +19,7 @@ function setTag(
 
   const expression = code.replace(/^set\s+/, "");
   const { dataVarname } = env.options;
+  const compiled: string[] = [];
 
   // Value is set (e.g. {{ set foo = "bar" }})
   if (expression.includes("=")) {
@@ -29,14 +30,17 @@ function setTag(
     }
 
     const [, variable, value] = match;
+    const subvarName = `${dataVarname}["${variable}"]`;
     const val = env.compileFilters(tokens, value);
 
-    return `${dataVarname}["${variable}"] = ${val};`;
+    compiled.push(`${subvarName} = ${val};`);
+    compiled.push(`${variable} = ${subvarName};`);
+    return compiled.join("\n");
   }
 
   // Value is captured (eg: {{ set foo }}bar{{ /set }})
-  const compiled: string[] = [];
-  const subvarName = `${dataVarname}["${expression.trim()}"]`;
+  const variable = expression.trim();
+  const subvarName = `${dataVarname}["${variable}"]`;
   const compiledFilters = env.compileFilters(tokens, subvarName);
 
   compiled.push(`${subvarName} = "";`);
@@ -48,5 +52,6 @@ function setTag(
 
   tokens.shift();
   compiled.push(`${subvarName} = ${compiledFilters};`);
+  compiled.push(`${variable} = ${subvarName};`);
   return compiled.join("\n");
 }

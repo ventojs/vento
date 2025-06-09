@@ -9,7 +9,10 @@ export interface TokenizeResult {
   error: Error | undefined;
 }
 
-export default function tokenize(source: string): TokenizeResult {
+export default function tokenize(
+  source: string,
+  keywords: Set<string>,
+): TokenizeResult {
   const tokens: Token[] = [];
   let type: TokenType = "string";
   let position = 0;
@@ -49,7 +52,7 @@ export default function tokenize(source: string): TokenizeResult {
       }
 
       if (type === "tag") {
-        const indexes = parseTag(source);
+        const indexes = parseTag(source, keywords);
         const lastIndex = indexes.length - 1;
         let tag: Token | undefined;
 
@@ -101,10 +104,8 @@ export default function tokenize(source: string): TokenizeResult {
  * Parse a tag and return the indexes of the start and end brackets, and the filters between.
  * For example: {{ tag |> filter1 |> filter2 }} => [2, 9, 20, 31]
  */
-export function parseTag(source: string): number[] {
+export function parseTag(source: string, keywords: Set<string>): number[] {
   const indexes: number[] = [2];
-
-  const keywords = new Set<string>();
 
   analyze(source, (type, index) => {
     if (type === "close") {
@@ -119,6 +120,5 @@ export function parseTag(source: string): number[] {
     }
   }, keywords);
 
-  console.log("Tag indexes:", keywords);
   return indexes;
 }

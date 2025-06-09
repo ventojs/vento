@@ -142,22 +142,31 @@ export class Environment {
         `The source code of "${path}" must be a string. Got ${typeof source}`,
       );
     }
-    const tokens = this.tokenize(source, path);
+    const [tokens, keywords] = this.tokenize(source, path);
     let code = this.compileTokens(tokens).join("\n");
 
     const { dataVarname, autoDataVarname } = this.options;
 
-    if (autoDataVarname) {
-      try {
-        code = transformTemplateCode(code, dataVarname);
-      } catch (cause) {
-        if (cause instanceof TransformError) {
-          throw new TemplateError(path, source, cause.position, cause);
-        }
+    // if (autoDataVarname) {
+    //   try {
+    //     code = transformTemplateCode(code, dataVarname);
+    //   } catch (cause) {
+    //     if (cause instanceof TransformError) {
+    //       throw new TemplateError(path, source, cause.position, cause);
+    //     }
 
-        throw new Error(`Unknown error while transforming ${path}`, { cause });
-      }
-    }
+    //     throw new Error(`Unknown error while transforming ${path}`, { cause });
+    //   }
+    // }
+
+    // Remove internal variables
+    keywords.delete(dataVarname);
+    keywords.delete("__pos");
+    keywords.delete("__env");
+    keywords.delete("__exports");
+    keywords.delete("__file");
+
+    const variables = Array.from(keywords).join(", ");
 
     const constructor = new Function(
       "__file",
@@ -168,8 +177,9 @@ export class Environment {
         let __pos = 0;
         try {
           ${dataVarname} = Object.assign({}, __defaults, ${dataVarname});
+          let { ${variables} } = ${dataVarname};
           const __exports = { content: "" };
-          ${code}
+          {${code}}
           return __exports;
         } catch (cause) {
           const template = __env.cache.get(__file);
@@ -178,6 +188,7 @@ export class Environment {
       }
       `,
     );
+    console.log(constructor.toString());
 
     const template: Template = constructor(path, this, defaults, TemplateError);
     template.file = path;
@@ -186,8 +197,9 @@ export class Environment {
     return template;
   }
 
-  tokenize(source: string, path?: string): Token[] {
-    const result = tokenize(source);
+  tokenize(source: string, path?: string): [Token[], Set<string>] {
+    const keywords = new Set<string>();
+    const result = tokenize(source, keywords);
     let { tokens } = result;
     const { position, error } = result;
 
@@ -203,7 +215,7 @@ export class Environment {
       }
     }
 
-    return tokens;
+    return [tokens, keywords];
   }
 
   async load(file: string, from?: string): Promise<Template> {

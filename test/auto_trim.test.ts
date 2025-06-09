@@ -19,7 +19,7 @@ Deno.test("Autotrim (removes newlines correctly)", () => {
   const env = tmpl();
   env.use(autoTrim());
 
-  const tokens = env.tokenize(code);
+  const [tokens] = env.tokenize(code);
   assertEquals(tokens, [
     ["string", "<h1>Hello!</h1>\n\n", 0],
     ["tag", "if true", 21],
@@ -52,7 +52,7 @@ Deno.test("Autotrim (no next tokens)", () => {
   const env = tmpl();
   env.use(autoTrim());
 
-  const tokens = env.tokenize(code);
+  const [tokens] = env.tokenize(code);
   assertEquals(tokens, [
     ["string", "", 0],
     ["tag", "if 1", 0],
