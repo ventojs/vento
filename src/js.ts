@@ -102,6 +102,7 @@ export default function analyze(
 ) {
   const length = source.length;
   const statuses: status[] = [];
+  const scopes: Set<string>[] = [new Set()];
   let index = 0;
 
   while (index < length) {
@@ -127,6 +128,9 @@ export default function analyze(
             if (!statuses.length && visitor("open-bracket", index) === false) {
               return;
             }
+            if (char === "{") {
+              scopes.push(new Set());
+            }
             statuses.unshift("bracket");
             break;
         }
@@ -138,10 +142,13 @@ export default function analyze(
         switch (statuses[0]) {
           // Close a bracket
           case "bracket":
-            statuses.shift();
+            {
+              statuses.shift();
+              scopes.shift();
 
-            if (statuses.length === 0 && visitor("close", index) === false) {
-              return;
+              if (statuses.length === 0 && visitor("close", index) === false) {
+                return;
+              }
             }
             break;
         }
@@ -331,9 +338,10 @@ export default function analyze(
                 index++;
               }
 
-              // If the keyword is not reserved and not a global property, add it to the keywords set
+              // If the keyword is not reserved and not a defined variable, add it to the keywords set
               if (
                 !reservedKeywords.has(keyword) &&
+                scopes.every((scope) => !scope.has(keyword)) &&
                 !Object.hasOwn(globalThis, keyword)
               ) {
                 keywords.add(keyword);

@@ -143,6 +143,7 @@ export class Environment {
       );
     }
     const [tokens, keywords] = this.tokenize(source, path);
+    console.log(tokens, keywords);
     let code = this.compileTokens(tokens).join("\n");
 
     const { dataVarname, autoDataVarname } = this.options;
@@ -167,6 +168,7 @@ export class Environment {
     keywords.delete("__file");
 
     const variables = Array.from(keywords).join(", ");
+    const initVars = variables ? `let { ${variables} } = ${dataVarname};` : "";
 
     const constructor = new Function(
       "__file",
@@ -177,7 +179,7 @@ export class Environment {
         let __pos = 0;
         try {
           ${dataVarname} = Object.assign({}, __defaults, ${dataVarname});
-          let { ${variables} } = ${dataVarname};
+          ${initVars}
           const __exports = { content: "" };
           {${code}}
           return __exports;
