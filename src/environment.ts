@@ -251,7 +251,6 @@ export class Environment {
       const input = {defaults, ...data, __file, __env, __defaults, __err}
       if(newVariables.size == 0) return render(input)
       for(const variable of newVariables) variables.add(variable)
-      console.log(code)
       render = new FnConstructor(`it`, `
         var {${[...variables].join(',')}} = it;
         try {
