@@ -239,7 +239,6 @@ export class Environment {
     const reserved = ['__file', '__env', '__defaults', '__err']
     const variables = new Set<string>(reserved)
     let render: (data: Record<string, unknown>) => Template | TemplateSync
-    const file = path?.replaceAll(`'`, `\\'`) ?? ''
     const __env = this
     const __err = TemplateError
     const __file = path
@@ -259,8 +258,8 @@ export class Environment {
           ;${code}
           return __exports
         } catch(cause){
-          const template = __env.cache.get('${file}');
-          throw new __err('${file}', template?.source, __pos, cause);
+          const template = __env.cache.get(__file);
+          throw new __err(__file, template?.source, __pos, cause);
         }
       `)
       return render(input)
