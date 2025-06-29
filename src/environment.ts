@@ -60,6 +60,7 @@ export interface Options {
   dataVarname: string;
   autoescape: boolean;
   autoDataVarname: boolean;
+  strict: boolean;
 }
 
 export class Environment {
@@ -145,6 +146,10 @@ export class Environment {
     const tokens = this.tokenize(source, path);
     let code = this.compileTokens(tokens).join("\n");
 
+    if (this.options.strict) {
+      return this.compileStrict(source, code, path, defaults, sync)
+    }
+
     const { dataVarname, autoDataVarname } = this.options;
 
     if (autoDataVarname) {
@@ -222,6 +227,48 @@ export class Environment {
     }
 
     return this.cache.get(path)!;
+  }
+
+  compileStrict(
+    source: string,
+    code: string,
+    path?: string,
+    defaults?: Record<string, unknown>,
+    sync?: boolean,
+  ): Template | TemplateSync {
+    const reserved = ['__file', '__env', '__defaults', '__err']
+    const variables = new Set<string>(reserved)
+    let render: (data: Record<string, unknown>) => Template | TemplateSync
+    const file = path?.replaceAll(`'`, `\\'`) ?? ''
+    const __env = this
+    const __err = TemplateError
+    const __file = path
+    const __defaults = defaults
+    const FnConstructor = sync ? Function : (async function(){}).constructor
+    const template = function(data){
+      const keys = data ? Object.keys(data) : []
+      const newVariables = keys.filter(key => !variables.has(key))
+      const input = {defaults, ...data, __file, __env, __defaults, __err}
+      if(newVariables.size == 0) return render(input)
+      for(const variable of newVariables) variables.add(variable)
+      console.log(code)
+      render = new FnConstructor(`it`, `
+        var {${[...variables].join(',')}} = it;
+        try {
+          const __exports = {content: ''}
+          ;${code}
+          return __exports
+        } catch(cause){
+          const template = __env.cache.get('${file}');
+          throw new __err('${file}', template?.source, __pos, cause);
+        }
+      `)
+      return render(input)
+    }
+    template.file = path
+    template.code = code
+    template.source = source
+    return template
   }
 
   compileTokens(
