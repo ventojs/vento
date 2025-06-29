@@ -245,14 +245,15 @@ export class Environment {
     const __file = path
     const __defaults = defaults
     const FnConstructor = sync ? Function : (async function(){}).constructor
+    const {dataVarname} = this.options;
     const template = function(data){
       const keys = data ? Object.keys(data) : []
       const newVariables = keys.filter(key => !variables.has(key))
       const input = {defaults, ...data, __file, __env, __defaults, __err}
       if(newVariables.size == 0) return render(input)
       for(const variable of newVariables) variables.add(variable)
-      render = new FnConstructor(`it`, `
-        var {${[...variables].join(',')}} = it;
+      render = new FnConstructor(`${dataVarname}`, `
+        var {${[...variables].join(',')}} = ${dataVarname};
         try {
           const __exports = {content: ''}
           ;${code}
