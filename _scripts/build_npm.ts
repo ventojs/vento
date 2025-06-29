@@ -16,6 +16,7 @@ await build({
     "./src/loader.ts",
     "./src/url_loader.ts",
     "./src/tokenizer.ts",
+    "./plugins/auto_trim.ts",
     "./plugins/if.ts",
     "./plugins/for.ts",
     "./plugins/include.ts",
