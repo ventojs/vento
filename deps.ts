@@ -1,5 +1,3 @@
-export * as path from "jsr:@std/path@1.0.8";
-export * as posix from "jsr:@std/path@1.0.8/posix";
 export * as html from "jsr:@std/html@1.0.3";
 
 export * as astring from "jsr:@davidbonnet/astring@1.8.6";
