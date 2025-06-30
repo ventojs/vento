@@ -249,7 +249,7 @@ export class Environment {
       const keys = data ? Object.keys(data) : []
       const newVariables = keys.filter(key => !variables.has(key))
       const input = {defaults, ...data, __file, __env, __defaults, __err}
-      if(newVariables.size == 0) return render(input)
+      if(render && newVariables.size == 0) return render(input)
       for(const variable of newVariables) variables.add(variable)
       render = new FnConstructor(`${dataVarname}`, `
         var {${[...variables].join(',')}} = ${dataVarname};

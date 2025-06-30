@@ -18,7 +18,7 @@ export default function (options: Options = {}): Environment {
     dataVarname: options.dataVarname || "it",
     autoescape: options.autoescape ?? false,
     autoDataVarname: options.autoDataVarname ?? true,
-    strict: options.strict ?? false,
+    strict: options.strict ?? true,
   });
 
   return env;
