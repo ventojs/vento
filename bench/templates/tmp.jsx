@@ -1,5 +1,5 @@
 /** @jsx h */
-import { h, render } from "npm:preact@10.26.9";
+import { h } from "npm:preact@10.26.9";
 
 export default function render(data) {
   // Misses <!DOCTYPE html>
@@ -72,7 +72,7 @@ export default function render(data) {
           Output: <output>{targetIndex}</output>
 
           <p>
-            This templating language uses <code>&#x7B;</code> and <code>}</code>
+            This templating language uses <code>&#x7B;</code> and <code>&#125;</code>
             {" "}
             for interpolation. There are two main ways to escape them if you
             need them literally:
@@ -83,7 +83,7 @@ export default function render(data) {
               Through <code>{`{\` … \`}`}</code>, or
             </li>
             <li>
-              Through character escaping, such as <code>&amp;#x7B; … }</code>
+              Through character escaping, such as <code>&amp;#x7B; … &#125;</code>
               {" "}
               in HTML.
             </li>
