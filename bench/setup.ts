@@ -13,10 +13,10 @@ const data = {
   title: "Benchmarking templating languages",
   description: "Benchmarking templating languages; who's fastest?",
   mainNavItems: [
-    {url: "#foo", text: "Foo"},
-    {url: "#bar", text: "Bar"},
-    {url: "#baz", text: "Baz"},
-    {url: "#qux", text: "Qux"},
+    { url: "#foo", text: "Foo" },
+    { url: "#bar", text: "Bar" },
+    { url: "#baz", text: "Baz" },
+    { url: "#qux", text: "Qux" },
   ],
   searchArray: [...Array(1_000).keys()],
 };
@@ -27,10 +27,10 @@ export async function runBenchmark(
     data: Record<string, unknown>,
   ) => Promise<() => Promise<any>>,
   { exclude }: { exclude: string[] } = { exclude: [] },
-){
-  for(const [name, initializer] of Object.entries(initializers)){
-    if(exclude.includes(name)) continue;
-    const run = await setupThenRun(initializer, data)
+) {
+  for (const [name, initializer] of Object.entries(initializers)) {
+    if (exclude.includes(name)) continue;
+    const run = await setupThenRun(initializer, data);
     Deno.bench(name, async () => {
       await run();
     });
@@ -44,8 +44,8 @@ const initializers = {
     const env = vento({ autoDataVarname: true });
     const render = await env.load(dir + "tmp.vto");
     return async (data: Record<string, unknown>) => {
-      const { content } = await render(data)
-      return content
+      const { content } = await render(data);
+      return content;
     };
   },
 
@@ -64,12 +64,12 @@ const initializers = {
 
   async Eta(): Promise<Renderer> {
     const eta = new Eta({ cache: true, useWith: true });
-    const template = eta.compile(eta.readFile(dir + "tmp.eta"))
+    const template = eta.compile(eta.readFile(dir + "tmp.eta"));
     return template.bind(eta);
   },
 
   async Pug(): Promise<Renderer> {
-    return pug.compileFile(dir + "tmp.pug")
+    return pug.compileFile(dir + "tmp.pug");
   },
 
   async JSX(): Promise<Renderer> {
@@ -90,4 +90,4 @@ const initializers = {
     edge.mount(dir);
     return edge.render.bind(edge, "tmp");
   },
-}
+};
