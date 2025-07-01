@@ -72,8 +72,8 @@ export default function render(data) {
           Output: <output>{targetIndex}</output>
 
           <p>
-            This templating language uses <code>&#x7B;</code> and <code>&#125;</code>
-            {" "}
+            This templating language uses <code>&#x7B;</code> and{" "}
+            <code>&#125;</code>{" "}
             for interpolation. There are two main ways to escape them if you
             need them literally:
           </p>
@@ -83,9 +83,8 @@ export default function render(data) {
               Through <code>{`{\` … \`}`}</code>, or
             </li>
             <li>
-              Through character escaping, such as <code>&amp;#x7B; … &#125;</code>
-              {" "}
-              in HTML.
+              Through character escaping, such as{" "}
+              <code>&amp;#x7B; … &#125;</code> in HTML.
             </li>
           </ol>
         </main>
