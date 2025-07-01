@@ -23,9 +23,9 @@ const data = {
 
 export async function runBenchmark(
   setupThenRun: (
-    initializer: () => Promise<Renderer>,
+    initializer: () => Renderer | Promise<Renderer>,
     data: Record<string, unknown>,
-  ) => Promise<() => Promise>,
+  ) => (() => Promise<void>) | Promise<() => Promise<void>>,
   { exclude }: { exclude: string[] } = { exclude: [] },
 ) {
   for (const [name, initializer] of Object.entries(initializers)) {
@@ -51,7 +51,7 @@ const initializers = {
     };
   },
 
-  Nunjucks(): Promise<Renderer> {
+  Nunjucks(): Renderer {
     const loader = new nunjucks.FileSystemLoader(Deno.cwd());
     const env = new nunjucks.Environment(loader);
     const template = env.getTemplate(dir + "tmp.njk", true);
@@ -64,13 +64,13 @@ const initializers = {
     return engine.render.bind(engine, template);
   },
 
-  Eta(): Promise<Renderer> {
+  Eta(): Renderer {
     const eta = new Eta({ cache: true, useWith: true });
     const template = eta.compile(eta.readFile(dir + "tmp.eta"));
-    return template.bind(eta);
+    return template.bind(eta) as Renderer;
   },
 
-  Pug(): Promise<Renderer> {
+  Pug(): Renderer {
     return pug.compileFile(dir + "tmp.pug");
   },
 
@@ -88,7 +88,7 @@ const initializers = {
   },
 
   // Edge cannot compile separately from rendering
-  Edge(): Promise<Renderer> {
+  Edge(): Renderer {
     const edge = Edge.create();
     edge.mount(dir);
     return edge.render.bind(edge, "tmp");
