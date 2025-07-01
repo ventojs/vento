@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>{{ title }}</title>
+	<meta name="description" content="{{ description }}">
+	<meta name="robots" content="noindex,nofollow">
+</head>
+<body>
+	<nav id="navigation-menu">
+		{% for navItem in mainNavItems %}
+			<a href="{{ navItem.url }}">{{ navItem.text | upper }}</a>
+		{% endfor %}
+	</nav>
+
+	<main>
+		<h1>Hello {{ user.name or 'there' }}!</h1>
+		<p>You're looking at a page that is written exclusively for benchmarking purposes.</p>
+		<p>A bit of explanation: this benchmark is run in two different ways.</p>
+		<ul>
+			<li>The template <em>compilation</em> is measured. This indicates how fast the templating engine can turn a file like this in a reusable function. Usually, contentful templates like this are only compiled once, but for layouts or includes/partials, they are often rendered many times with different input data.</li>
+			<li>That segues nicely into the next benchmark; the speed of said reusable function. How fast does the compiled function spit out the rendered output when called with some set of properties?</li>
+		</ul>
+		<p>In order to test the speed of the templating languages themselves, here's a binary search implementation.</p>
+
+		{% set searchTarget = 23 %}
+		<input readonly value="{{ searchTarget }}">
+		{% set start = 0 %}
+		{% set end = searchArray.length %}
+		{% for _ in searchArray %}
+			{% if start < end - 1 %}
+				{% set middle = start + (end - start) / 2 %}
+				{% set middle = middle | round(0, "floor") %}
+				{% if searchTarget < searchArray[middle] %}
+					{% set end = middle %}
+				{% else %}
+					{% set start = middle %}
+				{% endif %}
+			{% endif %}
+		{% endfor %}
+		{% set targetIndex = start %}
+		Output: <output>{{ targetIndex }}</output>
+
+		<p>This templating language uses <code>{&#x7B;</code> and <code>}}</code> for interpolation. There are two main ways to escape them if you need them literally:</p>
+
+		<ol>
+			<li>Through <code>{% raw %}{% raw {% endraw %}{% raw %}%} … {%{% endraw %} endraw %}</code>, or</li>
+			<li>Through character escaping, such as <code>{&amp;#x7B; … }}</code> in HTML.</li>
+		</ol>
+	</main>
+</body>
+</html>

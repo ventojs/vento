@@ -1,6 +1,0 @@
-<% const name = "World".toUpperCase() %>
-
-<% if (name === "WORLD") { %>
-<%= hello %>
-<%= name %>
-<% } %>
