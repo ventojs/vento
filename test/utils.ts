@@ -3,7 +3,7 @@ import { assertEquals, assertThrows } from "jsr:@std/assert@1.0.13";
 import { extract } from "jsr:@std/front-matter@1.0.9/yaml";
 import { test as fmTest } from "jsr:@std/front-matter@1.0.9";
 
-import { path } from "../deps.ts";
+import * as path from "node:path";
 
 import type { Options } from "../mod.ts";
 import type { Environment, Filter } from "../src/environment.ts";

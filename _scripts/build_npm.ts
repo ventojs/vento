@@ -50,7 +50,6 @@ await build({
   },
   mappings: {
     "npm:@types/estree@1.0.6": "estree",
-    "./src/loader.ts": "./src/loader.node.ts",
   },
   postBuild() {
     Deno.copyFileSync("LICENSE", "_npm/LICENSE");

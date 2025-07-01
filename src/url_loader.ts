@@ -1,4 +1,4 @@
-import { posix } from "../deps.ts";
+import { posix } from "node:path";
 
 import type { Loader, TemplateSource } from "./environment.ts";
 
