@@ -4,7 +4,7 @@ import { Liquid } from "npm:liquidjs@10.20.1";
 import { Eta } from "https://deno.land/x/eta@v3.5.0/src/index.ts";
 import { Edge } from "npm:edge.js@6.2.1";
 import pug from "npm:pug@3.0.3";
-import { renderToStaticMarkup } from "npm:react-dom@19.1.0/server";
+import * as preact from "npm:preact-render-to-string@6.5.13";
 import ejs from "npm:ejs@3.1.10";
 
 type Renderer = (data: Record<string, unknown>) => string | Promise<string>;
@@ -74,11 +74,11 @@ const initializers = {
     return pug.compileFile(dir + "tmp.pug");
   },
 
-  async JSX(): Promise<Renderer> {
+  async Preact(): Promise<Renderer> {
     const hash = "#" + getUniqueInt();
     const { default: render } = await import(dir + "tmp.jsx" + hash);
     return (data: Record<string, unknown>) => {
-      return renderToStaticMarkup(render(data));
+      return preact.render(render(data));
     };
   },
 

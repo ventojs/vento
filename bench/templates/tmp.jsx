@@ -1,4 +1,5 @@
-import React from "npm:react@19.1.0";
+/** @jsx h */
+import { h, render } from "npm:preact@10.26.9";
 
 export default function render(data) {
   // Misses <!DOCTYPE html>
