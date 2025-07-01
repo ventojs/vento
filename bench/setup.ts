@@ -38,6 +38,8 @@ export async function runBenchmark(
 }
 
 const dir = Deno.cwd() + "/bench/templates/";
+let uniqueInt = 1;
+const getUniqueInt = () => uniqueInt++;
 
 const initializers = {
   async Vento(): Promise<Renderer> {
@@ -73,7 +75,8 @@ const initializers = {
   },
 
   async JSX(): Promise<Renderer> {
-    const { default: render } = await import(dir + "tmp.jsx");
+    const hash = "#" + getUniqueInt();
+    const { default: render } = await import(dir + "tmp.jsx" + hash);
     return (data: Record<string, unknown>) => {
       return renderToStaticMarkup(render(data));
     };
