@@ -1,7 +1,7 @@
 {
   "tasks": {
     "test": "deno test --allow-read test",
-    "bench": "deno bench --allow-read",
+    "bench": "deno bench --allow-read --allow-sys=homedir --allow-env=BABEL_TYPES_8_BREAKING",
     "docs": "cd docs && deno task serve",
     "build-npm": "deno run --allow-run=npm --allow-env --allow-sys --allow-read --allow-write --allow-net=jsr.io,deno.land _scripts/build_npm.ts",
     "build-jsr": "deno run -A https://deno.land/x/jsrx@v0.1.1/mod.ts --name=@vento/vento",
