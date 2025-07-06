@@ -1,4 +1,4 @@
-import analyze from "../src/js.ts";
+import { topLevel } from "../src/js.ts";
 import type { Token } from "../src/tokenizer.ts";
 import type { Environment, Plugin } from "../src/environment.ts";
 
@@ -156,17 +156,21 @@ async function* asyncIterableToEntries(
 }
 
 function getDestructureContent(code: string): [string, string] {
-  let index = 0;
-
-  analyze(code, (type, i) => {
-    if (type === "close") {
-      index = i;
-      return false;
-    }
-  });
-
+  let index = 1;
+  const open = code[0];
+  const close = { "[": "]", "{": "}" }[open];
+  if (!close) {
+    throw Error(`Unrecognized destructuring in for loop: ${code}`);
+  }
+  do {
+    index = topLevel(code, index);
+  } while (index < code.length && code[index] != close);
+  if (index == code.length) {
+    throw Error(`Unclosed destructured loop variable: ${code}`);
+  }
+  index++;
   return [
     code.slice(0, index).trim(),
-    code.slice(index + 1).trim(),
+    code.slice(index).trim(),
   ];
 }

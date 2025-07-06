@@ -1,4 +1,4 @@
-import analyze from "../src/js.ts";
+import { topLevel } from "../src/js.ts";
 import type { Token } from "../src/tokenizer.ts";
 import type { Environment, Plugin } from "../src/environment.ts";
 
@@ -19,18 +19,26 @@ function includeTag(
   }
 
   const tagCode = code.substring(7).trim();
-  let index: number | undefined = undefined;
-  analyze(tagCode, (type, i) => {
-    if (type === "open-bracket") {
-      index = i - 1;
-      return false;
-    }
-  });
+  let file = tagCode;
+  let data = "";
 
-  const file = index === undefined
-    ? tagCode.trim()
-    : tagCode.slice(0, index).trim();
-  const data = index === undefined ? "" : tagCode.slice(index).trim();
+  // includes { data }
+  if (tagCode.endsWith("}")) {
+    const target = tagCode.length - 1;
+    let index = -1;
+    for (const match of tagCode.matchAll(/{/g)) {
+      if (topLevel(tagCode, match.index + 1) == target) {
+        index = match.index;
+        break;
+      }
+    }
+    if (index == -1) {
+      throw Error(`Invalid include tag: ${tagCode}`);
+    }
+    file = tagCode.slice(0, index).trim();
+    data = tagCode.slice(index).trim();
+  }
+
   const { dataVarname } = env.options;
   return `{
     const __tmp = await __env.run(${file},

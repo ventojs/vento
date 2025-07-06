@@ -15,12 +15,10 @@ type status =
   | "comment"
   | "line-comment";
 
-type Visitor = (type: breakpoints, index: number) => false | void;
-
-export default function analyze(source: string, visitor: Visitor) {
+export function topLevel(source: string, start: number): number {
   const length = source.length;
   const statuses: status[] = [];
-  let index = 0;
+  let index = start;
 
   while (index < length) {
     const char = source.charAt(index++);
@@ -42,9 +40,6 @@ export default function analyze(source: string, visitor: Visitor) {
           case undefined:
           case "square-bracket":
           case "bracket":
-            if (!statuses.length && visitor("open-bracket", index) === false) {
-              return;
-            }
             statuses.unshift("bracket");
             break;
         }
@@ -53,14 +48,11 @@ export default function analyze(source: string, visitor: Visitor) {
 
       // Detect end brackets
       case "}": {
+        if (statuses.length === 0) return index - 1;
         switch (statuses[0]) {
           // Close a bracket
           case "bracket":
             statuses.shift();
-
-            if (statuses.length === 0 && visitor("close", index) === false) {
-              return;
-            }
             break;
         }
         break;
@@ -130,9 +122,6 @@ export default function analyze(source: string, visitor: Visitor) {
           case undefined:
           case "square-bracket":
           case "bracket":
-            if (!statuses.length && visitor("open-bracket", index) === false) {
-              return;
-            }
             statuses.unshift("square-bracket");
             break;
         }
@@ -140,6 +129,7 @@ export default function analyze(source: string, visitor: Visitor) {
       }
 
       case "]": {
+        if (statuses.length === 0) return index - 1;
         switch (statuses[0]) {
           // Close a square bracket in a regex
           case "regex-bracket":
@@ -151,10 +141,6 @@ export default function analyze(source: string, visitor: Visitor) {
           // Close a square bracket
           case "square-bracket":
             statuses.shift();
-
-            if (statuses.length === 0 && visitor("close", index) === false) {
-              return;
-            }
             break;
         }
         break;
@@ -216,25 +202,14 @@ export default function analyze(source: string, visitor: Visitor) {
       }
 
       case "|": {
-        switch (statuses[0]) {
-          // New pipeline
-          case "bracket":
-            if (
-              source.charAt(index) === ">" &&
-              visitor("new-filter", index + 1) === false
-            ) {
-              return;
-            }
-            break;
+        if (statuses.length === 0 && source.charAt(index) === ">") {
+          return index - 1;
         }
         break;
       }
     }
   }
-
-  if (statuses.length > 0) {
-    visitor("unclosed", index);
-  }
+  return index;
 }
 
 // Get the previous character in a string ignoring spaces, line breaks and tabs

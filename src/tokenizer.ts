@@ -1,4 +1,4 @@
-import analyze from "./js.ts";
+import { topLevel } from "./js.ts";
 
 export type TokenType = "string" | "tag" | "filter" | "comment";
 export type Token = [TokenType, string, number?];
@@ -102,20 +102,18 @@ export default function tokenize(source: string): TokenizeResult {
  * For example: {{ tag |> filter1 |> filter2 }} => [2, 9, 20, 31]
  */
 export function parseTag(source: string): number[] {
-  const indexes: number[] = [2];
-
-  analyze(source, (type, index) => {
-    if (type === "close") {
-      indexes.push(index);
-      return false;
-    }
-
-    if (type === "new-filter") {
-      indexes.push(index);
-    } else if (type === "unclosed") {
-      throw new Error("Unclosed tag");
-    }
-  });
-
-  return indexes;
+  const indexes: number[] = [];
+  let cursor = 0;
+  parsing: do {
+    cursor += 2;
+    indexes.push(cursor);
+    do {
+      cursor = topLevel(source, cursor);
+      if (cursor == source.length) break parsing;
+      if (!source.startsWith("}}", cursor)) continue;
+      indexes.push(cursor + 2);
+      return indexes;
+    } while (!source.startsWith("|>", cursor));
+  } while (cursor < source.length);
+  throw new Error("Unclosed tag");
 }
