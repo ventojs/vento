@@ -25,11 +25,11 @@ function echoTag(
   }
 
   // Captured echo, e.g. {{ echo |> toUpperCase }} foo {{ /echo }}
-  const compiled = [`let _tmp = "";`];
-  const filters = env.compileFilters(tokens, "_tmp");
-  compiled.push(...env.compileTokens(tokens, "_tmp", ["/echo"]));
-  if (filters != "_tmp") {
-    compiled.push(`_tmp = ${filters}`);
+  const compiled = [`let __tmp = "";`];
+  const filters = env.compileFilters(tokens, "__tmp");
+  compiled.push(...env.compileTokens(tokens, "__tmp", ["/echo"]));
+  if (filters != "__tmp") {
+    compiled.push(`__tmp = ${filters}`);
   }
 
   const closeToken = tokens.shift();
@@ -39,6 +39,6 @@ function echoTag(
 
   return `{
     ${compiled.join("\n")}
-    ${output} += _tmp;
+    ${output} += __tmp;
   }`;
 }
