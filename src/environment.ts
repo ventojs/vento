@@ -187,13 +187,7 @@ export class Environment {
   }
 
   tokenize(source: string, path?: string): Token[] {
-    const result = tokenize(source);
-    let { tokens } = result;
-    const { position, error } = result;
-
-    if (error) {
-      throw new TemplateError(path, source, position, error);
-    }
+    let tokens = tokenize(source);
 
     for (const tokenPreprocessor of this.tokenPreprocessors) {
       const result = tokenPreprocessor(this, tokens, path);

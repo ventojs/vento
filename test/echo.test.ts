@@ -70,6 +70,13 @@ Deno.test("Echo tag", async () => {
     },
   });
 
+  await test({
+    template: `
+    Hello {{-echo-}} beautiful {{-/echo-}} world!
+    `,
+    expected: "Hellobeautifulworld!",
+  });
+
   testThrows({
     options: {
       autoDataVarname: false,
