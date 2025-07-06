@@ -158,16 +158,10 @@ async function* asyncIterableToEntries(
 function getDestructureContent(code: string): [string, string] {
   let index = 1;
   const open = code[0];
-  const close = { "[": "]", "{": "}" }[open];
-  if (!close) {
-    throw Error(`Unrecognized destructuring in for loop: ${code}`);
-  }
+  const close = { "[": "]", "{": "}" }[open]!;
   do {
     index = topLevel(code, index);
   } while (index < code.length && code[index] != close);
-  if (index == code.length) {
-    throw Error(`Unclosed destructured loop variable: ${code}`);
-  }
   index++;
   return [
     code.slice(0, index).trim(),
