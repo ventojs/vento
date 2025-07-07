@@ -105,10 +105,10 @@ export function parseTag(source: string): number[] {
   const indexes = [2];
   for (const [index, reason] of topLevel(source, 2)) {
     if (reason == "|>") {
-      indexes.push(index + 2);
+      indexes.push(index);
       continue;
-    } else if (!source.startsWith("}}", index)) continue;
-    indexes.push(index + 2);
+    } else if (!source.startsWith("}}", index - 1)) continue;
+    indexes.push(index + 1);
     return indexes;
   }
   throw new Error("Unclosed tag");

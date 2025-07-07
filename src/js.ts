@@ -52,13 +52,13 @@ export function* topLevel(
 
       // Detect end brackets
       case "}": {
-        if (statuses.length === 0) yield [index - 1, "}"];
         switch (statuses[0]) {
           // Close a bracket
           case "bracket":
             statuses.shift();
             break;
         }
+        if (statuses.length === 0) yield [index, "}"];
         break;
       }
 
@@ -134,7 +134,6 @@ export function* topLevel(
       }
 
       case "]": {
-        if (statuses.length === 0) yield [index - 1, "]"];
         switch (statuses[0]) {
           // Close a square bracket in a regex
           case "regex-bracket":
@@ -148,6 +147,7 @@ export function* topLevel(
             statuses.shift();
             break;
         }
+        if (statuses.length === 0) yield [index, "]"];
         break;
       }
 
@@ -208,7 +208,8 @@ export function* topLevel(
 
       case "|": {
         if (statuses.length === 0 && source.charAt(index) === ">") {
-          yield [index - 1, "|>"];
+          index++;
+          yield [index, "|>"];
         }
         break;
       }

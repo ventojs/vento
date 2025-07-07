@@ -26,7 +26,7 @@ function includeTag(
   if (tagCode.endsWith("}")) {
     let bracketIndex = -1;
     for (const [index, reason] of topLevel(tagCode, 0)) {
-      if (reason == "{") bracketIndex = index;
+      if (reason == "{") bracketIndex = index - 1;
     }
     if (bracketIndex == -1) {
       throw Error(`Invalid include tag: ${tagCode}`);
