@@ -24,19 +24,15 @@ function includeTag(
 
   // includes { data }
   if (tagCode.endsWith("}")) {
-    const target = tagCode.length - 1;
-    let index = -1;
-    for (const match of tagCode.matchAll(/{/g)) {
-      if (topLevel(tagCode, match.index + 1) == target) {
-        index = match.index;
-        break;
-      }
+    let bracketIndex = -1;
+    for (const [index, reason] of topLevel(tagCode, 0)) {
+      if (reason == "{") bracketIndex = index;
     }
-    if (index == -1) {
+    if (bracketIndex == -1) {
       throw Error(`Invalid include tag: ${tagCode}`);
     }
-    file = tagCode.slice(0, index).trim();
-    data = tagCode.slice(index).trim();
+    file = tagCode.slice(0, bracketIndex).trim();
+    data = tagCode.slice(bracketIndex).trim();
   }
 
   const { dataVarname } = env.options;
