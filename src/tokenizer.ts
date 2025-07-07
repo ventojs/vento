@@ -102,18 +102,14 @@ export default function tokenize(source: string): TokenizeResult {
  * For example: {{ tag |> filter1 |> filter2 }} => [2, 9, 20, 31]
  */
 export function parseTag(source: string): number[] {
-  const indexes: number[] = [];
-  let cursor = 0;
-  parsing: do {
-    cursor += 2;
-    indexes.push(cursor);
-    do {
-      cursor = topLevel(source, cursor);
-      if (cursor == source.length) break parsing;
-      if (!source.startsWith("}}", cursor)) continue;
-      indexes.push(cursor + 2);
-      return indexes;
-    } while (!source.startsWith("|>", cursor));
-  } while (cursor < source.length);
+  const indexes = [2];
+  for (const [index, reason] of topLevel(source, 2)) {
+    if (reason == "|>") {
+      indexes.push(index + 2);
+      continue;
+    } else if (!source.startsWith("}}", index)) continue;
+    indexes.push(index + 2);
+    return indexes;
+  }
   throw new Error("Unclosed tag");
 }

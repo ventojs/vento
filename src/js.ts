@@ -15,7 +15,10 @@ type status =
   | "comment"
   | "line-comment";
 
-export function topLevel(source: string, start: number): number {
+export function* topLevel(
+  source: string,
+  start: number,
+): Generator<[number, string]> {
   const length = source.length;
   const statuses: status[] = [];
   let index = start;
@@ -40,6 +43,7 @@ export function topLevel(source: string, start: number): number {
           case undefined:
           case "square-bracket":
           case "bracket":
+            if (statuses.length == 0) yield [index - 1, "{"];
             statuses.unshift("bracket");
             break;
         }
@@ -48,7 +52,7 @@ export function topLevel(source: string, start: number): number {
 
       // Detect end brackets
       case "}": {
-        if (statuses.length === 0) return index - 1;
+        if (statuses.length === 0) yield [index - 1, "}"];
         switch (statuses[0]) {
           // Close a bracket
           case "bracket":
@@ -122,6 +126,7 @@ export function topLevel(source: string, start: number): number {
           case undefined:
           case "square-bracket":
           case "bracket":
+            if (statuses.length == 0) yield [index - 1, "["];
             statuses.unshift("square-bracket");
             break;
         }
@@ -129,7 +134,7 @@ export function topLevel(source: string, start: number): number {
       }
 
       case "]": {
-        if (statuses.length === 0) return index - 1;
+        if (statuses.length === 0) yield [index - 1, "]"];
         switch (statuses[0]) {
           // Close a square bracket in a regex
           case "regex-bracket":
@@ -203,13 +208,13 @@ export function topLevel(source: string, start: number): number {
 
       case "|": {
         if (statuses.length === 0 && source.charAt(index) === ">") {
-          return index - 1;
+          yield [index - 1, "|>"];
         }
         break;
       }
     }
   }
-  return index;
+  return [index, ""];
 }
 
 // Get the previous character in a string ignoring spaces, line breaks and tabs

@@ -156,15 +156,17 @@ async function* asyncIterableToEntries(
 }
 
 function getDestructureContent(code: string): [string, string] {
-  let index = 1;
+  let position = -1;
   const open = code[0];
   const close = { "[": "]", "{": "}" }[open]!;
-  do {
-    index = topLevel(code, index);
-  } while (index < code.length && code[index] != close);
-  index++;
+  for (const [index, reason] of topLevel(code, 1)) {
+    if (reason != close) continue;
+    position = index;
+    break;
+  }
+  position++;
   return [
-    code.slice(0, index).trim(),
-    code.slice(index).trim(),
+    code.slice(0, position).trim(),
+    code.slice(position).trim(),
   ];
 }
