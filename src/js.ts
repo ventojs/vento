@@ -17,7 +17,7 @@ type status =
 
 export default function* iterateTopLevel(
   source: string,
-  start: number,
+  start: number = 0,
 ): Generator<[number, string]> {
   const length = source.length;
   const statuses: status[] = [];

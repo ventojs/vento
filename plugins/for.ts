@@ -156,7 +156,7 @@ async function* asyncIterableToEntries(
 }
 
 function getDestructureContent(code: string): [string, string] {
-  const generator = iterateTopLevel(code, 0);
+  const generator = iterateTopLevel(code);
   generator.next();
   const [position] = generator.next().value;
   return [

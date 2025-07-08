@@ -25,7 +25,7 @@ function includeTag(
   // includes { data }
   if (tagCode.endsWith("}")) {
     let bracketIndex = -1;
-    for (const [index, reason] of iterateTopLevel(tagCode, 0)) {
+    for (const [index, reason] of iterateTopLevel(tagCode)) {
       if (reason == "{") bracketIndex = index;
     }
     if (bracketIndex == -1) {
