@@ -3,86 +3,55 @@ import iterateTopLevel from "./js.ts";
 export type TokenType = "string" | "tag" | "filter" | "comment";
 export type Token = [TokenType, string, number?];
 
+const ECHO_START = /^-?\s*echo\s*-?$/;
+const ECHO_END = /{{-?\s*\/echo\s*-?}}/g;
+
 export default function tokenize(source: string): Token[] {
   const tokens: Token[] = [];
-  let type: TokenType = "string";
-  let position = 0;
-
-  while (source.length > 0) {
-    if (type === "string") {
-      const index = source.indexOf("{{");
-      const code = index === -1 ? source : source.slice(0, index);
-
-      tokens.push([type, code, position]);
-
-      if (index === -1) {
-        break;
+  let cursor = 0;
+  const max = source.length;
+  while(cursor < max){
+    const end = source.indexOf("{{", cursor);
+    if(end == -1){
+      tokens.push(["string", source.slice(cursor), cursor]);
+      return tokens;
+    }
+    tokens.push(["string", source.slice(cursor, end), cursor]);
+    cursor = end;
+    // {{# comment #}}
+    if(source[cursor + 2] == "#"){
+      cursor += 3;
+      const end = source.indexOf("#}}", cursor);
+      if(end == -1){
+        tokens.push(["comment", source.slice(cursor), cursor - 3]);
+        return tokens;
       }
-
-      position += index;
-      source = source.slice(index);
-      type = source.startsWith("{{#") ? "comment" : "tag";
+      tokens.push(["comment", source.slice(cursor, end), cursor - 3]);
+      cursor = end + 3;
       continue;
     }
-
-    if (type === "comment") {
-      source = source.slice(3);
-      const index = source.indexOf("#}}");
-      const comment = index === -1 ? source : source.slice(0, index);
-      tokens.push([type, comment, position]);
-
-      if (index === -1) {
-        break;
-      }
-
-      position += index + 3;
-      source = source.slice(index + 3);
-      type = "string";
-      continue;
-    }
-
-    if (type === "tag") {
-      const indexes = parseTag(source);
-      const lastIndex = indexes.length - 1;
-      let tag: Token | undefined;
-
-      indexes.reduce((prev, curr, index) => {
-        const code = source.slice(prev, curr - 2);
-
-        // Tag
-        if (index === 1) {
-          tag = [type, code, position];
-          tokens.push(tag);
-          return curr;
-        }
-
-        // Filters
+    // {{ arbitrary tag }}
+    const indexes = parseTag(source, cursor);
+    const tokenIndex = tokens.length;
+    for(let index = 1; index < indexes.length; index++){
+      if(index == 1){
+        tokens.push(["tag", source.slice(indexes[0], indexes[1] - 2), indexes[0] - 2]);
+      } else {
+        const code = source.slice(indexes[index - 1], indexes[index] - 2);
         tokens.push(["filter", code]);
-        return curr;
-      });
-
-      position += indexes[lastIndex];
-      source = source.slice(indexes[lastIndex]);
-      type = "string";
-
-      // Search the closing echo tag {{ /echo }}
-      if (tag?.[1].match(/^\-?\s*echo\s*\-?$/)) {
-        const end = /{{\-?\s*\/echo\s*\-?}}/.exec(source);
-
-        if (!end) {
-          tokens.push(["string", source, position]);
-          return tokens;
-        }
-
-        tokens.push(["string", source.slice(0, end.index), position]);
-        position += end.index;
-        tokens.push(["tag", end[0].slice(2, -2), position]);
-        position += end[0].length;
-        source = source.slice(end.index + end[0].length);
       }
-
-      continue;
     }
+    cursor = indexes[indexes.length - 1];
+    if (!ECHO_START.test(tokens[tokenIndex][1])) continue;
+    ECHO_END.lastIndex = cursor;
+    const match = ECHO_END.exec(source);
+    if(!match){
+      tokens.push(["string", source.slice(cursor), cursor]);
+      return tokens;
+    }
+    tokens.push(["string", source.slice(cursor, match.index), cursor]);
+    tokens.push(["tag", match[0].slice(2, -2), match.index + 2]);
+    cursor = match.index + match[0].length;
   }
   return tokens;
 }
@@ -91,13 +60,13 @@ export default function tokenize(source: string): Token[] {
  * Parse a tag and return the indexes of the start and end brackets, and the filters between.
  * For example: {{ tag |> filter1 |> filter2 }} => [2, 9, 20, 31]
  */
-export function parseTag(source: string): number[] {
-  const indexes = [2];
-  for (const [index, reason] of iterateTopLevel(source, 2)) {
+export function parseTag(source: string, start: number = 0): number[] {
+  const indexes = [start + 2];
+  for (const [index, reason] of iterateTopLevel(source, start + 2)) {
     if (reason == "|>") {
       indexes.push(index + 2);
       continue;
-    } else if (!source.startsWith("}}", index)) continue;
+    } else if (reason != "}" || source[index + 1] != "}") continue;
     indexes.push(index + 2);
     return indexes;
   }
