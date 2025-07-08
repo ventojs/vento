@@ -269,3 +269,19 @@ Deno.test("Include tag with object shorthand syntax", async () => {
     },
   });
 });
+
+Deno.test("Include tag with semi-ambiguous JS objects", async () => {
+  await test({
+    template: `
+    {{> const resolve = ({path}) => path; }}
+    {{ include resolve({ path: "/my-file.tmpl" }) { name } }}
+    `,
+    expected: "Hello Vento",
+    includes: {
+      "/my-file.tmpl": "Hello {{ name }}",
+    },
+    data: {
+      name: "Vento",
+    },
+  });
+});

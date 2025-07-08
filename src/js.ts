@@ -15,12 +15,13 @@ type status =
   | "comment"
   | "line-comment";
 
-type Visitor = (type: breakpoints, index: number) => false | void;
-
-export default function analyze(source: string, visitor: Visitor) {
+export default function* iterateTopLevel(
+  source: string,
+  start: number = 0,
+): Generator<[number, string]> {
   const length = source.length;
   const statuses: status[] = [];
-  let index = 0;
+  let index = start;
 
   while (index < length) {
     const char = source.charAt(index++);
@@ -42,9 +43,7 @@ export default function analyze(source: string, visitor: Visitor) {
           case undefined:
           case "square-bracket":
           case "bracket":
-            if (!statuses.length && visitor("open-bracket", index) === false) {
-              return;
-            }
+            if (statuses.length == 0) yield [index - 1, "{"];
             statuses.unshift("bracket");
             break;
         }
@@ -57,12 +56,9 @@ export default function analyze(source: string, visitor: Visitor) {
           // Close a bracket
           case "bracket":
             statuses.shift();
-
-            if (statuses.length === 0 && visitor("close", index) === false) {
-              return;
-            }
             break;
         }
+        if (statuses.length === 0) yield [index - 1, "}"];
         break;
       }
 
@@ -130,9 +126,7 @@ export default function analyze(source: string, visitor: Visitor) {
           case undefined:
           case "square-bracket":
           case "bracket":
-            if (!statuses.length && visitor("open-bracket", index) === false) {
-              return;
-            }
+            if (statuses.length == 0) yield [index - 1, "["];
             statuses.unshift("square-bracket");
             break;
         }
@@ -151,12 +145,9 @@ export default function analyze(source: string, visitor: Visitor) {
           // Close a square bracket
           case "square-bracket":
             statuses.shift();
-
-            if (statuses.length === 0 && visitor("close", index) === false) {
-              return;
-            }
             break;
         }
+        if (statuses.length === 0) yield [index - 1, "]"];
         break;
       }
 
@@ -216,25 +207,15 @@ export default function analyze(source: string, visitor: Visitor) {
       }
 
       case "|": {
-        switch (statuses[0]) {
-          // New pipeline
-          case "bracket":
-            if (
-              source.charAt(index) === ">" &&
-              visitor("new-filter", index + 1) === false
-            ) {
-              return;
-            }
-            break;
+        if (statuses.length === 0 && source.charAt(index) === ">") {
+          index++;
+          yield [index - 2, "|>"];
         }
         break;
       }
     }
   }
-
-  if (statuses.length > 0) {
-    visitor("unclosed", index);
-  }
+  return [index, ""];
 }
 
 // Get the previous character in a string ignoring spaces, line breaks and tabs
