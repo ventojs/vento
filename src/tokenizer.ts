@@ -10,19 +10,19 @@ export default function tokenize(source: string): Token[] {
   const tokens: Token[] = [];
   let cursor = 0;
   const max = source.length;
-  while(cursor < max){
+  while (cursor < max) {
     const end = source.indexOf("{{", cursor);
-    if(end == -1){
+    if (end == -1) {
       tokens.push(["string", source.slice(cursor), cursor]);
       return tokens;
     }
     tokens.push(["string", source.slice(cursor, end), cursor]);
     cursor = end;
     // {{# comment #}}
-    if(source[cursor + 2] == "#"){
+    if (source[cursor + 2] == "#") {
       cursor += 3;
       const end = source.indexOf("#}}", cursor);
-      if(end == -1){
+      if (end == -1) {
         tokens.push(["comment", source.slice(cursor), cursor - 3]);
         return tokens;
       }
@@ -33,9 +33,13 @@ export default function tokenize(source: string): Token[] {
     // {{ arbitrary tag }}
     const indexes = parseTag(source, cursor);
     const tokenIndex = tokens.length;
-    for(let index = 1; index < indexes.length; index++){
-      if(index == 1){
-        tokens.push(["tag", source.slice(indexes[0], indexes[1] - 2), indexes[0] - 2]);
+    for (let index = 1; index < indexes.length; index++) {
+      if (index == 1) {
+        tokens.push([
+          "tag",
+          source.slice(indexes[0], indexes[1] - 2),
+          indexes[0] - 2,
+        ]);
       } else {
         const code = source.slice(indexes[index - 1], indexes[index] - 2);
         tokens.push(["filter", code]);
@@ -45,7 +49,7 @@ export default function tokenize(source: string): Token[] {
     if (!ECHO_START.test(tokens[tokenIndex][1])) continue;
     ECHO_END.lastIndex = cursor;
     const match = ECHO_END.exec(source);
-    if(!match){
+    if (!match) {
       tokens.push(["string", source.slice(cursor), cursor]);
       return tokens;
     }

@@ -17,16 +17,6 @@ export class TemplateError extends VentoBaseError {
   }
 }
 
-export class TransformError extends VentoBaseError {
-  constructor(
-    message: string,
-    public position: number = 0,
-    cause?: Error,
-  ) {
-    super(message, { cause });
-  }
-}
-
 /** Returns the number and code of the errored line */
 export function errorLine(
   source: string,

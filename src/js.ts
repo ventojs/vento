@@ -4,12 +4,48 @@ const REGEX_LITERAL_START = /(?<=[(=:,?&!]\s*)\//y;
 
 const STOPPING_POINT = /['"`{}[\]/|]|((?<!\.\??)\b[a-zA-Z_]\w+)/g;
 
-const reserved = new Set(['var', 'let', 'const', 'function', 'class', 'typeof',
-  'instanceof', 'true', 'false', 'null', 'undefined', 'if', 'else', 'while',
-  'for', 'do', 'new', 'void', 'yield', 'await', 'break', 'continue', 'switch',
-  'case', 'default', 'return', 'import', 'export', 'delete', 'throw', 'try',
-  'catch', 'finallly', 'async',
-  '__file', '__env', '__defaults', '__err', '__exports', '__pos']);
+const reserved = new Set([
+  "var",
+  "let",
+  "const",
+  "function",
+  "class",
+  "typeof",
+  "instanceof",
+  "true",
+  "false",
+  "null",
+  "undefined",
+  "if",
+  "else",
+  "while",
+  "for",
+  "do",
+  "new",
+  "void",
+  "yield",
+  "await",
+  "break",
+  "continue",
+  "switch",
+  "case",
+  "default",
+  "return",
+  "import",
+  "export",
+  "delete",
+  "throw",
+  "try",
+  "catch",
+  "finallly",
+  "async",
+  "__file",
+  "__env",
+  "__defaults",
+  "__err",
+  "__exports",
+  "__pos",
+]);
 
 export default function* iterateTopLevel(
   source: string,
@@ -26,9 +62,9 @@ export default function* iterateTopLevel(
     if (!match) break parsing;
     cursor = match.index;
     const [stop, variable] = match;
-    if(variable){
+    if (variable) {
       cursor += variable.length;
-      if(!reserved.has(variable)) variables.add(variable);
+      if (!reserved.has(variable)) variables.add(variable);
       continue;
     }
     switch (stop) {
@@ -81,7 +117,7 @@ export default function* iterateTopLevel(
           break;
         }
         depth--;
-      }
+      } /* falls through */
       case "`": {
         TEMPLATE_PART.lastIndex = cursor;
         const match = TEMPLATE_PART.exec(source);

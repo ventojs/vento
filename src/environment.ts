@@ -1,7 +1,7 @@
 import iterateTopLevel from "./js.ts";
 import tokenize, { Token } from "./tokenizer.ts";
 
-import { TemplateError, TransformError } from "./errors.ts";
+import { TemplateError } from "./errors.ts";
 
 export interface TemplateResult {
   content: string;
@@ -149,16 +149,18 @@ export class Environment {
 
     if (autoDataVarname) {
       const generator = iterateTopLevel(code);
-      const [,, variables] = generator.next().value;
-      while(!generator.next().done);
+      const [, , variables] = generator.next().value;
+      while (!generator.next().done);
       variables.delete(dataVarname);
-      if(variables.size > 0){
+      if (variables.size > 0) {
         code = `
-          var ${[...variables].map(name => {
-            return `${name} = ${dataVarname}.${name} ?? globalThis.${name}`
-          }).join(',')};
+          var ${
+          [...variables].map((name) => {
+            return `${name} = ${dataVarname}.${name} ?? globalThis.${name}`;
+          }).join(",")
+        };
           {\n${code}\n}
-        `
+        `;
       }
     }
 

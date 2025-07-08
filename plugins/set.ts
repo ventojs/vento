@@ -36,7 +36,7 @@ function setTag(
 
   // Value is captured (eg: {{ set foo }}bar{{ /set }})
   const compiled: string[] = [];
-  const varName = expression.trim()
+  const varName = expression.trim();
   const subvarName = `${dataVarname}["${varName}"]`;
   const compiledFilters = env.compileFilters(tokens, subvarName);
 
