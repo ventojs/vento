@@ -1,7 +1,6 @@
 import iterateTopLevel from "./js.ts";
 import tokenize, { Token } from "./tokenizer.ts";
 
-import { transformTemplateCode } from "./transformer.ts";
 import { TemplateError, TransformError } from "./errors.ts";
 
 export interface TemplateResult {
