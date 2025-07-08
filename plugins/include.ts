@@ -1,4 +1,4 @@
-import { topLevel } from "../src/js.ts";
+import iterateTopLevel from "../src/js.ts";
 import type { Token } from "../src/tokenizer.ts";
 import type { Environment, Plugin } from "../src/environment.ts";
 
@@ -25,8 +25,8 @@ function includeTag(
   // includes { data }
   if (tagCode.endsWith("}")) {
     let bracketIndex = -1;
-    for (const [index, reason] of topLevel(tagCode, 0)) {
-      if (reason == "{") bracketIndex = index - 1;
+    for (const [index, reason] of iterateTopLevel(tagCode, 0)) {
+      if (reason == "{") bracketIndex = index;
     }
     if (bracketIndex == -1) {
       throw Error(`Invalid include tag: ${tagCode}`);

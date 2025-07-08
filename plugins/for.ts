@@ -1,4 +1,4 @@
-import { topLevel } from "../src/js.ts";
+import iterateTopLevel from "../src/js.ts";
 import type { Token } from "../src/tokenizer.ts";
 import type { Environment, Plugin } from "../src/environment.ts";
 
@@ -156,11 +156,11 @@ async function* asyncIterableToEntries(
 }
 
 function getDestructureContent(code: string): [string, string] {
-  const generator = topLevel(code, 0);
+  const generator = iterateTopLevel(code, 0);
   generator.next();
   const [position] = generator.next().value;
   return [
-    code.slice(0, position).trim(),
-    code.slice(position).trim(),
+    code.slice(0, position + 1).trim(),
+    code.slice(position + 1).trim(),
   ];
 }

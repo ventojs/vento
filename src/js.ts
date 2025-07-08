@@ -15,7 +15,7 @@ type status =
   | "comment"
   | "line-comment";
 
-export function* topLevel(
+export default function* iterateTopLevel(
   source: string,
   start: number,
 ): Generator<[number, string]> {
@@ -58,7 +58,7 @@ export function* topLevel(
             statuses.shift();
             break;
         }
-        if (statuses.length === 0) yield [index, "}"];
+        if (statuses.length === 0) yield [index - 1, "}"];
         break;
       }
 
@@ -147,7 +147,7 @@ export function* topLevel(
             statuses.shift();
             break;
         }
-        if (statuses.length === 0) yield [index, "]"];
+        if (statuses.length === 0) yield [index - 1, "]"];
         break;
       }
 
@@ -209,7 +209,7 @@ export function* topLevel(
       case "|": {
         if (statuses.length === 0 && source.charAt(index) === ">") {
           index++;
-          yield [index, "|>"];
+          yield [index - 2, "|>"];
         }
         break;
       }
