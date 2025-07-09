@@ -7,6 +7,12 @@ Deno.test("Unescape filter", async () => {
     `,
     expected: "<h1>Hello world</h1>",
   });
+  await test({
+    template: `
+    {{ "&#x3C;h1&#X03e;Hello world&#60;/h1&#062;" |> unescape }}
+    `,
+    expected: "<h1>Hello world</h1>",
+  });
   testSync({
     template: `
     {{ "&lt;h1&gt;Hello world&lt;/h1&gt;" |> unescape }}
