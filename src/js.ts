@@ -68,7 +68,7 @@ export default function* iterateTopLevel(
           break;
         }
         depth--;
-      }
+      } /* falls through */
       case "`": {
         TEMPLATE_PART.lastIndex = cursor;
         const match = TEMPLATE_PART.exec(source);
