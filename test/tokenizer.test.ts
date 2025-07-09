@@ -150,3 +150,12 @@ Deno.test("Tokenizer (regexp)", () => {
     ["tag", "!/}}/.test(foo)", 0],
   ]);
 });
+
+Deno.test("Tokenizer (too many closing brackets)", () => {
+  const code = "{{ print } }}";
+  const tokens = tmpl().tokenize(code);
+  assertEquals(tokens, [
+    ["string", "", 0],
+    ["tag", "print }", 0],
+  ]);
+});
