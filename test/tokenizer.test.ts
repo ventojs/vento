@@ -97,7 +97,7 @@ Deno.test("Tokenizer (comment)", () => {
   assertEquals(tokens, [
     ["string", "<h1> ", 0],
     ["comment", " {{ message }} ", 5],
-    ["string", " </h1>", 23],
+    ["string", " </h1>", 26],
   ]);
 });
 
