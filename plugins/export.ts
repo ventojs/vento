@@ -9,7 +9,6 @@ export default function (): Plugin {
 
 const EXPORT_START = /^export\b\s*/;
 const BLOCK_EXPORT = /^([a-zA-Z_]\w*)\s*$/;
-const INLINE_DEFAULT_EXPORT = /^default\b([^]*)$/;
 const INLINE_NAMED_EXPORT = /^([a-zA-Z_]\w*)\s*=([^]*)$/;
 const NAMED_EXPORTS = /^{[^]*?}$/;
 const AS = /\s+\bas\b\s+/;
@@ -33,31 +32,17 @@ function exportTag(
   const blockExport = source.match(BLOCK_EXPORT);
   if (blockExport) {
     const [, name] = blockExport;
-    const safeName = name == "default" ? "__default" : name;
-    const compiledFilters = env.compileFilters(tokens, safeName);
-    compiled.push(`var ${safeName} = "";`);
-    compiled.push(...env.compileTokens(tokens, safeName, ["/export"]));
+    const compiledFilters = env.compileFilters(tokens, name);
+    compiled.push(`var ${name} = "";`);
+    compiled.push(...env.compileTokens(tokens, name, ["/export"]));
     if (tokens[0]?.[0] !== "tag" || tokens[0]?.[1] !== "/export") {
       throw new Error(`Missing closing tag for export tag: ${code}`);
     }
     tokens.shift();
-    compiled.push(`${safeName} = ${compiledFilters}`);
-    if (name != "default") {
-      compiled.push(`${dataVarname}["${name}"] = ${safeName};`);
-    }
-    compiled.push(`__exports["${name}"] = ${safeName};`);
+    compiled.push(`${name} = ${compiledFilters}`);
+    compiled.push(`${dataVarname}["${name}"] = ${name};`);
+    compiled.push(`__exports["${name}"] = ${name};`);
     return compiled.join("\n");
-  }
-
-  // {{ export default "content" }}
-  const inlineDefaultExport = source.match(INLINE_DEFAULT_EXPORT);
-  if (inlineDefaultExport) {
-    const content = inlineDefaultExport[1].trim();
-    if (content.startsWith("=")) {
-      throw new Error(`Invalid "=" in default export tag: ${code}`);
-    }
-    const value = env.compileFilters(tokens, content);
-    return `__exports["default"] = ${value};`;
   }
 
   // {{ export foo = "content" }}
@@ -71,7 +56,7 @@ function exportTag(
     return compiled.join("\n");
   }
 
-  // {{ export { foo, bar as baz, qux as default } }}
+  // {{ export { foo, bar as baz } }}
   const namedExports = source.match(NAMED_EXPORTS);
   if (namedExports) {
     const [full] = namedExports;
