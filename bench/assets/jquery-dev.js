@@ -1,3 +1,5 @@
+// deno-fmt-ignore-file
+// deno-lint-ignore-file
 /*!
  * jQuery JavaScript Library v3.7.1
  * https://jquery.com/

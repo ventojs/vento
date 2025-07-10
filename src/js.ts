@@ -105,7 +105,7 @@ export default function* iterateTopLevel(
         do {
           const character = source[cursor];
           cursor++;
-          switch(character){
+          switch (character) {
             case "\\":
               cursor++;
               break;
@@ -119,7 +119,7 @@ export default function* iterateTopLevel(
               if (!inCharClass) continue parsing;
               break;
           }
-        } while(cursor < max);
+        } while (cursor < max);
         break parsing;
       }
     }

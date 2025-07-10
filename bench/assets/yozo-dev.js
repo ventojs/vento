@@ -1,3 +1,5 @@
+// deno-fmt-ignore-file
+// deno-lint-ignore-file
 // Yozo version: 0.6.1
 (() => {
   // src/help.js

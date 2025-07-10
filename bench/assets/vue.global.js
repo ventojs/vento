@@ -1,3 +1,5 @@
+// deno-fmt-ignore-file
+// deno-lint-ignore-file
 /**
 * vue v3.5.17
 * (c) 2018-present Yuxi (Evan) You and Vue contributors

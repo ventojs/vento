@@ -1,3 +1,5 @@
+// deno-fmt-ignore-file
+// deno-lint-ignore-file
 /**
  * @license
  * Lodash <https://lodash.com/>
