@@ -1,4 +1,3 @@
-const REGEX_LITERAL = /\/(?:\\?[^[])*\/|\/(?:\\?[^])*?](?:\\?[^[])*?\//y;
 const TEMPLATE_PART = /[`}](?:\\?[^])*?(?:`|\${)/y;
 const REGEX_LITERAL_START = /(?<=[(=:,?&!]\s*)\//y;
 
@@ -40,11 +39,18 @@ export default function* iterateTopLevel(
         cursor++;
         break;
       }
-      case "{":
-      case "[": {
-        brackets[++depth] = stop;
-        if (depth == 0) yield [cursor, stop];
+      case "{": {
+        if (depth < 0) yield [cursor, "{"];
         cursor++;
+        if (source[cursor] == "}") cursor++;
+        else brackets[++depth] = "{";
+        break;
+      }
+      case "[": {
+        if (depth < 0) yield [cursor, "["];
+        cursor++;
+        if (source[cursor] == "]") cursor++;
+        else brackets[++depth] = "[";
         break;
       }
       case "]": {
@@ -94,11 +100,27 @@ export default function* iterateTopLevel(
           cursor++;
           break;
         }
-        REGEX_LITERAL.lastIndex = cursor;
-        const match = REGEX_LITERAL.exec(source);
-        if (!match) break parsing;
-        cursor += match[0].length;
-        break;
+        let inCharClass = false;
+        cursor++;
+        do {
+          const character = source[cursor];
+          cursor++;
+          switch(character){
+            case "\\":
+              cursor++;
+              break;
+            case "[":
+              inCharClass = true;
+              break;
+            case "]":
+              inCharClass = false;
+              break;
+            case "/":
+              if (!inCharClass) continue parsing;
+              break;
+          }
+        } while(cursor < max);
+        break parsing;
       }
     }
   }
