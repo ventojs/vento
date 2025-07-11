@@ -1,6 +1,6 @@
 import { test } from "./utils.ts";
 
-Deno.test("Function tag (async)", async () => {
+Deno.test("Imports and exports", async () => {
   await test({
     template: `
     {{ import { hello } from "/my-file.tmpl" }}
@@ -55,6 +55,22 @@ Deno.test("Function tag (async)", async () => {
     includes: {
       "/my-file.tmpl": `
       {{ export hello = "Hello " + name }}
+      `,
+    },
+  });
+  await test({
+    template: `
+    {{ import { hi as hey } from "/my-file.tmpl" }}
+    {{ hey }}
+    `,
+    expected: "Hello Vento",
+    data: {
+      name: "Vento",
+    },
+    includes: {
+      "/my-file.tmpl": `
+      {{ set hello = "Hello " + name }}
+      {{ export { hello as hi } }}
       `,
     },
   });
