@@ -72,7 +72,7 @@ function exportTag(
         const value = `${dataVarname}["${name}"] ?? ${name}`;
         compiled.push(`__exports["${rename}"] = ${value};`);
       } else {
-        throw new Error(`Invalid import: ${code}`);
+        throw new Error(`Invalid export: ${code}`);
       }
     }
     return compiled.join("\n");
