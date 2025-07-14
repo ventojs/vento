@@ -96,4 +96,26 @@ Deno.test("> tag", async () => {
     `,
     expected: "2",
   });
+
+  await test({
+    template: `
+    {{> const message = 'Hello\\'s' }}
+    {{ message }}
+    `,
+    expected: "Hello's",
+  });
+
+  await test({
+    template: `
+    {{ "\\\\o/".replace(/\\\\[a-z/]\\//, "Hello") }}
+    `,
+    expected: "Hello",
+  });
+
+  await test({
+    template: `
+    {{ \`\\\\\${"\`"}\` }}
+    `,
+    expected: "\\`",
+  });
 });
