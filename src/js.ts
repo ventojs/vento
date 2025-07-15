@@ -1,6 +1,9 @@
+import reserved from "./reserved.ts";
+
 const TEMPLATE_PART = /[`}](?:\\?[^])*?(?:`|\${)/y;
 const REGEX_LITERAL_START = /(?<=[(=:,?&!]\s*)\//y;
-const STOPPING_POINT = /['"`{}[\]/|]/g;
+const STOPPING_POINT =
+  /['"`{}[\]/|]|((?<!\.\??|const\s+|let\s+|var\s+|function\s+)\b[a-zA-Z_]\w+)/g;
 
 /**
  * This function iterates over the top-level scope of a JavaScript source code string.
@@ -14,7 +17,8 @@ const STOPPING_POINT = /['"`{}[\]/|]/g;
 export default function* iterateTopLevel(
   source: string,
   start: number = 0,
-): Generator<[number, string]> {
+): Generator<[number, string, Set<string>]> {
+  const variables = new Set<string>();
   let cursor = start;
   let depth = -1;
   const brackets = [];
@@ -31,7 +35,12 @@ export default function* iterateTopLevel(
     }
 
     cursor = match.index;
-    const [stop] = match;
+    const [stop, variable] = match;
+    if (variable) {
+      cursor += variable.length;
+      if (!reserved.has(variable)) variables.add(variable);
+      continue;
+    }
 
     // Check the type of the stopping point.
     switch (stop) {
@@ -40,7 +49,7 @@ export default function* iterateTopLevel(
         // It's a pipe `|>` in the top-level scope
         if (depth < 0 && source[cursor] === ">") {
           cursor++;
-          yield [cursor - 2, "|>"];
+          yield [cursor - 2, "|>", variables];
         }
         break;
       }
@@ -66,7 +75,7 @@ export default function* iterateTopLevel(
 
       case "{": {
         // It's an opening brace: yield if it's in the top-level scope.
-        if (depth < 0) yield [cursor, "{"];
+        if (depth < 0) yield [cursor, "{", variables];
         cursor++;
         // Handle `{}`
         if (source[cursor] == "}") cursor++;
@@ -77,7 +86,7 @@ export default function* iterateTopLevel(
 
       case "[": {
         // It's an opening brace: yield if it's in the top-level scope.
-        if (depth < 0) yield [cursor, "["];
+        if (depth < 0) yield [cursor, "[", variables];
         cursor++;
 
         // Handle `[]`
@@ -92,7 +101,7 @@ export default function* iterateTopLevel(
         if (brackets[depth] == "[") depth--;
 
         // Yield if it's in the top-level scope.
-        if (depth < 0) yield [cursor, "]"];
+        if (depth < 0) yield [cursor, "]", variables];
         cursor++;
         break;
       }
@@ -102,14 +111,14 @@ export default function* iterateTopLevel(
         if (brackets[depth] == "{") {
           depth--;
           // Yield if it's in the top-level scope.
-          if (depth < 0) yield [cursor, "}"];
+          if (depth < 0) yield [cursor, "}", variables];
           cursor++;
           break;
         }
 
         // If it doesn't match, but we're in the top-level scope, yield anyway.
         if (depth < 0) {
-          yield [cursor, "}"];
+          yield [cursor, "}", variables];
           cursor++;
           break;
         }
@@ -191,5 +200,5 @@ export default function* iterateTopLevel(
       }
     }
   }
-  return [max, ""];
+  return [max, "", variables];
 }

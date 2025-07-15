@@ -124,12 +124,12 @@ Deno.test("Function scope is respected", async () => {
 
   await test({
     template: `
-    {{ function hello(name) -}}
-    {{> name = "Hello world!" }}
-    {{- name -}}
+    {{ function hello(target) -}}
+    {{> target = "Hello world!" }}
+    {{- target -}}
     {{ /function }}
 
-    {{ name ?? "No name" }} / {{ hello("world") }}
+    {{ target ?? "No name" }} / {{ hello("world") }}
     `,
     expected: "No name / Hello world!",
   });
