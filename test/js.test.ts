@@ -118,4 +118,9 @@ Deno.test("> tag", async () => {
     `,
     expected: "\\`",
   });
+
+  await test({
+    template: "{{ `{${`${`a`}`}}` }}",
+    expected: "{a}",
+  });
 });
