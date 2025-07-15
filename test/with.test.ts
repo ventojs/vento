@@ -19,10 +19,6 @@ Deno.test({
 Deno.test({
   name: "Assign key variables",
   fn: async () => {
-    // await test({
-    //   template: `{{> it["foo"] = "It works!" }}{{ foo }}`,
-    //   expected: "It works!",
-    // });
     await test({
       template: `{{ set foo = "It works!" }}{{ foo }}`,
       expected: "It works!",
