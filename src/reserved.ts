@@ -7,6 +7,7 @@ export default new Set([
   "__err",
   "__exports",
   "__pos",
+  "__tmp",
   // JS reserved words, and some "dangerous" words like `let`, `async` or
   // `undefined`, which aren't technically reserved but don't name your
   // variables that.

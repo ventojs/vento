@@ -2,17 +2,17 @@ import reserved from "./reserved.ts";
 
 const TEMPLATE_PART = /[`}](?:\\?[^])*?(?:`|\${)/y;
 const REGEX_LITERAL_START = /(?<=[(=:,?&!]\s*)\//y;
-const STOPPING_POINT =
-  /['"`{}[\]/|]|((?<!\.\??|const\s+|let\s+|var\s+|function\s+)\b[a-zA-Z_]\w+)/g;
+const STOPPING_POINT = /['"`{}[\]/|]|((?<!\.\??)\b[a-zA-Z_]\w+)/g;
 
 /**
- * This function iterates over the top-level scope of a JavaScript source code string.
- * It yields pairs of the index and the type of each top-level element found.
+ * This function iterates over the top-level scope of a JavaScript source code
+ * string. It yields pairs of the index and the type of each top-level element
+ * found.
  *
  * @example `{ foo: { bar: 1 } }` will yield:
- * - [0, "{"] for the opening brace
- * - [18, "}"] for the closing brace
- * - [18, ""] for the end of the string
+ * - [0, "{", Set[]]                for the first opening brace
+ * - [18, "}", Set['foo', 'bar']]   for the _second_ closing brace
+ * - [18, "", Set['foo', 'bar']]    for the end of the string
  */
 export default function* iterateTopLevel(
   source: string,

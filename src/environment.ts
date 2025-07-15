@@ -152,13 +152,12 @@ export class Environment {
       const [, , variables] = generator.next().value;
       while (!generator.next().done);
       variables.delete(dataVarname);
+      for (const variable of variables) {
+        if (isGlobal(variable)) variables.delete(variable);
+      }
       if (variables.size > 0) {
         code = `
-          var ${
-          [...variables].map((name) => {
-            return `${name} = ${dataVarname}.${name} ?? globalThis.${name}`;
-          }).join(",")
-        };
+          var {${[...variables].join(",")}} = ${dataVarname};
           {\n${code}\n}
         `;
       }
@@ -325,7 +324,7 @@ export class Environment {
 }
 
 function isGlobal(name: string) {
-  // @ts-ignore TS doesn't know about globalThis
+  if (name == "name") return false;
   if (Object.hasOwn(globalThis, name)) {
     return true;
   }
