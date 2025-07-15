@@ -74,13 +74,13 @@ export class FileLoader implements Loader {
 
     if (fmTest(source, ["yaml"])) {
       const { body, attrs } = extract<Record<string, unknown>>(source);
-      return {
+      return Promise.resolve({
         source: body,
         data: attrs,
-      };
+      });
     }
 
-    return { source };
+    return Promise.resolve({ source });
   }
 
   resolve(from: string, file: string): string {

@@ -51,7 +51,7 @@ export interface TemplateSource {
 }
 
 export interface Loader {
-  load(file: string): TemplateSource | Promise<TemplateSource>;
+  load(file: string): Promise<TemplateSource>;
   resolve(from: string, file: string): string;
 }
 
@@ -63,7 +63,7 @@ export interface Options {
 }
 
 export class Environment {
-  cache: Map<string, Template> = new Map();
+  cache: Map<string, Template | Promise<Template>> = new Map();
   options: Options;
   tags: Tag[] = [];
   tokenPreprocessors: TokenPreprocessor[] = [];
@@ -98,7 +98,7 @@ export class Environment {
       const cached = this.cache.get(file);
 
       if (cached) {
-        return await cached(data);
+        return (await cached)(data);
       }
 
       const template = this.compile(source, file);
@@ -202,20 +202,23 @@ export class Environment {
 
   async load(file: string, from?: string): Promise<Template> {
     const path = this.options.loader.resolve(from || "", file);
+    let cached = this.cache.get(path);
 
-    if (!this.cache.has(path)) {
-      // Remove query and hash params from path before loading
-      const cleanPath = path
-        .split("?")[0]
-        .split("#")[0];
-
-      const { source, data } = await this.options.loader.load(cleanPath);
-      const template = this.compile(source, path, data);
-
-      this.cache.set(path, template);
+    if (cached) {
+      return cached;
     }
 
-    return this.cache.get(path)!;
+    // Remove query and hash params from path before loading
+    const cleanPath = path
+      .split("?")[0]
+      .split("#")[0];
+
+    cached = this.options.loader.load(cleanPath)
+      .then(({ source, data }) => this.compile(source, path, data));
+
+    this.cache.set(path, cached);
+
+    return await cached;
   }
 
   compileTokens(

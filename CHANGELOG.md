@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+- Expose `url_loader` and all plugins for browser compatibility. [#115]
+- Support renamed imports and exports. [#125]
+
+### Changed
+- Use `node:` specifiers in both Node and Deno environment to reduce dependencies. [#118]
+- Improved benchmarking. [#119]
+- Rework the JavaScript analyzer to fix parsing issues and use a generator instead of visitor function. [#121], [#127]
+- Remove `jsr:@std/html` dependency. [#126]
+
+### Fixed
+- Improved the tokenization of `echo` tags. [#120]
+- Big performance improvement: Async templates wasn't properly cached, causing the same template to be compiled several times.
+
 ## [1.14.0] - 2025-06-12
 ### Added
 - New `url_loader.ts` to load templates from URLs.
@@ -356,7 +371,16 @@ First version
 [#102]: https://github.com/oscarotero/vento/issues/102
 [#106]: https://github.com/oscarotero/vento/issues/106
 [#108]: https://github.com/oscarotero/vento/issues/108
+[#115]: https://github.com/oscarotero/vento/issues/115
+[#118]: https://github.com/oscarotero/vento/issues/118
+[#119]: https://github.com/oscarotero/vento/issues/119
+[#120]: https://github.com/oscarotero/vento/issues/120
+[#121]: https://github.com/oscarotero/vento/issues/121
+[#125]: https://github.com/oscarotero/vento/issues/125
+[#126]: https://github.com/oscarotero/vento/issues/126
+[#127]: https://github.com/oscarotero/vento/issues/127
 
+[Unreleased]: https://github.com/oscarotero/vento/compare/v1.14.0...HEAD
 [1.14.0]: https://github.com/oscarotero/vento/compare/v1.13.2...v1.14.0
 [1.13.2]: https://github.com/oscarotero/vento/compare/v1.13.1...v1.13.2
 [1.13.1]: https://github.com/oscarotero/vento/compare/v1.13.0...v1.13.1
