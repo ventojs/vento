@@ -4,9 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [1.15.0] - Unreleased
+## [1.15.0] - 2025-07-16
 ### Added
-- Expose `url_loader` and all plugins for browser compatibility. [#115]
+- Expose `url_loader` and all plugins for browser compatibility. [#115] [#129]
 - Support renamed imports and exports. [#125]
 
 ### Changed
@@ -379,8 +379,9 @@ First version
 [#125]: https://github.com/oscarotero/vento/issues/125
 [#126]: https://github.com/oscarotero/vento/issues/126
 [#127]: https://github.com/oscarotero/vento/issues/127
+[#129]: https://github.com/oscarotero/vento/issues/129
 
-[Unreleased]: https://github.com/oscarotero/vento/compare/v1.14.0...HEAD
+[1.15.0]: https://github.com/oscarotero/vento/compare/v1.14.0...v1.15.0
 [1.14.0]: https://github.com/oscarotero/vento/compare/v1.13.2...v1.14.0
 [1.13.2]: https://github.com/oscarotero/vento/compare/v1.13.1...v1.13.2
 [1.13.1]: https://github.com/oscarotero/vento/compare/v1.13.0...v1.13.1
