@@ -82,7 +82,7 @@ export class Environment {
 
   async run(
     file: string,
-    data: Record<string, unknown>,
+    data?: Record<string, unknown>,
     from?: string,
   ): Promise<TemplateResult> {
     const template = await this.load(file, from);
