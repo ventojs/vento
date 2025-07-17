@@ -3,9 +3,6 @@ import fs from "node:fs/promises";
 import process from "node:process";
 import type { Loader, TemplateSource } from "./environment.ts";
 
-// Export for backward compatibility
-export type { Loader, TemplateSource };
-
 export class FileLoader implements Loader {
   #root: string;
 

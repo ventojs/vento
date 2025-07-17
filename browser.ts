@@ -1,19 +1,19 @@
 import { Environment, type Loader } from "./src/environment.ts";
-import { FileLoader } from "./src/loader.ts";
+import { UrlLoader } from "./src/url_loader.ts";
 import defaultPlugins from "./plugins/mod.ts";
 
 export interface Options {
-  includes?: string | Loader;
+  includes: URL | Loader;
   autoDataVarname?: boolean;
   dataVarname?: string;
   autoescape?: boolean;
 }
 
-export default function (options: Options = {}): Environment {
+export default function (options: Options): Environment {
   // Determine the loader based on the includes option
-  const loader = typeof options.includes === "object"
-    ? options.includes
-    : new FileLoader(options.includes);
+  const loader = options.includes instanceof URL
+    ? new UrlLoader(options.includes)
+    : options.includes;
 
   // Create a new Environment instance with the provided options
   const env = new Environment({

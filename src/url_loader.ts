@@ -1,5 +1,3 @@
-import { posix } from "node:path";
-
 import type { Loader, TemplateSource } from "./environment.ts";
 
 export class UrlLoader implements Loader {
@@ -10,7 +8,7 @@ export class UrlLoader implements Loader {
   }
 
   async load(file: string): Promise<TemplateSource> {
-    const url = new URL(posix.join(this.#root.pathname, file), this.#root);
+    const url = new URL(join(this.#root.pathname, file), this.#root);
     const source = await (await fetch(url)).text();
 
     return { source };
@@ -18,9 +16,18 @@ export class UrlLoader implements Loader {
 
   resolve(from: string, file: string): string {
     if (file.startsWith(".")) {
-      return posix.join("/", posix.dirname(from), file);
+      return join("/", dirname(from), file);
     }
 
-    return posix.join("/", file);
+    return join("/", file);
   }
+}
+
+function join(...parts: string[]): string {
+  return parts.join("/").replace(/\/+/g, "/");
+}
+
+function dirname(path: string): string {
+  const lastSlash = path.lastIndexOf("/");
+  return lastSlash === -1 ? "." : path.slice(0, lastSlash);
 }

@@ -2,5 +2,6 @@ _bin
 _site
 _cache
 _npm
+_browser
 demo
 TODO
