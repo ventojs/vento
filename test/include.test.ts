@@ -200,6 +200,18 @@ salute: Hello from front matter
   });
 });
 
+Deno.test("Include tag (with global-conflicting data)", async () => {
+  await test({
+    template: `
+    {{ include "/my-file.tmpl" {performance: 'good'} }}
+    `,
+    expected: "[object Performance]",
+    includes: {
+      "/my-file.tmpl": "{{ performance }}",
+    },
+  });
+});
+
 Deno.test("Include tag dynamically", async () => {
   await test({
     template: `

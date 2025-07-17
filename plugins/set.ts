@@ -31,12 +31,13 @@ function setTag(
     const [, variable, value] = match;
     const val = env.compileFilters(tokens, value);
 
-    return `${dataVarname}["${variable}"] = ${val};`;
+    return `var ${variable} = ${dataVarname}["${variable}"] = ${val};`;
   }
 
   // Value is captured (eg: {{ set foo }}bar{{ /set }})
   const compiled: string[] = [];
-  const subvarName = `${dataVarname}["${expression.trim()}"]`;
+  const varName = expression.trim();
+  const subvarName = `${dataVarname}["${varName}"]`;
   const compiledFilters = env.compileFilters(tokens, subvarName);
 
   compiled.push(`${subvarName} = "";`);
@@ -47,6 +48,6 @@ function setTag(
   }
 
   tokens.shift();
-  compiled.push(`${subvarName} = ${compiledFilters};`);
+  compiled.push(`var ${varName} = ${subvarName} = ${compiledFilters};`);
   return compiled.join("\n");
 }

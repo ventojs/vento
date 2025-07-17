@@ -147,3 +147,16 @@ Deno.test("Function with filters", async () => {
     expected: "HELLO WORLD",
   });
 });
+
+Deno.test("Function hoisting", async () => {
+  await test({
+    template: `
+    {{ hello("world") }}
+
+    {{ function hello(name) }}
+    {{ name }}
+    {{ /function }}
+    `,
+    expected: "world",
+  });
+});

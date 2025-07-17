@@ -1,7 +1,7 @@
+import iterateTopLevel from "./js.ts";
 import tokenize, { Token } from "./tokenizer.ts";
 
-import { transformTemplateCode } from "./transformer.ts";
-import { TemplateError, TransformError } from "./errors.ts";
+import { TemplateError } from "./errors.ts";
 
 export interface TemplateResult {
   content: string;
@@ -148,14 +148,18 @@ export class Environment {
     const { dataVarname, autoDataVarname } = this.options;
 
     if (autoDataVarname) {
-      try {
-        code = transformTemplateCode(code, dataVarname);
-      } catch (cause) {
-        if (cause instanceof TransformError) {
-          throw new TemplateError(path, source, cause.position, cause);
-        }
-
-        throw new Error(`Unknown error while transforming ${path}`, { cause });
+      const generator = iterateTopLevel(code);
+      const [, , variables] = generator.next().value;
+      while (!generator.next().done);
+      variables.delete(dataVarname);
+      for (const variable of variables) {
+        if (isGlobal(variable)) variables.delete(variable);
+      }
+      if (variables.size > 0) {
+        code = `
+          var {${[...variables].join(",")}} = ${dataVarname};
+          {\n${code}\n}
+        `;
       }
     }
 
@@ -323,7 +327,7 @@ export class Environment {
 }
 
 function isGlobal(name: string) {
-  // @ts-ignore TS doesn't know about globalThis
+  if (name == "name") return false;
   if (Object.hasOwn(globalThis, name)) {
     return true;
   }
