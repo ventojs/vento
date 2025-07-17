@@ -1,4 +1,4 @@
-export default new Set([
+const variables = new Set([
   // Words reserved by Vento, used internally. In general, don't use variable
   // names starting with two underscores to be future-proof and avoid clashes.
   "__file",
@@ -52,4 +52,14 @@ export default new Set([
   "while",
   "with",
   "yield",
+
+  // Variables that are already defined globally
+  ...Object.getOwnPropertyNames(globalThis),
 ]);
+
+// Remove `name` from the reserved variables
+// because it's widely used in templates
+// and it can cause issues if it's reserved.
+variables.delete("name");
+
+export default variables;

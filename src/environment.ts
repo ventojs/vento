@@ -152,9 +152,7 @@ export class Environment {
       const [, , variables] = generator.next().value;
       while (!generator.next().done);
       variables.delete(dataVarname);
-      for (const variable of variables) {
-        if (isGlobal(variable)) variables.delete(variable);
-      }
+
       if (variables.size > 0) {
         code = `
           var {${[...variables].join(",")}} = ${dataVarname};
