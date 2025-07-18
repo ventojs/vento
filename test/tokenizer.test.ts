@@ -1,6 +1,6 @@
 import { parseTag } from "../core/tokenizer.ts";
 import tmpl from "../mod.ts";
-import { assertEquals } from "https://deno.land/std@0.224.0/assert/assert_equals.ts";
+import { assertEquals } from "./utils.ts";
 
 Deno.test("Parse tag", () => {
   const code = "{{ tag |> filter1 |> filter2 }}";

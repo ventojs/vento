@@ -1,12 +1,14 @@
 import tmpl from "../mod.ts";
-import { assertEquals } from "https://deno.land/std@0.224.0/assert/assert_equals.ts";
-import { assertThrows } from "https://deno.land/std@0.224.0/assert/assert_throws.ts";
-import { extract } from "https://deno.land/std@0.224.0/front_matter/yaml.ts";
-import { test as fmTest } from "https://deno.land/std@0.224.0/front_matter/mod.ts";
+import { assertEquals } from "jsr:@std/assert@1.0.13/equals";
+import { assertThrows } from "jsr:@std/assert@1.0.13/throws";
+import { extract } from "jsr:@std/front-matter@1.0.9/yaml";
+import { test as fmTest } from "jsr:@std/front-matter@1.0.9/test";
 import { MemoryLoader } from "../loaders/memory.ts";
 
 import type { Options } from "../mod.ts";
 import type { Environment, Filter } from "../core/environment.ts";
+
+export { assertEquals };
 
 export interface TestOptions {
   template: string;
@@ -68,10 +70,11 @@ export class TestLoader extends MemoryLoader {
     // Extract the YAML front matter if present
     if (fmTest(tmpl.source, ["yaml"])) {
       const { body, attrs } = extract<Record<string, unknown>>(tmpl.source);
-      return Promise.resolve({
+
+      return {
         source: body,
-        data: { attrs, ...tmpl.data },
-      });
+        data: { ...tmpl.data, ...attrs },
+      };
     }
 
     return tmpl;

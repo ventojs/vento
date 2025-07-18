@@ -1,3 +1,4 @@
+import path from "node:path";
 import type { Loader, TemplateSource } from "../core/environment.ts";
 
 /**
@@ -12,25 +13,20 @@ export class MemoryLoader implements Loader {
   }
 
   load(file: string): Promise<TemplateSource> {
-    const source = this.files[file] || "";
+    if (!(file in this.files)) {
+      throw new Error(`File not found: ${file}`);
+    }
+
+    const source = this.files[file];
 
     return Promise.resolve({ source });
   }
 
   resolve(from: string, file: string): string {
     if (file.startsWith(".")) {
-      return join(dirname(from), file).replace(/\\/g, "/");
+      return path.join(path.dirname(from), file).replace(/\\/g, "/");
     }
 
-    return join("/", file).replace(/\\/g, "/");
+    return path.join("/", file).replace(/\\/g, "/");
   }
-}
-
-function join(...parts: string[]): string {
-  return parts.join("/").replace(/\/+/g, "/");
-}
-
-function dirname(path: string): string {
-  const lastSlash = path.lastIndexOf("/");
-  return lastSlash === -1 ? "." : path.slice(0, lastSlash);
 }
