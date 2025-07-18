@@ -1,6 +1,6 @@
-import iterateTopLevel from "../src/js.ts";
-import type { Token } from "../src/tokenizer.ts";
-import type { Environment, Plugin } from "../src/environment.ts";
+import iterateTopLevel from "../core/js.ts";
+import type { Token } from "../core/tokenizer.ts";
+import type { Environment, Plugin } from "../core/environment.ts";
 
 export default function (): Plugin {
   return (env: Environment) => {

@@ -1,5 +1,5 @@
-import { Environment, type Loader } from "./src/environment.ts";
-import { UrlLoader } from "./src/url_loader.ts";
+import { Environment, type Loader } from "./core/environment.ts";
+import { UrlLoader } from "./core/url_loader.ts";
 import defaultPlugins from "./plugins/mod.ts";
 
 export interface Options {

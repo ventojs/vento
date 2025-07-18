@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - `plugins/mod.ts` module to register all default plugins easily.
 
 ### Changed
+- Renamed `src` directory to `core`.
 - Implemented a different approach to resolve the variables without using `meriyah` to analyze the code. [#128]
 
 ### Removed

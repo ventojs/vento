@@ -1,4 +1,4 @@
-import type { Environment, Plugin } from "../src/environment.ts";
+import type { Environment, Plugin } from "../core/environment.ts";
 
 export default function (): Plugin {
   return (env: Environment) => {

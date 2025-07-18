@@ -7,7 +7,7 @@ import { test as fmTest } from "https://deno.land/std@0.224.0/front_matter/mod.t
 import * as path from "node:path";
 
 import type { Options } from "../mod.ts";
-import type { Environment, Filter, Loader } from "../src/environment.ts";
+import type { Environment, Filter, Loader } from "../core/environment.ts";
 
 export interface TestOptions {
   template: string;

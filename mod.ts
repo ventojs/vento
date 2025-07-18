@@ -1,5 +1,5 @@
-import { Environment, type Loader } from "./src/environment.ts";
-import { FileLoader } from "./src/loader.ts";
+import { Environment, type Loader } from "./core/environment.ts";
+import { FileLoader } from "./core/loader.ts";
 import defaultPlugins from "./plugins/mod.ts";
 
 export interface Options {
