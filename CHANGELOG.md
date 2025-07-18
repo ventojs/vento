@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 - Renamed `src` directory to `core`.
+- Moved all loaders to the `loaders` root directory.
 - Implemented a different approach to resolve the variables without using `meriyah` to analyze the code. [#128]
 
 ### Removed
