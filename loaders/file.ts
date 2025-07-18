@@ -1,8 +1,12 @@
 import path from "node:path";
 import fs from "node:fs/promises";
 import process from "node:process";
-import type { Loader, TemplateSource } from "./environment.ts";
+import type { Loader, TemplateSource } from "../core/environment.ts";
 
+/**
+ * Vento file loader for loading templates from the file system.
+ * Used by JS runtimes like Node, Deno, and Bun.
+ */
 export class FileLoader implements Loader {
   #root: string;
 

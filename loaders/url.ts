@@ -1,5 +1,9 @@
-import type { Loader, TemplateSource } from "./environment.ts";
+import type { Loader, TemplateSource } from "../core/environment.ts";
 
+/**
+ * Vento URL loader for loading templates from a URL.
+ * Used by browser environments.
+ */
 export class UrlLoader implements Loader {
   #root: URL;
 

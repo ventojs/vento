@@ -3,11 +3,10 @@ import { assertEquals } from "https://deno.land/std@0.224.0/assert/assert_equals
 import { assertThrows } from "https://deno.land/std@0.224.0/assert/assert_throws.ts";
 import { extract } from "https://deno.land/std@0.224.0/front_matter/yaml.ts";
 import { test as fmTest } from "https://deno.land/std@0.224.0/front_matter/mod.ts";
-
-import * as path from "node:path";
+import { MemoryLoader } from "../loaders/memory.ts";
 
 import type { Options } from "../mod.ts";
-import type { Environment, Filter, Loader } from "../core/environment.ts";
+import type { Environment, Filter } from "../core/environment.ts";
 
 export interface TestOptions {
   template: string;
@@ -25,7 +24,7 @@ export function testThrows(options: TestOptions) {
 
 export async function test(options: TestOptions) {
   const env = tmpl({
-    includes: new FileLoader(options.includes || {}),
+    includes: new TestLoader(options.includes || {}),
     ...options.options,
   });
 
@@ -62,32 +61,19 @@ export function testSync(options: TestOptions) {
   assertEquals(result.content.trim(), options.expected.trim());
 }
 
-export class FileLoader implements Loader {
-  files: Record<string, string> = {};
+export class TestLoader extends MemoryLoader {
+  override async load(file: string) {
+    const tmpl = await super.load(file);
 
-  constructor(files: Record<string, string>) {
-    this.files = files;
-  }
-
-  load(file: string) {
-    const source = this.files[file] || "";
-
-    if (fmTest(source, ["yaml"])) {
-      const { body, attrs } = extract<Record<string, unknown>>(source);
+    // Extract the YAML front matter if present
+    if (fmTest(tmpl.source, ["yaml"])) {
+      const { body, attrs } = extract<Record<string, unknown>>(tmpl.source);
       return Promise.resolve({
         source: body,
-        data: attrs,
+        data: { attrs, ...tmpl.data },
       });
     }
 
-    return Promise.resolve({ source });
-  }
-
-  resolve(from: string, file: string): string {
-    if (file.startsWith(".")) {
-      return path.join(path.dirname(from), file).replace(/\\/g, "/");
-    }
-
-    return path.join("/", file).replace(/\\/g, "/");
+    return tmpl;
   }
 }
