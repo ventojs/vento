@@ -72,6 +72,7 @@ for await (const { path } of walk("_npm", { exts: [".ts"] })) {
 
 exports["./prism-vento.js"] = "./prism-vento.js";
 exports["./highlightjs-vento.js"] = "./highlightjs-vento.js";
+exports["."] = exports["./mod.js"];
 
 // Sort the exports by key
 exports = Object.fromEntries(
