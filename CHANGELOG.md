@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 2.0.0 - Unreleased
+Vento 2.0 is now dependency-free and compatible with browsers without requiring a build process.
+
 ### Added
 - Build-less browser support.
 - `plugins/mod.ts` module to register all default plugins easily.

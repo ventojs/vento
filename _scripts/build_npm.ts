@@ -1,5 +1,12 @@
 import { copy, walk } from "jsr:@std/fs@1.0.19";
 
+const version = Deno.args[0];
+
+if (!version) {
+  console.error("Please provide a version number as the first argument.");
+  Deno.exit(1);
+}
+
 // Remove the previous code
 try {
   await Deno.remove("./_npm", { recursive: true });
@@ -102,7 +109,7 @@ await Deno.writeTextFile(
   JSON.stringify(
     {
       name: "ventojs",
-      version: "xx",
+      version,
       description: "🌬 A minimal but powerful template engine",
       type: "module",
       repository: {
@@ -116,7 +123,6 @@ await Deno.writeTextFile(
         url: "https://github.com/ventojs/vento/issues",
       },
       homepage: "https://vento.js.org/",
-      files: ["**/*.js"],
       exports,
     },
     null,
