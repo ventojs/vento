@@ -174,7 +174,7 @@ export class Environment {
           ${code}
           return __exports;
         } catch (cause) {
-          const template = __env.cache.get(__file);
+          const template = ${sync ? "" : "await"} __env.cache.get(__file);
           throw new __err(__file, template?.source, __pos, cause);
         }
       }
