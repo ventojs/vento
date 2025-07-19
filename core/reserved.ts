@@ -8,7 +8,7 @@ const variables = new Set([
   "__exports",
   "__pos",
   "__tmp",
-  // JS reserved words, and some "dangerous" words like `let`, `async` or
+  // JS reserved words, and some "dangerous" words like `let`, `async`, `of` or
   // `undefined`, which aren't technically reserved but don't name your
   // variables that.
   "async",
@@ -38,6 +38,7 @@ const variables = new Set([
   "let",
   "new",
   "null",
+  "of",
   "return",
   "super",
   "switch",
