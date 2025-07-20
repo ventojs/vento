@@ -75,6 +75,9 @@ export class Environment {
     safeString(str: string): SafeString {
       return new SafeString(str);
     },
+    templateError(template: Template, pos: number, cause: Error) {
+      return new TemplateError(template.file, template.source, pos, cause);
+    },
   };
 
   constructor(options: Options) {
@@ -167,26 +170,22 @@ export class Environment {
     }
 
     const constructor = new Function(
-      "__file",
       "__env",
-      "__defaults",
-      "__err",
-      `return${sync ? "" : " async"} function (${dataVarname}) {
+      `return${sync ? "" : " async"} function __template (${dataVarname}) {
         let __pos = 0;
         try {
-          ${dataVarname} = Object.assign({}, __defaults, ${dataVarname});
+          ${dataVarname} = Object.assign({}, __template.defaults, ${dataVarname});
           const __exports = { content: "" };
           ${code}
           return __exports;
         } catch (cause) {
-          const template = ${sync ? "" : "await"} __env.cache.get(__file);
-          throw new __err(__file, template?.source, __pos, cause);
+          throw __env.utils.templateError(__template, __pos, cause);
         }
       }
       `,
     );
 
-    const template: Template = constructor(path, this, defaults, TemplateError);
+    const template: Template = constructor(this);
     template.file = path;
     template.code = code;
     template.source = source;

@@ -2,6 +2,7 @@ const variables = new Set([
   // Words reserved by Vento, used internally. In general, don't use variable
   // names starting with two underscores to be future-proof and avoid clashes.
   "__file",
+  "__template",
   "__env",
   "__defaults",
   "__err",

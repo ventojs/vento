@@ -59,7 +59,7 @@ function importTag(
 
   const { dataVarname } = env.options;
   return `let ${variables.join(",")}; {
-    let __tmp = await __env.run(${specifier}, {...${dataVarname}}, __file);
+    let __tmp = await __env.run(${specifier}, {...${dataVarname}}, __template.file);
     ${compiled.join("\n")}
   }`;
 }
