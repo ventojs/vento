@@ -13,6 +13,7 @@ export interface Template {
   source: string;
   code: string;
   file?: string;
+  defaults?: Record<string, unknown>;
 }
 
 export interface TemplateSync {
@@ -20,6 +21,7 @@ export interface TemplateSync {
   source: string;
   code: string;
   file?: string;
+  defaults?: Record<string, unknown>;
 }
 
 export type TokenPreprocessor = (
@@ -188,6 +190,7 @@ export class Environment {
     template.file = path;
     template.code = code;
     template.source = source;
+    template.defaults = defaults || {};
     return template;
   }
 
