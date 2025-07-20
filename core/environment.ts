@@ -1,7 +1,12 @@
 import iterateTopLevel from "./js.ts";
 import tokenize, { Token } from "./tokenizer.ts";
 
-import { TemplateError } from "./errors.ts";
+import {
+  throwVentoSyntaxError,
+  throwTagSyntaxError,
+  throwJSSyntaxError,
+  throwRuntimeError,
+} from "./errors.ts";
 
 export interface TemplateResult {
   content: string;
@@ -151,8 +156,21 @@ export class Environment {
         `The source code of "${path}" must be a string. Got ${typeof source}`,
       );
     }
-    const tokens = this.tokenize(source, path);
-    let code = this.compileTokens(tokens).join("\n");
+    const rawTokens = this.tokenize(source, path);
+    const tokens = [...rawTokens]
+    if(tokens.at(-1)[0] != "string"){
+      const error = new Error('Unclosed tag')
+      const context = {source, path, tokens, body: ''}
+      throwVentoSyntaxError(error, context)
+    }
+    let code
+    try {
+      code = this.compileTokens(rawTokens).join("\n");
+    } catch(tagError){
+      const parsedTokens = tokens.slice(0, -rawTokens.length)
+      const context = {path, source, tokens: parsedTokens, body: ''}
+      throwTagSyntaxError(tagError, context)
+    }
 
     const { dataVarname, autoDataVarname } = this.options;
 
@@ -170,28 +188,36 @@ export class Environment {
       }
     }
 
-    const constructor = new Function(
-      "__env",
-      `return${sync ? "" : " async"} function __template (${dataVarname}) {
-        let __pos = 0;
-        try {
-          ${dataVarname} = Object.assign({}, __template.defaults, ${dataVarname});
-          const __exports = { content: "" };
-          ${code}
-          return __exports;
-        } catch (cause) {
-          throw __env.utils.templateError(__template, __pos, cause);
-        }
+    try {
+      const constructor = new Function("__context",
+        "__env",
+        "__defaults",
+        "__err",
+        `return${sync ? "" : " async"} function (${dataVarname}) {
+          try {
+            ${dataVarname} = Object.assign({}, __defaults, ${dataVarname});
+            const __exports = { content: "" };
+            ${code}
+            return __exports;
+          } catch (cause) {
+            __err(cause, __context);
+          }
+        }`
+      )
+      const body = constructor.toString()
+      const context = {path, body, tokens, source}
+      return constructor(context, this, defaults, throwRuntimeError);
+    } catch(syntaxError) {
+      // In synchronous contexts, we don't have "time" to figure out exactly
+      // what the issue is, so we just throw the raw error
+      if(sync) throw error;
+      const context = { path, body: code, tokens, source }
+      const promise = throwJSSyntaxError(syntaxError, context)
+      return async () => {
+        await promise
+        throw syntaxError
       }
-      `,
-    );
-
-    const template: Template = constructor(this);
-    template.file = path;
-    template.code = code;
-    template.source = source;
-    template.defaults = defaults || {};
-    return template;
+    }
   }
 
   tokenize(source: string, path?: string): Token[] {
@@ -239,6 +265,7 @@ export class Environment {
     tokens: Token[],
     outputVar = "__exports.content",
     stopAt?: string[],
+    context: Partial<ErrorContext>,
   ): string[] {
     const compiled: string[] = [];
 
@@ -262,7 +289,7 @@ export class Environment {
       }
 
       if (type === "tag") {
-        compiled.push(`__pos = ${pos};`);
+        compiled.push(`/*__pos:${pos}*/`);
         for (const tag of this.tags) {
           const compiledTag = tag(this, code, outputVar, tokens);
 
