@@ -70,6 +70,9 @@ export class Environment {
   filters: Record<string, Filter> = {};
   utils: Record<string, unknown> = {
     callMethod,
+    safeString(str: string): SafeString {
+      return new SafeString(str);
+    },
   };
 
   constructor(options: Options) {
@@ -354,4 +357,19 @@ function callMethod(thisObject: any, method: string, ...args: unknown[]) {
 
 function checkAsync(fn: () => unknown): boolean {
   return fn.constructor?.name === "AsyncFunction";
+}
+
+export class SafeString {
+  #value: string;
+  constructor(value: string) {
+    this.#value = value;
+  }
+
+  toString() {
+    return this.#value;
+  }
+
+  [Symbol.toStringTag]() {
+    return this.toString();
+  }
 }

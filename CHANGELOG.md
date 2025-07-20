@@ -21,4 +21,8 @@ Vento 2.0 is now dependency-free and compatible with browsers without requiring 
 - All extenal dependencies (`meriyah`, `estree`, etc).
 - `bare.ts` file since now it's useless.
 
+### Fixed
+- Functions output when the autoescape is enabled [#95]
+
+[#95]: https://github.com/ventojs/vento/issues/95
 [#128]: https://github.com/ventojs/vento/issues/128

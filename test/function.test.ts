@@ -160,3 +160,34 @@ Deno.test("Function hoisting", async () => {
     expected: "world",
   });
 });
+
+Deno.test("Function with autoescape", async () => {
+  await test({
+    template: `
+    {{ hello("world") }}
+
+    {{ function hello(name) }}
+      <strong>{{ name }}</strong>-{{ "<strong>world</strong>" |> safe }}-{{ "<strong>world</strong>" }}
+    {{ /function }}
+    `,
+    expected:
+      "<strong>world</strong>-<strong>world</strong>-<strong>world</strong>",
+    options: {
+      autoescape: false,
+    },
+  });
+  await test({
+    template: `
+    {{ hello("world") }}
+
+    {{ function hello(name) }}
+      <strong>{{ name }}</strong>-{{ "<strong>world</strong>" |> safe }}-{{ "<strong>world</strong>" }}
+    {{ /function }}
+    `,
+    expected:
+      "<strong>world</strong>-<strong>world</strong>-&lt;strong&gt;world&lt;/strong&gt;",
+    options: {
+      autoescape: true,
+    },
+  });
+});

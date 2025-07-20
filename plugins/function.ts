@@ -52,7 +52,7 @@ function functionTag(
 
   tokens.shift();
 
-  compiled.push(`return ${result};`);
+  compiled.push(`return __env.utils.safeString(${result});`);
   compiled.push(`}`);
 
   if (exp) {
