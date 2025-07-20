@@ -51,9 +51,10 @@ export interface TemplateSource {
   source: string;
   data?: Record<string, unknown>;
 }
+export type PrecompiledTemplate = (env: Environment) => Template;
 
 export interface Loader {
-  load(file: string): Promise<TemplateSource>;
+  load(file: string): Promise<TemplateSource | PrecompiledTemplate>;
   resolve(from: string, file: string): string;
 }
 
@@ -221,7 +222,13 @@ export class Environment {
       .split("#")[0];
 
     cached = this.options.loader.load(cleanPath)
-      .then(({ source, data }) => this.compile(source, path, data));
+      .then((result) => {
+        if (typeof result === "function") {
+          return result(this);
+        }
+        const { source, data } = result;
+        return this.compile(source, path, data);
+      });
 
     this.cache.set(path, cached);
 
