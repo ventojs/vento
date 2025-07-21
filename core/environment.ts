@@ -368,17 +368,4 @@ function checkAsync(fn: () => unknown): boolean {
   return fn.constructor?.name === "AsyncFunction";
 }
 
-export class SafeString {
-  #value: string;
-  constructor(value: string) {
-    this.#value = value;
-  }
-
-  toString() {
-    return this.#value;
-  }
-
-  [Symbol.toStringTag]() {
-    return this.toString();
-  }
-}
+export class SafeString extends String {}
