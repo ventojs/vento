@@ -16,14 +16,6 @@ export interface Template {
   defaults?: Record<string, unknown>;
 }
 
-export interface TemplateSync {
-  (data?: Record<string, unknown>): TemplateResult;
-  source: string;
-  code: string;
-  file?: string;
-  defaults?: Record<string, unknown>;
-}
-
 export type TokenPreprocessor = (
   env: Environment,
   tokens: Token[],
@@ -120,32 +112,11 @@ export class Environment {
     return await template(data);
   }
 
-  runStringSync(
-    source: string,
-    data?: Record<string, unknown>,
-  ): TemplateResult {
-    const template = this.compile(source, "", {}, true);
-    return template(data);
-  }
-
   compile(
     source: string,
     path?: string,
     defaults?: Record<string, unknown>,
-    sync?: false,
-  ): Template;
-  compile(
-    source: string,
-    path?: string,
-    defaults?: Record<string, unknown>,
-    sync?: true,
-  ): TemplateSync;
-  compile(
-    source: string,
-    path?: string,
-    defaults?: Record<string, unknown>,
-    sync = false,
-  ): Template | TemplateSync {
+  ): Template {
     if (typeof source !== "string") {
       throw new Error(
         `The source code of "${path}" must be a string. Got ${typeof source}`,
@@ -172,7 +143,7 @@ export class Environment {
 
     const constructor = new Function(
       "__env",
-      `return${sync ? "" : " async"} function __template (${dataVarname}) {
+      `return async function __template (${dataVarname}) {
         let __pos = 0;
         try {
           ${dataVarname} = Object.assign({}, __template.defaults, ${dataVarname});

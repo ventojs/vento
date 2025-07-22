@@ -1,6 +1,6 @@
 import tmpl from "../mod.ts";
 import { assertEquals } from "jsr:@std/assert@1.0.13/equals";
-import { assertThrows } from "jsr:@std/assert@1.0.13/throws";
+import { assertRejects } from "jsr:@std/assert@1.0.13/rejects";
 import { extract } from "jsr:@std/front-matter@1.0.9/yaml";
 import { test as fmTest } from "jsr:@std/front-matter@1.0.9/test";
 import { MemoryLoader } from "../loaders/memory.ts";
@@ -20,8 +20,8 @@ export interface TestOptions {
   options?: Options;
 }
 
-export function testThrows(options: TestOptions) {
-  assertThrows(() => testSync(options));
+export async function testThrows(options: TestOptions) {
+  await assertRejects(async () => await test(options));
 }
 
 export async function test(options: TestOptions) {
@@ -41,25 +41,6 @@ export async function test(options: TestOptions) {
   }
 
   const result = await env.runString(options.template, options.data);
-  assertEquals(result.content.trim(), options.expected.trim());
-}
-
-export function testSync(options: TestOptions) {
-  const env = tmpl({
-    ...options.options,
-  });
-
-  if (options.init) {
-    options.init(env);
-  }
-
-  if (options.filters) {
-    for (const [name, filter] of Object.entries(options.filters)) {
-      env.filters[name] = filter;
-    }
-  }
-
-  const result = env.runStringSync(options.template, options.data);
   assertEquals(result.content.trim(), options.expected.trim());
 }
 

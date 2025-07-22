@@ -77,7 +77,7 @@ Deno.test("Echo tag", async () => {
     expected: "Hellobeautifulworld!",
   });
 
-  testThrows({
+  await testThrows({
     options: {
       autoDataVarname: false,
     },
