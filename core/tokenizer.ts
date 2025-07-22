@@ -15,13 +15,14 @@ export default function tokenize(source: string): Token[] {
 
       tokens.push([type, code, position]);
 
+      position += index;
+      source = source.slice(index);
+      type = source.startsWith("{{#") ? "comment" : "tag";
+
       if (index === -1) {
         break;
       }
 
-      position += index;
-      source = source.slice(index);
-      type = source.startsWith("{{#") ? "comment" : "tag";
       continue;
     }
 
@@ -61,7 +62,7 @@ export default function tokenize(source: string): Token[] {
         return curr;
       });
 
-      if(indexes[lastIndex] == Infinity) return tokens
+      if (indexes[lastIndex] == Infinity) return tokens;
 
       position += indexes[lastIndex];
       source = source.slice(indexes[lastIndex]);
@@ -86,8 +87,8 @@ export default function tokenize(source: string): Token[] {
       continue;
     }
   }
-  if(type == "string"){
-    tokens.push([type, "", position])
+  if (type == "string") {
+    tokens.push([type, "", position]);
   }
   return tokens;
 }

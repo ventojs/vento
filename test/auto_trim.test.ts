@@ -58,5 +58,6 @@ Deno.test("Autotrim (no next tokens)", () => {
     ["tag", "if 1", 0],
     ["string", "it works", 10],
     ["tag", "/if", 18],
+    ["string", "", 27],
   ]);
 });
