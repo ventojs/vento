@@ -1,3 +1,4 @@
+import { join } from "./utils.ts";
 import type { Loader, TemplateSource } from "../core/environment.ts";
 
 /**
@@ -20,18 +21,9 @@ export class UrlLoader implements Loader {
 
   resolve(from: string, file: string): string {
     if (file.startsWith(".")) {
-      return join("/", dirname(from), file);
+      return join(from, "..", file);
     }
 
-    return join("/", file);
+    return join(file);
   }
-}
-
-function join(...parts: string[]): string {
-  return parts.join("/").replace(/\/+/g, "/");
-}
-
-function dirname(path: string): string {
-  const lastSlash = path.lastIndexOf("/");
-  return lastSlash === -1 ? "." : path.slice(0, lastSlash);
 }

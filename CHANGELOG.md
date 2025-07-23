@@ -11,6 +11,7 @@ Vento 2.0 is now dependency-free and compatible with browsers without requiring 
 - Build-less browser support.
 - `plugins/mod.ts` module to register all default plugins easily.
 - Support for precompiled templates.
+- New filesystem loader to use File System API.
 
 ### Changed
 - Renamed `src` directory to `core`.
