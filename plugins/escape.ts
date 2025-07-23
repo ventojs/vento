@@ -17,25 +17,25 @@ export default function (): Plugin {
         return str;
       }
 
-      let html = '';
+      let html = "";
 
       for (let i = match.index; i < str.length; i++) {
         switch (str.charCodeAt(i)) {
           case 34: // "
-            html += '&quot;';
-          break;
+            html += "&quot;";
+            break;
           case 39: // '
-            html += '&apos;';
-          break;
+            html += "&apos;";
+            break;
           case 38: // &
-            html += '&amp;';
-          break;
+            html += "&amp;";
+            break;
           case 60: // <
-            html += '&lt;';
-          break;
+            html += "&lt;";
+            break;
           case 62: // >
-            html += '&gt;';
-          break;
+            html += "&gt;";
+            break;
           default:
             html += str[i];
         }
