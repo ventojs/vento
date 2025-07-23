@@ -15,13 +15,14 @@ export default function tokenize(source: string): Token[] {
 
       tokens.push([type, code, position]);
 
+      position += index;
+      source = source.slice(index);
+      type = source.startsWith("{{#") ? "comment" : "tag";
+
       if (index === -1) {
         break;
       }
 
-      position += index;
-      source = source.slice(index);
-      type = source.startsWith("{{#") ? "comment" : "tag";
       continue;
     }
 
@@ -61,6 +62,8 @@ export default function tokenize(source: string): Token[] {
         return curr;
       });
 
+      if (indexes[lastIndex] == Infinity) return tokens;
+
       position += indexes[lastIndex];
       source = source.slice(indexes[lastIndex]);
       type = "string";
@@ -84,6 +87,9 @@ export default function tokenize(source: string): Token[] {
       continue;
     }
   }
+  if (type == "string") {
+    tokens.push([type, "", position]);
+  }
   return tokens;
 }
 
@@ -101,5 +107,6 @@ export function parseTag(source: string): number[] {
     indexes.push(index + 2);
     return indexes;
   }
-  throw new Error("Unclosed tag");
+  indexes.push(Infinity);
+  return indexes;
 }

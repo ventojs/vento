@@ -127,6 +127,7 @@ Deno.test("Tokenizer (literal 3)", () => {
   assertEquals(tokens, [
     ["string", "", 0],
     ["tag", "`\\${{`", 0],
+    ["string", "", 12],
   ]);
 });
 
@@ -139,6 +140,7 @@ Deno.test("Tokenizer (filter)", () => {
     ["filter", "await fetch"],
     ["filter", "await json"],
     ["filter", "stringify"],
+    ["string", "", 51],
   ]);
 });
 
@@ -148,5 +150,6 @@ Deno.test("Tokenizer (regexp)", () => {
   assertEquals(tokens, [
     ["string", "", 0],
     ["tag", "!/}}/.test(foo)", 0],
+    ["string", "", 21],
   ]);
 });

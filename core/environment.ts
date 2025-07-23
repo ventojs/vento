@@ -1,7 +1,13 @@
 import iterateTopLevel from "./js.ts";
 import tokenize, { Token } from "./tokenizer.ts";
 
-import { TemplateError } from "./errors.ts";
+import {
+  type ErrorContext,
+  printJSSyntaxError,
+  printRuntimeError,
+  printTagSyntaxError,
+  printVentoSyntaxError,
+} from "./errors.ts";
 
 export interface TemplateResult {
   content: string;
@@ -14,6 +20,7 @@ export interface Template {
   code: string;
   file?: string;
   defaults?: Record<string, unknown>;
+  context: ErrorContext;
 }
 
 export interface TemplateSync {
@@ -76,9 +83,7 @@ export class Environment {
     safeString(str: string): SafeString {
       return new SafeString(str);
     },
-    templateError(template: Template, pos: number, cause: Error) {
-      return new TemplateError(template.file, template.source, pos, cause);
-    },
+    printRuntimeError,
   };
 
   constructor(options: Options) {
@@ -151,8 +156,24 @@ export class Environment {
         `The source code of "${path}" must be a string. Got ${typeof source}`,
       );
     }
-    const tokens = this.tokenize(source, path);
-    let code = this.compileTokens(tokens).join("\n");
+    const rawTokens = this.tokenize(source, path);
+    const tokens = [...rawTokens];
+    if (tokens.at(-1)![0] != "string") {
+      const error = new Error("Unclosed tag");
+      const context = { source, path, tokens, body: "" };
+      printVentoSyntaxError(error, context);
+      throw error;
+    }
+    let code: string;
+    try {
+      code = this.compileTokens(rawTokens).join("\n");
+    } catch (tagError) {
+      if (!(tagError instanceof Error)) throw tagError;
+      const parsedTokens = tokens.slice(0, -rawTokens.length);
+      const context = { path, source, tokens: parsedTokens, body: "" };
+      printTagSyntaxError(tagError, context);
+      throw tagError;
+    }
 
     const { dataVarname, autoDataVarname } = this.options;
 
@@ -170,27 +191,42 @@ export class Environment {
       }
     }
 
-    const constructor = new Function(
-      "__env",
-      `return${sync ? "" : " async"} function __template (${dataVarname}) {
-        let __pos = 0;
-        try {
-          ${dataVarname} = Object.assign({}, __template.defaults, ${dataVarname});
-          const __exports = { content: "" };
-          ${code}
-          return __exports;
-        } catch (cause) {
-          throw __env.utils.templateError(__template, __pos, cause);
-        }
-      }
-      `,
-    );
-
-    const template: Template = constructor(this);
+    let template, context;
+    try {
+      const constructor = new Function(
+        "__env",
+        `return${sync ? "" : " async"} function __template(${dataVarname}) {
+          try {
+            ${dataVarname} = Object.assign({}, __template.defaults, ${dataVarname});
+            const __exports = { content: "" };
+            ${code}
+            return __exports;
+          } catch (cause) {
+            __env.utils.printRuntimeError(cause, __template.context);
+            throw cause;
+          }
+        }`,
+      );
+      template = constructor(this);
+      const body = constructor.toString();
+      context = { path, body, tokens, source };
+    } catch (syntaxError) {
+      // In synchronous contexts, we don't have "time" to figure out exactly
+      // what the issue is, so we just throw the raw error
+      if (sync) throw syntaxError;
+      if (!(syntaxError instanceof SyntaxError)) throw syntaxError;
+      context = { path, body: code, tokens, source };
+      const promise = printJSSyntaxError(syntaxError, context);
+      template = async function () {
+        await promise;
+        throw syntaxError;
+      };
+    }
     template.file = path;
     template.code = code;
     template.source = source;
     template.defaults = defaults || {};
+    template.context = context;
     return template;
   }
 
@@ -262,7 +298,7 @@ export class Environment {
       }
 
       if (type === "tag") {
-        compiled.push(`__pos = ${pos};`);
+        compiled.push(`/*__pos:${pos}*/`);
         for (const tag of this.tags) {
           const compiledTag = tag(this, code, outputVar, tokens);
 
