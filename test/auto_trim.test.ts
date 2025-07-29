@@ -14,6 +14,7 @@ Deno.test("Autotrim (removes newlines correctly)", () => {
    {{ /if }}
   
     {{ description }}   
+    {{ form }}
     <a {{ if true }}rel="me"{{ /if }} href="#">text</a>`;
 
   const env = tmpl();
@@ -37,11 +38,13 @@ Deno.test("Autotrim (removes newlines correctly)", () => {
     ["tag", "/if", 169],
     ["string", "  \n    ", 178],
     ["tag", "description", 186],
-    ["string", "   \n    <a ", 203],
-    ["tag", "if true", 214],
-    ["string", 'rel="me"', 227],
-    ["tag", "/if", 235],
-    ["string", ' href="#">text</a>', 244],
+    ["string", "   \n    ", 203],
+    ["tag", "form", 211],
+    ["string", "\n    <a ", 221],
+    ["tag", "if true", 229],
+    ["string", 'rel="me"', 242],
+    ["tag", "/if", 250],
+    ["string", ' href="#">text</a>', 259],
   ]);
 });
 
