@@ -37,7 +37,10 @@ export function autoTrim(tokens: Token[], options: AutoTrimOptions) {
 
     const [type, code] = token;
 
-    if (type === "tag" && options.tags.find((tag) => code.startsWith(tag))) {
+    if (
+      type === "tag" &&
+      options.tags.find((tag) => code === tag || code.startsWith(tag + " "))
+    ) {
       // Remove leading horizontal space
       previous[1] = previous[1].replace(/(^|\n)[ \t]*$/, "$1");
 
