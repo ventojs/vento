@@ -1,3 +1,4 @@
+import { TokenError } from "../core/errors.ts";
 import iterateTopLevel from "../core/js.ts";
 import type { Token } from "../core/tokenizer.ts";
 import type { Environment, Plugin } from "../core/environment.ts";
@@ -10,10 +11,11 @@ export default function (): Plugin {
 
 function includeTag(
   env: Environment,
-  code: string,
+  token: Token,
   output: string,
   tokens: Token[],
 ): string | undefined {
+  const [, code] = token;
   if (!code.startsWith("include ")) {
     return;
   }
@@ -29,7 +31,7 @@ function includeTag(
       if (reason == "{") bracketIndex = index;
     }
     if (bracketIndex == -1) {
-      throw Error(`Invalid include tag: ${tagCode}`);
+      throw new TokenError("Invalid include tag", token);
     }
     file = tagCode.slice(0, bracketIndex).trim();
     data = tagCode.slice(bracketIndex).trim();

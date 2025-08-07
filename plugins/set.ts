@@ -1,3 +1,4 @@
+import { TokenError } from "../core/errors.ts";
 import type { Token } from "../core/tokenizer.ts";
 import type { Environment, Plugin } from "../core/environment.ts";
 
@@ -9,10 +10,12 @@ export default function (): Plugin {
 
 function setTag(
   env: Environment,
-  code: string,
+  token: Token,
   _output: string,
   tokens: Token[],
 ): string | undefined {
+  const [, code] = token;
+
   if (!code.startsWith("set ")) {
     return;
   }
@@ -25,7 +28,7 @@ function setTag(
     const match = code.match(/^set\s+([\w]+)\s*=\s*([\s\S]+)$/);
 
     if (!match) {
-      throw new Error(`Invalid set tag: ${code}`);
+      throw new TokenError("Invalid set tag", token);
     }
 
     const [, variable, value] = match;
@@ -44,7 +47,7 @@ function setTag(
   compiled.push(...env.compileTokens(tokens, subvarName, ["/set"]));
 
   if (tokens.length && (tokens[0][0] !== "tag" || tokens[0][1] !== "/set")) {
-    throw new Error(`Missing closing tag for set tag: ${code}`);
+    throw new TokenError("Missing closing tag for set tag", token);
   }
 
   tokens.shift();

@@ -1,3 +1,4 @@
+import { TokenError } from "../core/errors.ts";
 import type { Token } from "../core/tokenizer.ts";
 import type { Environment, Plugin } from "../core/environment.ts";
 
@@ -9,10 +10,12 @@ export default function (): Plugin {
 
 function layoutTag(
   env: Environment,
-  code: string,
+  token: Token,
   output: string,
   tokens: Token[],
 ): string | undefined {
+  const [, code] = token;
+
   if (!code.startsWith("layout ")) {
     return;
   }
@@ -22,7 +25,7 @@ function layoutTag(
   );
 
   if (!match) {
-    throw new Error(`Invalid wrap: ${code}`);
+    throw new TokenError("Invalid layout tag", token);
   }
 
   const [_, file, data] = match;
@@ -39,7 +42,7 @@ function layoutTag(
   compiled.push(...env.compileTokens(tokens, varname, ["/layout"]));
 
   if (tokens.length && (tokens[0][0] !== "tag" || tokens[0][1] !== "/layout")) {
-    throw new Error(`Missing closing tag for layout tag: ${code}`);
+    throw new TokenError("Missing closing tag for layout tag", token);
   }
 
   tokens.shift();

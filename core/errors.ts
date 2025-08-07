@@ -1,5 +1,17 @@
 import type { Token } from "./tokenizer.ts";
 
+export class TokenError extends Error {
+  token: Token;
+  file?: string;
+
+  constructor(message: string, token: Token, file?: string) {
+    super(message);
+    this.name = "TokenError";
+    this.token = token;
+    this.file = file;
+  }
+}
+
 export type ErrorContext = {
   path?: string;
   source: string;

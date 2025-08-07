@@ -2,11 +2,10 @@ import iterateTopLevel from "./js.ts";
 import tokenize, { Token } from "./tokenizer.ts";
 
 import {
-  type ErrorContext,
   printJSSyntaxError,
   printRuntimeError,
   printTagSyntaxError,
-  printVentoSyntaxError,
+  TokenError,
 } from "./errors.ts";
 
 export interface TemplateResult {
@@ -20,7 +19,8 @@ export interface Template {
   code: string;
   file?: string;
   defaults?: Record<string, unknown>;
-  context: ErrorContext;
+  body?: string;
+  tokens?: Token[];
 }
 
 export type TokenPreprocessor = (
@@ -31,7 +31,7 @@ export type TokenPreprocessor = (
 
 export type Tag = (
   env: Environment,
-  code: string,
+  token: Token,
   output: string,
   tokens: Token[],
 ) => string | undefined;
@@ -123,27 +123,32 @@ export class Environment {
     defaults?: Record<string, unknown>,
   ): Template {
     if (typeof source !== "string") {
-      throw new Error(
+      throw new TypeError(
         `The source code of "${path}" must be a string. Got ${typeof source}`,
       );
     }
     const rawTokens = this.tokenize(source, path);
     const tokens = [...rawTokens];
-    if (tokens.at(-1)![0] != "string") {
-      const error = new Error("Unclosed tag");
-      const context = { source, path, tokens, body: "" };
-      printVentoSyntaxError(error, context);
-      throw error;
+    const lastToken = tokens.at(-1)!;
+
+    if (lastToken[0] != "string") {
+      throw new TokenError("Unclosed tag", lastToken, path);
     }
+
     let code: string;
     try {
       code = this.compileTokens(rawTokens).join("\n");
-    } catch (tagError) {
-      if (!(tagError instanceof Error)) throw tagError;
+    } catch (error) {
+      if (error instanceof TokenError) {
+        error.file = path;
+        throw error;
+      }
+
+      if (!(error instanceof Error)) throw error;
       const parsedTokens = tokens.slice(0, -rawTokens.length);
       const context = { path, source, tokens: parsedTokens, body: "" };
-      printTagSyntaxError(tagError, context);
-      throw tagError;
+      printTagSyntaxError(error, context);
+      throw error;
     }
 
     const { dataVarname, autoDataVarname } = this.options;
@@ -253,7 +258,8 @@ export class Environment {
         break;
       }
 
-      const [type, code, pos] = tokens.shift()!;
+      const token = tokens.shift()!;
+      const [type, code, pos] = token;
 
       if (type === "comment") {
         continue;
@@ -269,7 +275,7 @@ export class Environment {
       if (type === "tag") {
         compiled.push(`/*__pos:${pos}*/`);
         for (const tag of this.tags) {
-          const compiledTag = tag(this, code, outputVar, tokens);
+          const compiledTag = tag(this, token, outputVar, tokens);
 
           if (typeof compiledTag === "string") {
             compiled.push(compiledTag);
@@ -287,7 +293,7 @@ export class Environment {
         continue;
       }
 
-      throw new Error(`Unknown token type "${type}"`);
+      throw new TokenError(`Unknown token type "${type}"`, token);
     }
 
     return compiled;
@@ -297,12 +303,13 @@ export class Environment {
     let unescaped = false;
 
     while (tokens.length > 0 && tokens[0][0] === "filter") {
-      const [, code] = tokens.shift()!;
+      const token = tokens.shift()!;
+      const [, code] = token;
 
       const match = code.match(/^(await\s+)?([\w.]+)(?:\((.*)\))?$/);
 
       if (!match) {
-        throw new Error(`Invalid filter: ${code}`);
+        throw new TokenError(`Invalid filter: ${code}`, token);
       }
 
       const [_, isAsync, name, args] = match;

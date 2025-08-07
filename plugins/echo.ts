@@ -1,3 +1,4 @@
+import { TokenError } from "../core/errors.ts";
 import type { Token } from "../core/tokenizer.ts";
 import type { Environment, Plugin } from "../core/environment.ts";
 
@@ -9,10 +10,12 @@ export default function (): Plugin {
 
 function echoTag(
   env: Environment,
-  code: string,
+  token: Token,
   output: string,
   tokens: Token[],
 ): string | undefined {
+  const [, code] = token;
+
   if (!/^echo\b/.test(code)) {
     return;
   }
@@ -34,7 +37,7 @@ function echoTag(
 
   const closeToken = tokens.shift();
   if (!closeToken || closeToken[0] != "tag" || closeToken[1] != "/echo") {
-    throw new Error("Unclosed echo tag");
+    throw new TokenError("Unclosed echo tag", token);
   }
 
   return `{

@@ -1,3 +1,4 @@
+import { TokenError } from "../core/errors.ts";
 import type { Token } from "../core/tokenizer.ts";
 import type { Environment, Plugin } from "../core/environment.ts";
 
@@ -9,10 +10,12 @@ export default function (): Plugin {
 
 function functionTag(
   env: Environment,
-  code: string,
+  token: Token,
   _output: string,
   tokens: Token[],
 ): string | undefined {
+  const [, code] = token;
+
   if (!code.match(/^(export\s+)?(async\s+)?function\s/)) {
     return;
   }
@@ -22,7 +25,7 @@ function functionTag(
   );
 
   if (!match) {
-    throw new Error(`Invalid function: ${code}`);
+    throw new TokenError("Invalid function tag", token);
   }
 
   const [_, exp, as, name, args] = match;
@@ -38,7 +41,10 @@ function functionTag(
     if (
       tokens.length && (tokens[0][0] !== "tag" || tokens[0][1] !== "/export")
     ) {
-      throw new Error(`Missing closing tag for export function tag: ${code}`);
+      throw new TokenError(
+        "Missing closing tag for export function tag",
+        token,
+      );
     }
   } else {
     compiled.push(...env.compileTokens(tokens, "__output", ["/function"]));
@@ -46,7 +52,7 @@ function functionTag(
     if (
       tokens.length && (tokens[0][0] !== "tag" || tokens[0][1] !== "/function")
     ) {
-      throw new Error(`Missing closing tag for function tag: ${code}`);
+      throw new TokenError("Missing closing tag for function tag", token);
     }
   }
 

@@ -1,3 +1,5 @@
+import { TokenError } from "../core/errors.ts";
+
 import type { Token } from "../core/tokenizer.ts";
 import type { Environment, Plugin } from "../core/environment.ts";
 
@@ -15,10 +17,11 @@ const AS = /\s+\bas\b\s+/;
 
 function exportTag(
   env: Environment,
-  code: string,
+  token: Token,
   _output: string,
   tokens: Token[],
 ): string | undefined {
+  const [, code] = token;
   const exportStart = code.match(EXPORT_START);
   if (!exportStart) {
     return;
@@ -36,7 +39,7 @@ function exportTag(
     compiled.push(`var ${name} = "";`);
     compiled.push(...env.compileTokens(tokens, name, ["/export"]));
     if (tokens[0]?.[0] !== "tag" || tokens[0]?.[1] !== "/export") {
-      throw new Error(`Missing closing tag for export tag: ${code}`);
+      throw new TokenError("Missing closing tag", token);
     }
     tokens.shift();
     compiled.push(`${name} = ${compiledFilters}`);
@@ -72,9 +75,10 @@ function exportTag(
         const value = `${dataVarname}["${name}"] ?? ${name}`;
         compiled.push(`__exports["${rename}"] = ${value};`);
       } else {
-        throw new Error(`Invalid export: ${code}`);
+        throw new TokenError("Invalid export", token);
       }
     }
+
     return compiled.join("\n");
   }
 }
