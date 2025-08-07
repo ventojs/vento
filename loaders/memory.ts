@@ -1,4 +1,4 @@
-import path from "node:path";
+import { join } from "./utils.ts";
 import type { Loader, TemplateSource } from "../core/environment.ts";
 
 /**
@@ -24,9 +24,9 @@ export class MemoryLoader implements Loader {
 
   resolve(from: string, file: string): string {
     if (file.startsWith(".")) {
-      return path.join(path.dirname(from), file).replace(/\\/g, "/");
+      return join(from, "..", file);
     }
 
-    return path.join("/", file).replace(/\\/g, "/");
+    return join(file);
   }
 }

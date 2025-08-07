@@ -1,4 +1,4 @@
-import { test, testSync } from "./utils.ts";
+import { test } from "./utils.ts";
 
 Deno.test("Comment tag", async () => {
   await test({
@@ -8,12 +8,6 @@ Deno.test("Comment tag", async () => {
     expected: "",
   });
   await test({
-    template: `
-    <h1> {{# {{ title }} {{#}}
-    `,
-    expected: "<h1> ",
-  });
-  testSync({
     template: `
     <h1> {{# {{ title }} {{#}}
     `,

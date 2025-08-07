@@ -11,6 +11,7 @@ Vento 2.0 is now dependency-free and compatible with browsers without requiring 
 - Build-less browser support.
 - `plugins/mod.ts` module to register all default plugins easily.
 - Support for precompiled templates.
+- New filesystem loader to use File System API.
 
 ### Changed
 - Renamed `src` directory to `core`.
@@ -18,6 +19,7 @@ Vento 2.0 is now dependency-free and compatible with browsers without requiring 
 - Implemented a different approach to resolve the variables without using `meriyah` to analyze the code. [#128]
 
 ### Removed
+- `runStringSync` function.
 - Deprecated option `useWith`.
 - All extenal dependencies (`meriyah`, `estree`, etc).
 - `bare.ts` file since now it's useless.

@@ -23,14 +23,6 @@ export interface Template {
   context: ErrorContext;
 }
 
-export interface TemplateSync {
-  (data?: Record<string, unknown>): TemplateResult;
-  source: string;
-  code: string;
-  file?: string;
-  defaults?: Record<string, unknown>;
-}
-
 export type TokenPreprocessor = (
   env: Environment,
   tokens: Token[],
@@ -125,32 +117,11 @@ export class Environment {
     return await template(data);
   }
 
-  runStringSync(
-    source: string,
-    data?: Record<string, unknown>,
-  ): TemplateResult {
-    const template = this.compile(source, "", {}, true);
-    return template(data);
-  }
-
   compile(
     source: string,
     path?: string,
     defaults?: Record<string, unknown>,
-    sync?: false,
-  ): Template;
-  compile(
-    source: string,
-    path?: string,
-    defaults?: Record<string, unknown>,
-    sync?: true,
-  ): TemplateSync;
-  compile(
-    source: string,
-    path?: string,
-    defaults?: Record<string, unknown>,
-    sync = false,
-  ): Template | TemplateSync {
+  ): Template {
     if (typeof source !== "string") {
       throw new Error(
         `The source code of "${path}" must be a string. Got ${typeof source}`,
@@ -195,7 +166,7 @@ export class Environment {
     try {
       const constructor = new Function(
         "__env",
-        `return${sync ? "" : " async"} function __template(${dataVarname}) {
+        `return async function __template(${dataVarname}) {
           try {
             ${dataVarname} = Object.assign({}, __template.defaults, ${dataVarname});
             const __exports = { content: "" };
@@ -211,9 +182,6 @@ export class Environment {
       const body = constructor.toString();
       context = { path, body, tokens, source };
     } catch (syntaxError) {
-      // In synchronous contexts, we don't have "time" to figure out exactly
-      // what the issue is, so we just throw the raw error
-      if (sync) throw syntaxError;
       if (!(syntaxError instanceof SyntaxError)) throw syntaxError;
       context = { path, body: code, tokens, source };
       const promise = printJSSyntaxError(syntaxError, context);
@@ -222,6 +190,7 @@ export class Environment {
         throw syntaxError;
       };
     }
+
     template.file = path;
     template.code = code;
     template.source = source;
@@ -404,17 +373,4 @@ function checkAsync(fn: () => unknown): boolean {
   return fn.constructor?.name === "AsyncFunction";
 }
 
-export class SafeString {
-  #value: string;
-  constructor(value: string) {
-    this.#value = value;
-  }
-
-  toString() {
-    return this.#value;
-  }
-
-  [Symbol.toStringTag]() {
-    return this.toString();
-  }
-}
+export class SafeString extends String {}

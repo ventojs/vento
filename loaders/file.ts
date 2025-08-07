@@ -5,7 +5,7 @@ import type { Loader, TemplateSource } from "../core/environment.ts";
 
 /**
  * Vento file loader for loading templates from the file system.
- * Used by JS runtimes like Node, Deno, and Bun.
+ * Used by Node-like runtimes (Node, Deno, Bun, ...)
  */
 export class FileLoader implements Loader {
   #root: string;

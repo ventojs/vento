@@ -18,7 +18,7 @@ await Deno.mkdir("./_npm");
 // Copy the files
 const paths: string[] = [
   "mod.ts",
-  "browser.ts",
+  "web.ts",
   "highlightjs-vento.js",
   "prism-vento.js",
   "core",
