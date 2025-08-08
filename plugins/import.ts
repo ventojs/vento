@@ -1,3 +1,5 @@
+import { TokenError } from "../core/errors.ts";
+import type { Token } from "../core/tokenizer.ts";
 import type { Environment, Plugin } from "../core/environment.ts";
 
 export default function (): Plugin {
@@ -13,15 +15,16 @@ const AS = /\s+\bas\b\s+/;
 
 function importTag(
   env: Environment,
-  code: string,
+  token: Token,
 ): string | undefined {
+  const [, code] = token;
   if (!code.startsWith("import ")) {
     return;
   }
 
   const match = code.match(IMPORT_STATEMENT);
   if (!match) {
-    throw new Error(`Invalid import: ${code}`);
+    throw new TokenError("Invalid import tag", token);
   }
 
   const compiled: string[] = [];
@@ -48,12 +51,12 @@ function importTag(
           variables.push(rename);
           return `${name}: ${rename}`;
         } else {
-          throw new Error(`Invalid import: ${code}`);
+          throw new TokenError("Invalid named import", token);
         }
       });
       compiled.push(`({${chunks.join(",")}} = __tmp);`);
     } else {
-      throw new Error(`Invalid import: ${code}`);
+      throw new TokenError("Invalid import tag", token);
     }
   }
 
