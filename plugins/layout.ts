@@ -48,7 +48,7 @@ function layoutTag(
       {...${dataVarname}${data ? `, ${data}` : ""}, content: ${
       env.compileFilters(tokens, varname)
     }},
-      __template.file
+      __template.path
     );
     ${output} += __tmp.content;`,
   );

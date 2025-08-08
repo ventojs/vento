@@ -61,7 +61,7 @@ export function exportTemplate(
 
     ${
     options?.source
-      ? `__template.file = ${JSON.stringify(template.file)};
+      ? `__template.path = ${JSON.stringify(template.path)};
         __template.code = ${JSON.stringify(template.code)};
         __template.source = ${JSON.stringify(template.source)};`
       : ""

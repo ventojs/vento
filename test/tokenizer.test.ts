@@ -137,9 +137,9 @@ Deno.test("Tokenizer (filter)", () => {
   assertEquals(tokens, [
     ["string", "", 0],
     ["tag", "url", 0],
-    ["filter", "await fetch"],
-    ["filter", "await json"],
-    ["filter", "stringify"],
+    ["filter", "await fetch", 9],
+    ["filter", "await json", 24],
+    ["filter", "stringify", 38],
     ["string", "", 51],
   ]);
 });

@@ -41,7 +41,7 @@ function includeTag(
   return `{
     const __tmp = await __env.run(${file},
       {...${dataVarname}${data ? `, ...${data}` : ""}},
-      __template.file
+      __template.path
     );
     ${output} += ${env.compileFilters(tokens, "__tmp.content")};
   }`;

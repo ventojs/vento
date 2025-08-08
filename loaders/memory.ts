@@ -6,18 +6,17 @@ import type { Loader, TemplateSource } from "../core/environment.ts";
  * Used for testing or in-memory operations.
  */
 export class MemoryLoader implements Loader {
-  files: Record<string, string> = {};
+  files: Map<string, string>;
 
   constructor(files: Record<string, string>) {
-    this.files = files;
+    this.files = new Map(Object.entries(files));
   }
 
   load(file: string): Promise<TemplateSource> {
-    if (!(file in this.files)) {
+    const source = this.files.get(file);
+    if (source === undefined) {
       throw new Error(`File not found: ${file}`);
     }
-
-    const source = this.files[file];
 
     return Promise.resolve({ source });
   }
