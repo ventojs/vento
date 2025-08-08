@@ -17,7 +17,20 @@ Vento 2.0 is now dependency-free and compatible with browsers without a build st
 ### Changed
 - Renamed `src` directory to `core`.
 - Moved all loaders to the `loaders` root directory.
-- Implemented a different approach to resolve the variables without using `meriyah` to analyze the code. [#128]
+- Implemented a different approach to resolve the variables without using `meriyah` to analyze the code [#128].
+- The signature of `tag` plugins has changed:
+  ```diff
+  -- (env: Environment, code: string, output: string, tokens: Tokens[])
+  ++ (env: Environment, token: Token, output: string, tokens: Tokens[])
+  ```
+- The `compileTokens` function has changed. The third argument is a string with the closing tag and now it throws an error if its not found:
+  ```diff
+  -- env.compileTokens(tokens, tmpOutput, ["/code"]);
+  -- if (tokens.length && (tokens[0][0] !== "tag" || tokens[0][1] !== "/code")) {
+  --   throw new Error("missing closing tag");
+  -- }
+  ++ env.compileTokens(tokens, tmpOutput, "/code");
+  ```
 
 ### Removed
 - `runStringSync` function.
