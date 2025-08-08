@@ -46,18 +46,18 @@ export async function test(options: TestOptions) {
 
 export class TestLoader extends MemoryLoader {
   override async load(file: string) {
-    const tmpl = await super.load(file);
+    const template = await super.load(file);
 
     // Extract the YAML front matter if present
-    if (fmTest(tmpl.source, ["yaml"])) {
-      const { body, attrs } = extract<Record<string, unknown>>(tmpl.source);
+    if (fmTest(template.source, ["yaml"])) {
+      const { body, attrs } = extract<Record<string, unknown>>(template.source);
 
       return {
         source: body,
-        data: { ...tmpl.data, ...attrs },
+        data: { ...template.data, ...attrs },
       };
     }
 
-    return tmpl;
+    return template;
   }
 }

@@ -87,11 +87,11 @@ Deno.test("Set tag with includes", async () => {
   await test({
     template: `
     {{ set name = "World" }}
-    {{ include "/my-file.tmpl" }}
+    {{ include "/my-file.vto" }}
     `,
     expected: "Hello World",
     includes: {
-      "/my-file.tmpl": "Hello {{ name }}",
+      "/my-file.vto": "Hello {{ name }}",
     },
   });
   await test({
@@ -119,16 +119,16 @@ Deno.test("Set tag with includes", async () => {
   await test({
     template: `
     {{- set recursive = true -}}
-    {{- include "/my-file.tmpl" -}}
+    {{- include "/my-file.vto" -}}
     `,
     expected: "Hello WorldHello World",
     includes: {
-      "/my-file.tmpl": `
+      "/my-file.vto": `
       {{- set text = "Hello World" -}}
       {{- text -}}
       {{- if it.recursive -}}
       {{- set recursive = false -}}
-      {{- include "./my-file.tmpl" -}}
+      {{- include "./my-file.vto" -}}
       {{- /if -}}
       `,
     },

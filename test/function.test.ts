@@ -70,14 +70,14 @@ Deno.test("Function tag (async)", async () => {
   await test({
     template: `
     {{ async function file }}
-    {{ include "/my-file.tmpl" }}
+    {{ include "/my-file.vto" }}
     {{ /function }}
 
     {{ await file() }}
     `,
     expected: "Hello world",
     includes: {
-      "/my-file.tmpl": "Hello world",
+      "/my-file.vto": "Hello world",
     },
   });
 });
