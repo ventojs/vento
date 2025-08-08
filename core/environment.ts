@@ -139,12 +139,12 @@ export class Environment {
     try {
       code = this.compileTokens(rawTokens).join("\n");
     } catch (error) {
+      if (!(error instanceof Error)) throw error;
       if (error instanceof TokenError) {
         error.file = path;
         throw error;
       }
 
-      if (!(error instanceof Error)) throw error;
       const parsedTokens = tokens.slice(0, -rawTokens.length);
       const context = { path, source, tokens: parsedTokens, body: "" };
       printTagSyntaxError(error, context);
@@ -248,18 +248,21 @@ export class Environment {
   compileTokens(
     tokens: Token[],
     outputVar = "__exports.content",
-    stopAt?: string[],
+    closeToken?: string,
   ): string[] {
     const compiled: string[] = [];
+    let openToken: Token | undefined;
 
     tokens:
     while (tokens.length > 0) {
-      if (stopAt && tokens[0][0] === "tag" && stopAt.includes(tokens[0][1])) {
-        break;
-      }
-
       const token = tokens.shift()!;
       const [type, code, pos] = token;
+      openToken ??= token;
+
+      // We found the closing tag, so we stop compiling
+      if (closeToken && type === "tag" && closeToken === code) {
+        return compiled;
+      }
 
       if (type === "comment") {
         continue;
@@ -294,6 +297,14 @@ export class Environment {
       }
 
       throw new TokenError(`Unknown token type "${type}"`, token);
+    }
+
+    // If we reach here, it means we have an open token that wasn't closed
+    if (closeToken) {
+      throw new TokenError(
+        `Missing closing tag ("${closeToken}" tag is expected)`,
+        openToken!,
+      );
     }
 
     return compiled;

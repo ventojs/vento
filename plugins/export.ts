@@ -37,11 +37,8 @@ function exportTag(
     const [, name] = blockExport;
     const compiledFilters = env.compileFilters(tokens, name);
     compiled.push(`var ${name} = "";`);
-    compiled.push(...env.compileTokens(tokens, name, ["/export"]));
-    if (tokens[0]?.[0] !== "tag" || tokens[0]?.[1] !== "/export") {
-      throw new TokenError("Missing closing tag", token);
-    }
-    tokens.shift();
+    compiled.push(...env.compileTokens(tokens, name, "/export"));
+
     compiled.push(`${name} = ${compiledFilters}`);
     compiled.push(`${dataVarname}["${name}"] = ${name};`);
     compiled.push(`__exports["${name}"] = ${name};`);

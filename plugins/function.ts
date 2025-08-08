@@ -36,24 +36,9 @@ function functionTag(
   const result = env.compileFilters(tokens, "__output");
 
   if (exp) {
-    compiled.push(...env.compileTokens(tokens, "__output", ["/export"]));
-
-    if (
-      tokens.length && (tokens[0][0] !== "tag" || tokens[0][1] !== "/export")
-    ) {
-      throw new TokenError(
-        "Missing closing tag for export function tag",
-        token,
-      );
-    }
+    compiled.push(...env.compileTokens(tokens, "__output", "/export"));
   } else {
-    compiled.push(...env.compileTokens(tokens, "__output", ["/function"]));
-
-    if (
-      tokens.length && (tokens[0][0] !== "tag" || tokens[0][1] !== "/function")
-    ) {
-      throw new TokenError("Missing closing tag for function tag", token);
-    }
+    compiled.push(...env.compileTokens(tokens, "__output", "/function"));
   }
 
   tokens.shift();

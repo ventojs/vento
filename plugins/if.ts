@@ -23,8 +23,7 @@ function ifTag(
 
   const val = env.compileFilters(tokens, condition);
   compiled.push(`if (${val}) {`);
-  compiled.push(...env.compileTokens(tokens, output, ["/if"]));
-  tokens.shift();
+  compiled.push(...env.compileTokens(tokens, output, "/if"));
   compiled.push("}");
 
   return compiled.join("\n");

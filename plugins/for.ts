@@ -86,8 +86,7 @@ function forTag(
     );
   }
 
-  compiled.push(...env.compileTokens(tokens, output, ["/for"]));
-  tokens.shift();
+  compiled.push(...env.compileTokens(tokens, output, "/for"));
   compiled.push("}");
 
   return compiled.join("\n");

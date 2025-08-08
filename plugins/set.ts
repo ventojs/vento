@@ -44,13 +44,7 @@ function setTag(
   const compiledFilters = env.compileFilters(tokens, subvarName);
 
   compiled.push(`${subvarName} = "";`);
-  compiled.push(...env.compileTokens(tokens, subvarName, ["/set"]));
-
-  if (tokens.length && (tokens[0][0] !== "tag" || tokens[0][1] !== "/set")) {
-    throw new TokenError("Missing closing tag for set tag", token);
-  }
-
-  tokens.shift();
+  compiled.push(...env.compileTokens(tokens, subvarName, "/set"));
   compiled.push(`var ${varName} = ${subvarName} = ${compiledFilters};`);
   return compiled.join("\n");
 }

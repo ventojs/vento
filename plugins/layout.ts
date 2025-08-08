@@ -39,14 +39,7 @@ function layoutTag(
 
   compiled.push("{");
   compiled.push(`let ${varname} = "";`);
-  compiled.push(...env.compileTokens(tokens, varname, ["/layout"]));
-
-  if (tokens.length && (tokens[0][0] !== "tag" || tokens[0][1] !== "/layout")) {
-    throw new TokenError("Missing closing tag for layout tag", token);
-  }
-
-  tokens.shift();
-
+  compiled.push(...env.compileTokens(tokens, varname, "/layout"));
   compiled.push(`${varname} = ${compiledFilters};`);
   const { dataVarname } = env.options;
 

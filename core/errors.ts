@@ -12,6 +12,15 @@ export class TokenError extends Error {
   }
 }
 
+export class JsError extends Error {
+  token?: Token;
+  file?: string;
+
+  static fromError(error: Error): JsError {
+    return new JsError(error.message);
+  }
+}
+
 export type ErrorContext = {
   path?: string;
   source: string;
