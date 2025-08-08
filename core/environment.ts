@@ -1,26 +1,23 @@
 import iterateTopLevel from "./js.ts";
 import tokenize, { Token } from "./tokenizer.ts";
 
-import {
-  printJSSyntaxError,
-  printRuntimeError,
-  printTagSyntaxError,
-  TokenError,
-} from "./errors.ts";
+import { createError, TokenError } from "./errors.ts";
 
 export interface TemplateResult {
   content: string;
   [key: string]: unknown;
 }
 
-export interface Template {
-  (data?: Record<string, unknown>): Promise<TemplateResult>;
+export interface TemplateContext {
   source: string;
   code: string;
-  file?: string;
+  path?: string;
   defaults?: Record<string, unknown>;
-  body?: string;
   tokens?: Token[];
+}
+
+export interface Template extends TemplateContext {
+  (data?: Record<string, unknown>): Promise<TemplateResult>;
 }
 
 export type TokenPreprocessor = (
@@ -72,10 +69,10 @@ export class Environment {
   filters: Record<string, Filter> = {};
   utils: Record<string, unknown> = {
     callMethod,
+    createError,
     safeString(str: string): SafeString {
       return new SafeString(str);
     },
-    printRuntimeError,
   };
 
   constructor(options: Options) {
@@ -127,28 +124,25 @@ export class Environment {
         `The source code of "${path}" must be a string. Got ${typeof source}`,
       );
     }
-    const rawTokens = this.tokenize(source, path);
-    const tokens = [...rawTokens];
+    const allTokens = this.tokenize(source, path);
+    const tokens = [...allTokens];
     const lastToken = tokens.at(-1)!;
 
     if (lastToken[0] != "string") {
-      throw new TokenError("Unclosed tag", lastToken, path);
+      throw new TokenError("Unclosed tag", lastToken, source, path);
     }
 
-    let code: string;
+    let code = "";
     try {
-      code = this.compileTokens(rawTokens).join("\n");
+      code = this.compileTokens(tokens).join("\n");
     } catch (error) {
       if (!(error instanceof Error)) throw error;
-      if (error instanceof TokenError) {
-        error.file = path;
-        throw error;
-      }
-
-      const parsedTokens = tokens.slice(0, -rawTokens.length);
-      const context = { path, source, tokens: parsedTokens, body: "" };
-      printTagSyntaxError(error, context);
-      throw error;
+      throw createError(error, {
+        source,
+        code,
+        tokens: allTokens,
+        path,
+      });
     }
 
     const { dataVarname, autoDataVarname } = this.options;
@@ -167,7 +161,6 @@ export class Environment {
       }
     }
 
-    let template, context;
     try {
       const constructor = new Function(
         "__env",
@@ -177,31 +170,27 @@ export class Environment {
             const __exports = { content: "" };
             ${code}
             return __exports;
-          } catch (cause) {
-            __env.utils.printRuntimeError(cause, __template.context);
-            throw cause;
+          } catch (error) {
+            throw __env.utils.createError(error, __template);
           }
         }`,
       );
-      template = constructor(this);
-      const body = constructor.toString();
-      context = { path, body, tokens, source };
-    } catch (syntaxError) {
-      if (!(syntaxError instanceof SyntaxError)) throw syntaxError;
-      context = { path, body: code, tokens, source };
-      const promise = printJSSyntaxError(syntaxError, context);
-      template = async function () {
-        await promise;
-        throw syntaxError;
-      };
+      const template = constructor(this);
+      template.path = path;
+      template.code = constructor.toString();
+      template.source = source;
+      template.tokens = allTokens;
+      template.defaults = defaults || {};
+      return template;
+    } catch (error) {
+      if (!(error instanceof Error)) throw error;
+      throw createError(error, {
+        source,
+        code,
+        tokens: allTokens,
+        path,
+      });
     }
-
-    template.file = path;
-    template.code = code;
-    template.source = source;
-    template.defaults = defaults || {};
-    template.context = context;
-    return template;
   }
 
   tokenize(source: string, path?: string): Token[] {
@@ -315,8 +304,7 @@ export class Environment {
 
     while (tokens.length > 0 && tokens[0][0] === "filter") {
       const token = tokens.shift()!;
-      const [, code] = token;
-
+      const [, code, position] = token;
       const match = code.match(/^(await\s+)?([\w.]+)(?:\((.*)\))?$/);
 
       if (!match) {
@@ -337,7 +325,9 @@ export class Environment {
           // It's a prototype's method (e.g. `String.toUpperCase()`)
           output = `${
             isAsync ? "await " : ""
-          }__env.utils.callMethod(${output}, "${name}", ${args ? args : ""})`;
+          }__env.utils.callMethod(${position}, ${output}, "${name}", ${
+            args ? args : ""
+          })`;
         }
       } else {
         // It's a filter (e.g. filters.upper())
@@ -372,8 +362,13 @@ function isGlobal(name: string) {
   }
 }
 
-// deno-lint-ignore no-explicit-any
-function callMethod(thisObject: any, method: string, ...args: unknown[]) {
+function callMethod(
+  position: number,
+  // deno-lint-ignore no-explicit-any
+  thisObject: any,
+  method: string,
+  ...args: unknown[]
+) {
   if (thisObject === null || thisObject === undefined) {
     return thisObject;
   }
@@ -382,8 +377,9 @@ function callMethod(thisObject: any, method: string, ...args: unknown[]) {
     return thisObject[method](...args);
   }
 
-  throw new Error(
-    `"${method}" is not a valid filter, global object or a method of a ${typeof thisObject} variable`,
+  throw new TokenError(
+    `Method "${method}" is not a function of ${typeof thisObject} variable`,
+    position,
   );
 }
 

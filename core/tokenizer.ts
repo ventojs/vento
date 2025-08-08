@@ -1,7 +1,7 @@
 import iterateTopLevel from "./js.ts";
 
 export type TokenType = "string" | "tag" | "filter" | "comment";
-export type Token = [TokenType, string, number?];
+export type Token = [TokenType, string, number];
 
 export default function tokenize(source: string): Token[] {
   const tokens: Token[] = [];
@@ -58,7 +58,7 @@ export default function tokenize(source: string): Token[] {
         }
 
         // Filters
-        tokens.push(["filter", code]);
+        tokens.push(["filter", code, position + prev]);
         return curr;
       });
 

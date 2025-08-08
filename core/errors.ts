@@ -1,90 +1,157 @@
 import type { Token } from "./tokenizer.ts";
+import type { TemplateContext } from "./environment.ts";
 
-export class TokenError extends Error {
-  token: Token;
+export interface ErrorContext {
+  type: string;
+  message: string;
+  source: string;
+  position: number;
+  file?: string;
+}
+
+abstract class VentoError extends Error {
+  abstract getContext():
+    | ErrorContext
+    | undefined
+    | Promise<ErrorContext | undefined>;
+}
+
+export class TokenError extends VentoError {
+  token: Token | number;
+  source?: string;
   file?: string;
 
-  constructor(message: string, token: Token, file?: string) {
+  constructor(
+    message: string,
+    token: Token | number,
+    source?: string,
+    file?: string,
+  ) {
     super(message);
     this.name = "TokenError";
     this.token = token;
+    this.source = source;
     this.file = file;
   }
-}
 
-export class JsError extends Error {
-  token?: Token;
-  file?: string;
-
-  static fromError(error: Error): JsError {
-    return new JsError(error.message);
+  getContext() {
+    if (!this.source || this.token === undefined) {
+      return;
+    }
+    return {
+      type: this.name,
+      message: this.message,
+      source: this.source,
+      position: typeof this.token === "number" ? this.token : this.token[2],
+      file: this.file,
+    };
   }
 }
 
-export type ErrorContext = {
-  path?: string;
-  source: string;
-  body: string;
-  tokens?: Token[];
-};
+export class RuntimeError extends VentoError {
+  context: TemplateContext;
 
-export function printVentoSyntaxError(
-  error: Error,
-  context: ErrorContext,
-): void {
-  const token = context.tokens!.findLast((token) => token[2] != undefined);
-  const position = token![2]!;
-  prettyPrintError("VentoSyntaxError", error, context.source, position);
+  constructor(error: Error, context: TemplateContext) {
+    super(error.message);
+    this.name = error.name || "JavaScriptError";
+    this.context = context;
+    this.cause = error;
+  }
+
+  getContext() {
+    if (this.cause instanceof SyntaxError) {
+      return parseSyntaxError(this.cause as SyntaxError, this.context);
+    }
+    if (this.cause instanceof Error) {
+      return parseError(this.cause, this.context);
+    }
+  }
 }
 
-export function printTagSyntaxError(
-  error: Error,
-  context: ErrorContext,
-): void {
-  const token = context.tokens?.at(-1)!;
-  if (!token) throw error;
-  const position = token[2]! + 2;
-  prettyPrintError("TagSyntaxError", error, context.source, position);
+export function createError(error: Error, context: TemplateContext): Error {
+  if (error instanceof RuntimeError) return error;
+
+  // If the error is a TokenError, we can enhance it with the context information
+  if (error instanceof TokenError) {
+    error.file ??= context.path;
+    error.source ??= context.source;
+    return error;
+  }
+
+  // JavaScript syntax errors can be parsed to get accurate position
+  return new RuntimeError(error, context);
 }
 
-export async function printJSSyntaxError(
+export async function printError(error: unknown): Promise<void> {
+  if (error instanceof VentoError) {
+    const context = await error.getContext();
+
+    if (context) {
+      return prettyPrintError(
+        context.type,
+        context.message,
+        context.source,
+        context.position,
+        context.file,
+      );
+    }
+  }
+
+  console.error(error);
+}
+
+function parseError(
+  error: Error,
+  context: TemplateContext,
+): ErrorContext | undefined {
+  const stackMatch = error.stack?.match(/<anonymous>:(\d+):(\d+)/);
+  if (!stackMatch) return;
+  const row = Number(stackMatch[1]) - 1;
+  const col = Number(stackMatch[2]);
+  const position = getAccurateErrorPosition(row, col, context);
+  if (position == -1) return;
+
+  return {
+    type: error.name || "JavaScriptError",
+    message: error.message,
+    source: context.source,
+    position,
+    file: context.path,
+  };
+}
+
+async function parseSyntaxError(
   error: SyntaxError,
-  context: ErrorContext,
-): Promise<void> {
-  const code = `()=>{${context.body}}`;
+  context: TemplateContext,
+): Promise<ErrorContext | undefined> {
+  const code = `()=>{${context.code}}`;
   const dataUrl = "data:application/javascript;base64," + btoa(code);
   const stack = await import(dataUrl).catch(({ stack }) => stack);
-  if (!stack) throw error;
+  if (!stack) return;
   const stackMatch = stack?.match(/:(\d+):(\d+)$/m);
-  if (!stackMatch) throw error;
+  if (!stackMatch) return;
   const row = Number(stackMatch[1]) - 1;
   const col = Number(stackMatch[2]);
   const position = getAccurateErrorPosition(row, col, context);
-  if (position == -1) throw error;
-  prettyPrintError("SyntaxError", error, context.source, position);
-}
+  if (position == -1) return;
 
-export function printRuntimeError(
-  error: Error,
-  context: ErrorContext,
-): void {
-  const stackMatch = error.stack?.match(/<anonymous>:(\d+):(\d+)/);
-  if (!stackMatch) throw error;
-  const row = Number(stackMatch[1]) - 1;
-  const col = Number(stackMatch[2]);
-  const position = getAccurateErrorPosition(row, col, context);
-  if (position == -1) throw error;
-  prettyPrintError("RuntimeError", error, context.source, position);
+  return {
+    type: "SyntaxError",
+    message: error.message,
+    source: context.source,
+    position,
+    file: context.path,
+  };
 }
 
 function getAccurateErrorPosition(
   row: number,
   col: number,
-  context: ErrorContext,
+  context: TemplateContext,
 ): number {
-  const { body, tokens, source } = context;
+  const { code, tokens, source } = context;
   if (!tokens) return -1;
-  const linesAndDelims = body.split(/(\r\n?|[\n\u2028\u2029])/);
+  const linesAndDelims = code.split(/(\r\n?|[\n\u2028\u2029])/);
   const linesAndDelimsUntilIssue = linesAndDelims.slice(0, row * 2);
   const issueIndex = linesAndDelimsUntilIssue.join("").length + col;
   const posLine = linesAndDelimsUntilIssue.findLast((line) => {
@@ -99,7 +166,7 @@ function getAccurateErrorPosition(
   if (!token) return -1;
   const isJS = token[1].startsWith(">");
   const tag = isJS ? token[1].slice(1).trimStart() : token[1];
-  const issueStartIndex = body.lastIndexOf(tag, issueIndex);
+  const issueStartIndex = code.lastIndexOf(tag, issueIndex);
   if (issueStartIndex == -1) return -1;
   const sourceIssueStartIndex = source.indexOf(tag, position);
   return sourceIssueStartIndex + issueIndex - issueStartIndex - 1;
@@ -107,9 +174,10 @@ function getAccurateErrorPosition(
 
 function prettyPrintError(
   type: string,
-  error: Error,
+  message: string,
   source: string,
   position: number,
+  file?: string,
 ): void {
   const LINE_TERMINATOR = /\r\n?|[\n\u2028\u2029]/;
   const sourceAfterIssue = source.slice(position);
@@ -127,9 +195,38 @@ function prettyPrintError(
   const sidebarWidth = numberLength + 4;
   const tooltipIndex = sidebarWidth + endLineIndex;
   const tooltipIndent = " ".repeat(tooltipIndex);
-  const tooltip = `${tooltipIndent}\x1b[31m^ ${error.message}\x1b[39m`;
-  console.log(`\x1b[31m${type}\x1b[39m: ${error.message}`);
-  console.log(displayedCode + "\n" + tooltip);
-  console.log("\x1b[2m\nOriginal error:\x1b[22m");
-  throw error;
+  const tooltip = `${tooltipIndent}\x1b[31m^ ${message}\x1b[39m`;
+  console.error(`\x1b[31m${type}\x1b[39m: ${message}`);
+  if (file) {
+    console.error(`\x1b[2m${getLocation(file, source, position)}\x1b[22m`);
+    console.error();
+  }
+  console.error(displayedCode + "\n" + tooltip);
+}
+
+function getLocation(
+  file: string,
+  source: string,
+  position: number,
+): string {
+  let line = 1;
+  let column = 1;
+
+  for (let index = 0; index < position; index++) {
+    if (
+      source[index] === "\n" ||
+      (source[index] === "\r" && source[index + 1] === "\n")
+    ) {
+      line++;
+      column = 1;
+
+      if (source[index] === "\r") {
+        index++;
+      }
+    } else {
+      column++;
+    }
+  }
+
+  return `${file}:${line}:${column}`;
 }
