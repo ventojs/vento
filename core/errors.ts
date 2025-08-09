@@ -9,7 +9,7 @@ export interface ErrorContext {
   file?: string;
 }
 
-abstract class VentoError extends Error {
+export abstract class VentoError extends Error {
   abstract getContext():
     | ErrorContext
     | undefined
