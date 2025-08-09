@@ -167,10 +167,26 @@ function getAccurateErrorPosition(
   return sourceIssueStartIndex + issueIndex - issueStartIndex - 1;
 }
 
-export function stringifyContext(context: ErrorContext): string {
+export interface ErrorFormat {
+  number: (n: string) => string;
+  dim: (line: string) => string;
+  error: (msg: string) => string;
+}
+
+const terminal: ErrorFormat = {
+  number: (n: string) => `\x1b[33m${n}\x1b[39m`,
+  dim: (line: string) => `\x1b[2m${line}\x1b[22m`,
+  error: (msg: string) => `\x1b[31m${msg}\x1b[39m`,
+};
+
+const LINE_TERMINATOR = /\r\n?|[\n\u2028\u2029]/;
+
+export function stringifyContext(
+  context: ErrorContext,
+  format = terminal,
+): string {
   const { type, message, source, position, file } = context;
 
-  const LINE_TERMINATOR = /\r\n?|[\n\u2028\u2029]/;
   const sourceAfterIssue = source.slice(position);
   const newlineMatch = sourceAfterIssue.match(LINE_TERMINATOR);
   const endIndex = position + (newlineMatch?.index ?? sourceAfterIssue.length);
@@ -180,17 +196,17 @@ export function stringifyContext(context: ErrorContext): string {
   const numberLength = (displayedLineEntries.at(-1)![0] + 1).toString().length;
   const displayedCode = displayedLineEntries.map(([index, line]) => {
     const number = `${index + 1}`.padStart(numberLength);
-    const sidebar = ` \x1b[33m${number}\x1b[39m \x1b[2m|\x1b[22m `;
+    const sidebar = ` ${format.number(number)} ${format.dim("|")} `;
     return sidebar + line;
   }).join("\n");
   const sidebarWidth = numberLength + 4;
   const tooltipIndex = sidebarWidth + endLineIndex;
   const tooltipIndent = " ".repeat(tooltipIndex);
-  const tooltip = `${tooltipIndent}\x1b[31m^ ${message}\x1b[39m`;
+  const tooltip = tooltipIndent + format.error(`^ ${message}`);
   const output: string[] = [];
-  output.push(`\x1b[31m${type}\x1b[39m: ${message}`);
+  output.push(`${format.error(type)}: ${message}`);
   if (file) {
-    output.push(`\x1b[2m${getLocation(file, source, position)}\x1b[22m`, "");
+    output.push(format.dim(getLocation(file, source, position)), "");
   }
   output.push(displayedCode, tooltip);
   return output.join("\n");
