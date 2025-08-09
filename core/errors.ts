@@ -87,14 +87,7 @@ export async function printError(error: unknown): Promise<void> {
     const context = await error.getContext();
 
     if (context) {
-      const err = stringifyContext(
-        context.type,
-        context.message,
-        context.source,
-        context.position,
-        context.file,
-      );
-      console.error(err);
+      console.error(stringifyContext(context));
       return;
     }
   }
@@ -174,13 +167,9 @@ function getAccurateErrorPosition(
   return sourceIssueStartIndex + issueIndex - issueStartIndex - 1;
 }
 
-export function stringifyContext(
-  type: string,
-  message: string,
-  source: string,
-  position: number,
-  file?: string,
-): string {
+export function stringifyContext(context: ErrorContext): string {
+  const { type, message, source, position, file } = context;
+
   const LINE_TERMINATOR = /\r\n?|[\n\u2028\u2029]/;
   const sourceAfterIssue = source.slice(position);
   const newlineMatch = sourceAfterIssue.match(LINE_TERMINATOR);
