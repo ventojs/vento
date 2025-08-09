@@ -87,13 +87,15 @@ export async function printError(error: unknown): Promise<void> {
     const context = await error.getContext();
 
     if (context) {
-      return prettyPrintError(
+      const err = stringifyContext(
         context.type,
         context.message,
         context.source,
         context.position,
         context.file,
       );
+      console.error(err);
+      return;
     }
   }
 
@@ -172,13 +174,13 @@ function getAccurateErrorPosition(
   return sourceIssueStartIndex + issueIndex - issueStartIndex - 1;
 }
 
-function prettyPrintError(
+export function stringifyContext(
   type: string,
   message: string,
   source: string,
   position: number,
   file?: string,
-): void {
+): string {
   const LINE_TERMINATOR = /\r\n?|[\n\u2028\u2029]/;
   const sourceAfterIssue = source.slice(position);
   const newlineMatch = sourceAfterIssue.match(LINE_TERMINATOR);
@@ -196,12 +198,13 @@ function prettyPrintError(
   const tooltipIndex = sidebarWidth + endLineIndex;
   const tooltipIndent = " ".repeat(tooltipIndex);
   const tooltip = `${tooltipIndent}\x1b[31m^ ${message}\x1b[39m`;
-  console.error(`\x1b[31m${type}\x1b[39m: ${message}`);
+  const output: string[] = [];
+  output.push(`\x1b[31m${type}\x1b[39m: ${message}`);
   if (file) {
-    console.error(`\x1b[2m${getLocation(file, source, position)}\x1b[22m`);
-    console.error();
+    output.push(`\x1b[2m${getLocation(file, source, position)}\x1b[22m`, "");
   }
-  console.error(displayedCode + "\n" + tooltip);
+  output.push(displayedCode, tooltip);
+  return output.join("\n");
 }
 
 function getLocation(
