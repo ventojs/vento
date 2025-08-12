@@ -32,6 +32,7 @@ Vento 2.0 is now dependency-free and compatible with browsers without a build st
   -- }
   ++ env.compileTokens(tokens, tmpOutput, "/code");
   ```
+- Prism and Highlight.js adapters: Rename language name to `vto` (from `vento`).
 
 ### Removed
 - `runStringSync` function.
