@@ -5,7 +5,7 @@ const UNSAFE = /[<>"&']/;
 
 export default function (): Plugin {
   return (env: Environment) => {
-    env.filters.escape = (value: any): string => {
+    env.filters.escape = (value: unknown): string => {
       if (!value) return "";
       if (value instanceof SafeString) return value.toString();
 
