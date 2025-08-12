@@ -5,7 +5,7 @@ logo: /favicon.svg
 # 🌬 Vento
 
 Vento is the [Galician](https://en.wikipedia.org/wiki/Galician_language) word
-for _wind_ but also a new template engine for Deno and Node. It's inspired by other
+for _wind_ but also a new JavaScript-based template engine. It's inspired by other
 engines, such as [Nunjucks](https://mozilla.github.io/nunjucks/),
 [Liquid](https://liquidjs.com/), [Eta](https://eta.js.org/), and
 [Mustache](https://mustache.github.io/).
@@ -14,6 +14,13 @@ engines, such as [Nunjucks](https://mozilla.github.io/nunjucks/),
 
 All these template engines mentioned above are great but they also have some
 drawbacks and none of them meets all my requirements, so I've created Vento.
+
+Some of Vento's main selling points are:
+
+- All logic is done in JavaScript; there's no need to learn many engine-specific APIs. Compared to engines like Liquid or Nunjucks that restrict authors to their own flow control syntax, larger blocks of logic become a breeze to write in Vento. Additionally, there's much less of a need to learn language-specific features; want to uppercase a string? Use JavaScript's `toUpperCase()` method; no need to look up whether it was `| upper` or `| upcase`.
+- Vento's JavaScript embedding is robust and handles many edge cases correctly. Other JavaScript-based templating languages have various degrees of tolerance for syntax conflicting with delimiters; for example, `<%= '%>' %>` throws an error in EJS, but Vento handles the equivalent, `{{ '}}' }}`, perfectly fine.
+- Vento is async-friendly. Your templates are directly compiled into JavaScript functions, and therefore support asynchronicity out-of-the-box.
+- Vento's tag syntax is more developer-friendly; it reduces the cognitive load by using `{{ … }}` for both tags and interpolation. Additionally, closing tags hit the sweet spot for being short but readable; instead of the longer `{% endfor %}` or more cryptic `<% } %>`, it uses a compact but expressive `{{ /for }}`.
 
 ### Nunjucks
 
