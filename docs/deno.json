@@ -6,12 +6,24 @@
   },
   "lock": false,
   "imports": {
-    "lume/": "https://deno.land/x/lume@v2.5.0/",
-    "wiki/": "https://deno.land/x/lume_theme_simple_wiki@v0.12.1/"
+    "lume/": "https://deno.land/x/lume@v3.0.5/",
+    "wiki/": "https://deno.land/x/lume_theme_simple_wiki@v0.14.0/",
+    "lume/jsx-runtime": "https://deno.land/x/ssx@v0.1.11/jsx-runtime.ts"
   },
   "compilerOptions": {
     "types": [
       "lume/types.ts"
+    ],
+    "jsx": "react-jsx",
+    "jsxImportSource": "lume"
+  },
+  "unstable": [
+    "temporal",
+    "fmt-component"
+  ],
+  "lint": {
+    "plugins": [
+      "https://deno.land/x/lume@v3.0.5/lint.ts"
     ]
   }
 }
