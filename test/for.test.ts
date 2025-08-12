@@ -1,4 +1,4 @@
-import { test, testSync } from "./utils.ts";
+import { test } from "./utils.ts";
 
 Deno.test("For tag (number)", async () => {
   await test({
@@ -190,16 +190,6 @@ Deno.test("For tag (with filters)", async () => {
     },
   });
   await test({
-    template: `
-    {{ for name of [1, 2, 3] |> filter(n => n === 2) }}{{ name }}-{{ /for }}
-    `,
-    expected: "2-",
-    init(env) {
-      env.filters.double = (values: number[]) =>
-        values.map((value) => value * 2);
-    },
-  });
-  testSync({
     template: `
     {{ for name of [1, 2, 3] |> filter(n => n === 2) }}{{ name }}-{{ /for }}
     `,

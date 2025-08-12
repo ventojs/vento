@@ -1,5 +1,6 @@
-import type { Token } from "../src/tokenizer.ts";
-import type { Environment, Plugin } from "../src/environment.ts";
+import { TokenError } from "../core/errors.ts";
+import type { Token } from "../core/tokenizer.ts";
+import type { Environment, Plugin } from "../core/environment.ts";
 
 export default function (): Plugin {
   return (env: Environment) => {
@@ -9,10 +10,12 @@ export default function (): Plugin {
 
 function functionTag(
   env: Environment,
-  code: string,
+  token: Token,
   _output: string,
   tokens: Token[],
 ): string | undefined {
+  const [, code] = token;
+
   if (!code.match(/^(export\s+)?(async\s+)?function\s/)) {
     return;
   }
@@ -22,7 +25,7 @@ function functionTag(
   );
 
   if (!match) {
-    throw new Error(`Invalid function: ${code}`);
+    throw new TokenError("Invalid function tag", token);
   }
 
   const [_, exp, as, name, args] = match;
@@ -33,26 +36,14 @@ function functionTag(
   const result = env.compileFilters(tokens, "__output");
 
   if (exp) {
-    compiled.push(...env.compileTokens(tokens, "__output", ["/export"]));
-
-    if (
-      tokens.length && (tokens[0][0] !== "tag" || tokens[0][1] !== "/export")
-    ) {
-      throw new Error(`Missing closing tag for export function tag: ${code}`);
-    }
+    compiled.push(...env.compileTokens(tokens, "__output", "/export"));
   } else {
-    compiled.push(...env.compileTokens(tokens, "__output", ["/function"]));
-
-    if (
-      tokens.length && (tokens[0][0] !== "tag" || tokens[0][1] !== "/function")
-    ) {
-      throw new Error(`Missing closing tag for function tag: ${code}`);
-    }
+    compiled.push(...env.compileTokens(tokens, "__output", "/function"));
   }
 
   tokens.shift();
 
-  compiled.push(`return ${result};`);
+  compiled.push(`return __env.utils.safeString(${result});`);
   compiled.push(`}`);
 
   if (exp) {

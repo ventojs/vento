@@ -1,5 +1,7 @@
-import type { Token } from "../src/tokenizer.ts";
-import type { Environment, Plugin } from "../src/environment.ts";
+import { TokenError } from "../core/errors.ts";
+
+import type { Token } from "../core/tokenizer.ts";
+import type { Environment, Plugin } from "../core/environment.ts";
 
 export default function (): Plugin {
   return (env: Environment) => {
@@ -15,10 +17,11 @@ const AS = /\s+\bas\b\s+/;
 
 function exportTag(
   env: Environment,
-  code: string,
+  token: Token,
   _output: string,
   tokens: Token[],
 ): string | undefined {
+  const [, code] = token;
   const exportStart = code.match(EXPORT_START);
   if (!exportStart) {
     return;
@@ -34,11 +37,8 @@ function exportTag(
     const [, name] = blockExport;
     const compiledFilters = env.compileFilters(tokens, name);
     compiled.push(`var ${name} = "";`);
-    compiled.push(...env.compileTokens(tokens, name, ["/export"]));
-    if (tokens[0]?.[0] !== "tag" || tokens[0]?.[1] !== "/export") {
-      throw new Error(`Missing closing tag for export tag: ${code}`);
-    }
-    tokens.shift();
+    compiled.push(...env.compileTokens(tokens, name, "/export"));
+
     compiled.push(`${name} = ${compiledFilters}`);
     compiled.push(`${dataVarname}["${name}"] = ${name};`);
     compiled.push(`__exports["${name}"] = ${name};`);
@@ -72,9 +72,10 @@ function exportTag(
         const value = `${dataVarname}["${name}"] ?? ${name}`;
         compiled.push(`__exports["${rename}"] = ${value};`);
       } else {
-        throw new Error(`Invalid export: ${code}`);
+        throw new TokenError("Invalid export", token);
       }
     }
+
     return compiled.join("\n");
   }
 }

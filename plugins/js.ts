@@ -1,4 +1,5 @@
-import type { Environment, Plugin } from "../src/environment.ts";
+import type { Token } from "../core/tokenizer.ts";
+import type { Environment, Plugin } from "../core/environment.ts";
 
 export default function (): Plugin {
   return (env: Environment) => {
@@ -8,7 +9,7 @@ export default function (): Plugin {
 
 function jsTag(
   _env: Environment,
-  code: string,
+  [, code]: Token,
 ): string | undefined {
   if (!code.startsWith(">")) {
     return;

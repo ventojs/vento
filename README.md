@@ -20,6 +20,8 @@ Nunjucks, Liquid, Mustache, and EJS.
 ## Features
 
 - Minimal, fast runtime. 🔥
+- No dependencies.
+- Compatible with browsers and JS runtimes (Deno, Node, Bun, etc).
 - Ergonomic by design. All tags and outputs are written with `{{` and `}}`.
 - Write JavaScript anywhere. `{{ await user.getName() }}` is real JS executed at
   runtime.

@@ -1,4 +1,4 @@
-import type { Environment, Plugin } from "../src/environment.ts";
+import type { Environment, Plugin } from "../core/environment.ts";
 
 const NAMED_ENTITIES = /&(apos|quot|amp|lt|gt);/g;
 const CHAR_REF = /&#(x[0-9A-F]{1,6}|[0-9]{1,7});/gi;

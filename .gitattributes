@@ -1,0 +1,11 @@
+* text=auto eol=lf
+
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/.github export-ignore
+/.vscode export-ignore
+/bench export-ignore
+/docs export-ignore
+/test export-ignore
+/_scripts export-ignore
+/deno.json export-ignore

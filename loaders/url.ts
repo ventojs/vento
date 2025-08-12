@@ -1,7 +1,10 @@
-import { posix } from "node:path";
+import { join } from "./utils.ts";
+import type { Loader, TemplateSource } from "../core/environment.ts";
 
-import type { Loader, TemplateSource } from "./environment.ts";
-
+/**
+ * Vento URL loader for loading templates from a URL.
+ * Used by browser environments.
+ */
 export class UrlLoader implements Loader {
   #root: URL;
 
@@ -10,7 +13,7 @@ export class UrlLoader implements Loader {
   }
 
   async load(file: string): Promise<TemplateSource> {
-    const url = new URL(posix.join(this.#root.pathname, file), this.#root);
+    const url = new URL(join(this.#root.pathname, file), this.#root);
     const source = await (await fetch(url)).text();
 
     return { source };
@@ -18,9 +21,9 @@ export class UrlLoader implements Loader {
 
   resolve(from: string, file: string): string {
     if (file.startsWith(".")) {
-      return posix.join("/", posix.dirname(from), file);
+      return join(from, "..", file);
     }
 
-    return posix.join("/", file);
+    return join(file);
   }
 }

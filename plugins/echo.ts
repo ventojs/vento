@@ -1,5 +1,5 @@
-import type { Token } from "../src/tokenizer.ts";
-import type { Environment, Plugin } from "../src/environment.ts";
+import type { Token } from "../core/tokenizer.ts";
+import type { Environment, Plugin } from "../core/environment.ts";
 
 export default function (): Plugin {
   return (env: Environment) => {
@@ -9,7 +9,7 @@ export default function (): Plugin {
 
 function echoTag(
   env: Environment,
-  code: string,
+  [, code]: Token,
   output: string,
   tokens: Token[],
 ): string | undefined {
@@ -27,14 +27,10 @@ function echoTag(
   // Captured echo, e.g. {{ echo |> toUpperCase }} foo {{ /echo }}
   const compiled = [`let __tmp = "";`];
   const filters = env.compileFilters(tokens, "__tmp");
-  compiled.push(...env.compileTokens(tokens, "__tmp", ["/echo"]));
+  compiled.push(...env.compileTokens(tokens, "__tmp", "/echo"));
+
   if (filters != "__tmp") {
     compiled.push(`__tmp = ${filters}`);
-  }
-
-  const closeToken = tokens.shift();
-  if (!closeToken || closeToken[0] != "tag" || closeToken[1] != "/echo") {
-    throw new Error("Unclosed echo tag");
   }
 
   return `{

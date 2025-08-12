@@ -1,6 +1,6 @@
-import { parseTag } from "../src/tokenizer.ts";
+import { parseTag } from "../core/tokenizer.ts";
 import tmpl from "../mod.ts";
-import { assertEquals } from "https://deno.land/std@0.224.0/assert/assert_equals.ts";
+import { assertEquals } from "./utils.ts";
 
 Deno.test("Parse tag", () => {
   const code = "{{ tag |> filter1 |> filter2 }}";
@@ -127,6 +127,7 @@ Deno.test("Tokenizer (literal 3)", () => {
   assertEquals(tokens, [
     ["string", "", 0],
     ["tag", "`\\${{`", 0],
+    ["string", "", 12],
   ]);
 });
 
@@ -136,9 +137,10 @@ Deno.test("Tokenizer (filter)", () => {
   assertEquals(tokens, [
     ["string", "", 0],
     ["tag", "url", 0],
-    ["filter", "await fetch"],
-    ["filter", "await json"],
-    ["filter", "stringify"],
+    ["filter", "await fetch", 9],
+    ["filter", "await json", 24],
+    ["filter", "stringify", 38],
+    ["string", "", 51],
   ]);
 });
 
@@ -148,5 +150,6 @@ Deno.test("Tokenizer (regexp)", () => {
   assertEquals(tokens, [
     ["string", "", 0],
     ["tag", "!/}}/.test(foo)", 0],
+    ["string", "", 21],
   ]);
 });

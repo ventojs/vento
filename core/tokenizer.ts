@@ -1,7 +1,7 @@
 import iterateTopLevel from "./js.ts";
 
 export type TokenType = "string" | "tag" | "filter" | "comment";
-export type Token = [TokenType, string, number?];
+export type Token = [TokenType, string, number];
 
 export default function tokenize(source: string): Token[] {
   const tokens: Token[] = [];
@@ -15,13 +15,14 @@ export default function tokenize(source: string): Token[] {
 
       tokens.push([type, code, position]);
 
+      position += index;
+      source = source.slice(index);
+      type = source.startsWith("{{#") ? "comment" : "tag";
+
       if (index === -1) {
         break;
       }
 
-      position += index;
-      source = source.slice(index);
-      type = source.startsWith("{{#") ? "comment" : "tag";
       continue;
     }
 
@@ -57,9 +58,11 @@ export default function tokenize(source: string): Token[] {
         }
 
         // Filters
-        tokens.push(["filter", code]);
+        tokens.push(["filter", code, position + prev]);
         return curr;
       });
+
+      if (indexes[lastIndex] == Infinity) return tokens;
 
       position += indexes[lastIndex];
       source = source.slice(indexes[lastIndex]);
@@ -84,6 +87,9 @@ export default function tokenize(source: string): Token[] {
       continue;
     }
   }
+  if (type == "string") {
+    tokens.push([type, "", position]);
+  }
   return tokens;
 }
 
@@ -101,5 +107,6 @@ export function parseTag(source: string): number[] {
     indexes.push(index + 2);
     return indexes;
   }
-  throw new Error("Unclosed tag");
+  indexes.push(Infinity);
+  return indexes;
 }

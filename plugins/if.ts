@@ -1,5 +1,6 @@
-import type { Token } from "../src/tokenizer.ts";
-import type { Environment, Plugin } from "../src/environment.ts";
+import { TokenError } from "../core/errors.ts";
+import type { Token } from "../core/tokenizer.ts";
+import type { Environment, Plugin } from "../core/environment.ts";
 
 export default function (): Plugin {
   return (env: Environment) => {
@@ -10,7 +11,7 @@ export default function (): Plugin {
 
 function ifTag(
   env: Environment,
-  code: string,
+  [, code]: Token,
   output: string,
   tokens: Token[],
 ): string | undefined {
@@ -22,8 +23,7 @@ function ifTag(
 
   const val = env.compileFilters(tokens, condition);
   compiled.push(`if (${val}) {`);
-  compiled.push(...env.compileTokens(tokens, output, ["/if"]));
-  tokens.shift();
+  compiled.push(...env.compileTokens(tokens, output, "/if"));
   compiled.push("}");
 
   return compiled.join("\n");
@@ -31,15 +31,17 @@ function ifTag(
 
 function elseTag(
   _env: Environment,
-  code: string,
+  token: Token,
 ): string | undefined {
+  const [, code] = token;
+
   if (!code.startsWith("else ") && code !== "else") {
     return;
   }
   const match = code.match(/^else(\s+if\s+(.*))?$/);
 
   if (!match) {
-    throw new Error(`Invalid else: ${code}`);
+    throw new TokenError("Invalid else tag", token);
   }
 
   const [_, ifTag, condition] = match;

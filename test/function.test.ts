@@ -70,14 +70,14 @@ Deno.test("Function tag (async)", async () => {
   await test({
     template: `
     {{ async function file }}
-    {{ include "/my-file.tmpl" }}
+    {{ include "/my-file.vto" }}
     {{ /function }}
 
     {{ await file() }}
     `,
     expected: "Hello world",
     includes: {
-      "/my-file.tmpl": "Hello world",
+      "/my-file.vto": "Hello world",
     },
   });
 });
@@ -145,5 +145,49 @@ Deno.test("Function with filters", async () => {
     {{ hello() }}
     `,
     expected: "HELLO WORLD",
+  });
+});
+
+Deno.test("Function hoisting", async () => {
+  await test({
+    template: `
+    {{ hello("world") }}
+
+    {{ function hello(name) }}
+    {{ name }}
+    {{ /function }}
+    `,
+    expected: "world",
+  });
+});
+
+Deno.test("Function with autoescape", async () => {
+  await test({
+    template: `
+    {{ hello("world") }}
+
+    {{ function hello(name) }}
+      <strong>{{ name }}</strong>-{{ "<strong>world</strong>" |> safe }}-{{ "<strong>world</strong>" }}
+    {{ /function }}
+    `,
+    expected:
+      "<strong>world</strong>-<strong>world</strong>-<strong>world</strong>",
+    options: {
+      autoescape: false,
+    },
+  });
+  await test({
+    template: `
+    {{ hello("world") }}
+
+    {{ function hello(name) }}
+      <strong>{{ name }}</strong>-{{ "<strong>world</strong>" |> safe }}-{{ "<strong>world</strong>" }}
+    {{ /function }}
+    `,
+    expected:
+      "<strong>world</strong>-<strong>world</strong>-&lt;strong&gt;world&lt;/strong&gt;",
+    options: {
+      autoescape: true,
+    },
   });
 });
