@@ -13,6 +13,7 @@ Vento 2.0 is now dependency-free and compatible with browsers without a build st
 - Support for precompiled templates.
 - New filesystem loader to use File System API.
 - Better errors reporting [#131], [#137]
+- `core/errors.ts` module to format errors.
 
 ### Changed
 - Renamed `src` directory to `core`.

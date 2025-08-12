@@ -82,12 +82,39 @@ export function createError(error: Error, context: TemplateContext): Error {
   return new RuntimeError(error, context);
 }
 
-export async function printError(error: unknown): Promise<void> {
+export interface ErrorFormat {
+  number: (n: string) => string;
+  dim: (line: string) => string;
+  error: (msg: string) => string;
+}
+
+const colors: ErrorFormat = {
+  number: (n: string) => `\x1b[33m${n}\x1b[39m`,
+  dim: (line: string) => `\x1b[2m${line}\x1b[22m`,
+  error: (msg: string) => `\x1b[31m${msg}\x1b[39m`,
+};
+
+const plain: ErrorFormat = {
+  number: (n: string) => n,
+  dim: (line: string) => line,
+  error: (msg: string) => msg,
+};
+
+const formats: Record<string, ErrorFormat> = {
+  colors,
+  plain,
+};
+
+export async function printError(
+  error: unknown,
+  format: ErrorFormat | keyof typeof formats = plain,
+): Promise<void> {
   if (error instanceof VentoError) {
     const context = await error.getContext();
+    const fmt = typeof format === "string" ? formats[format] || plain : format;
 
     if (context) {
-      console.error(stringifyContext(context));
+      console.error(stringifyContext(context, fmt));
       return;
     }
   }
@@ -167,23 +194,11 @@ function getAccurateErrorPosition(
   return sourceIssueStartIndex + issueIndex - issueStartIndex - 1;
 }
 
-export interface ErrorFormat {
-  number: (n: string) => string;
-  dim: (line: string) => string;
-  error: (msg: string) => string;
-}
-
-const terminal: ErrorFormat = {
-  number: (n: string) => `\x1b[33m${n}\x1b[39m`,
-  dim: (line: string) => `\x1b[2m${line}\x1b[22m`,
-  error: (msg: string) => `\x1b[31m${msg}\x1b[39m`,
-};
-
 const LINE_TERMINATOR = /\r\n?|[\n\u2028\u2029]/;
 
 export function stringifyContext(
   context: ErrorContext,
-  format = terminal,
+  format = plain,
 ): string {
   const { type, message, source, position, file } = context;
 
