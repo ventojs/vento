@@ -49,21 +49,21 @@ export class TokenError extends VentoError {
 }
 
 export class RuntimeError extends VentoError {
-  context: TemplateContext;
+  #context: TemplateContext;
 
   constructor(error: Error, context: TemplateContext) {
     super(error.message);
     this.name = error.name || "JavaScriptError";
-    this.context = context;
+    this.#context = context;
     this.cause = error;
   }
 
   getContext() {
     if (this.cause instanceof SyntaxError) {
-      return parseSyntaxError(this.cause as SyntaxError, this.context);
+      return parseSyntaxError(this.cause as SyntaxError, this.#context);
     }
     if (this.cause instanceof Error) {
-      return parseError(this.cause, this.context);
+      return parseError(this.cause, this.#context);
     }
   }
 }
@@ -126,20 +126,23 @@ function parseError(
   error: Error,
   context: TemplateContext,
 ): ErrorContext | undefined {
-  const stackMatch = error.stack?.match(/<anonymous>:(\d+):(\d+)/);
-  if (!stackMatch) return;
-  const row = Number(stackMatch[1]) - 1;
-  const col = Number(stackMatch[2]);
-  const position = getAccurateErrorPosition(row, col, context);
-  if (position == -1) return;
-
-  return {
-    type: error.name || "JavaScriptError",
-    message: error.message,
-    source: context.source,
-    position,
-    file: context.path,
-  };
+  for (const frame of parseStack(error.stack)) {
+    if (frame.file === "<anonymous>") {
+      const position = getAccurateErrorPosition(
+        frame.line - 1,
+        frame.column,
+        context,
+      );
+      if (position === -1) return;
+      return {
+        type: error.name || "JavaScriptError",
+        message: error.message,
+        source: context.source,
+        position,
+        file: context.path,
+      };
+    }
+  }
 }
 
 async function parseSyntaxError(
@@ -147,23 +150,28 @@ async function parseSyntaxError(
   context: TemplateContext,
 ): Promise<ErrorContext | undefined> {
   const code = `()=>{${context.code}}`;
-  const dataUrl = "data:application/javascript;base64," + btoa(code);
-  const stack = await import(dataUrl).catch(({ stack }) => stack);
-  if (!stack) return;
-  const stackMatch = stack?.match(/:(\d+):(\d+)$/m);
-  if (!stackMatch) return;
-  const row = Number(stackMatch[1]) - 1;
-  const col = Number(stackMatch[2]);
-  const position = getAccurateErrorPosition(row, col, context);
-  if (position == -1) return;
+  const url = URL.createObjectURL(
+    new Blob([code], { type: "application/javascript" }),
+  );
+  const stack = await import(url).catch(({ stack }) => stack);
+  URL.revokeObjectURL(url);
 
-  return {
-    type: "SyntaxError",
-    message: error.message,
-    source: context.source,
-    position,
-    file: context.path,
-  };
+  for (const frame of parseStack(stack)) {
+    const position = getAccurateErrorPosition(
+      frame.line - 1,
+      frame.column,
+      context,
+    );
+    if (position == -1) return;
+
+    return {
+      type: "SyntaxError",
+      message: error.message,
+      source: context.source,
+      position,
+      file: context.path,
+    };
+  }
 }
 
 function getAccurateErrorPosition(
@@ -252,4 +260,23 @@ function getLocation(
   }
 
   return `${file}:${line}:${column}`;
+}
+
+interface StackFrame {
+  file: string;
+  line: number;
+  column: number;
+}
+
+function* parseStack(stack?: string): Generator<StackFrame> {
+  if (!stack) return;
+  const matches = stack.matchAll(/([^(\s,]+):(\d+):(\d+)/g);
+  for (const match of matches) {
+    const [_, file, line, column] = match;
+    yield {
+      file,
+      line: Number(line),
+      column: Number(column),
+    };
+  }
 }
