@@ -34,7 +34,7 @@ function setTag(
     const [, variable, value] = match;
     const val = env.compileFilters(tokens, value);
 
-    if (strict) return `var ${variable} = ${val};`
+    if (strict) return `var ${variable} = ${val};`;
     return `var ${variable} = ${dataVarname}["${variable}"] = ${val};`;
   }
 
