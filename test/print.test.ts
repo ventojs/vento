@@ -249,3 +249,13 @@ Deno.test({
     });
   },
 });
+
+Deno.test({
+  name: "Print undeclared variable",
+  fn: async () => {
+    await test({
+      template: `{{ foo }}`,
+      expected: "",
+    });
+  },
+});
