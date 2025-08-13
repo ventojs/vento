@@ -40,7 +40,7 @@ function layoutTag(
   compiled.push("{");
   compiled.push(`let ${varname} = "";`);
   compiled.push(...env.compileTokens(tokens, varname, "/layout"));
-  compiled.push(`${varname} = ${compiledFilters};`);
+  compiled.push(`${varname} = __env.utils.safeString(${compiledFilters});`);
   const { dataVarname } = env.options;
 
   compiled.push(

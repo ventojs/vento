@@ -61,9 +61,12 @@ export function exportTemplate(
 
     ${
     options?.source
-      ? `__template.path = ${JSON.stringify(template.path)};
+      ? `__template.path = ${
+        JSON.stringify(template.path ? template.path + ".js" : undefined)
+      };
         __template.code = ${JSON.stringify(template.code)};
-        __template.source = ${JSON.stringify(template.source)};`
+        __template.source = ${JSON.stringify(template.source)};
+        __template.tokens = ${JSON.stringify(template.tokens)};`
       : ""
   }
     __template.defaults = ${JSON.stringify(template.defaults || {})};

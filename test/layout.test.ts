@@ -72,3 +72,30 @@ Deno.test("Nested layout tags", async () => {
     },
   });
 });
+
+Deno.test("Layout with autoescape", async () => {
+  await test({
+    template: `
+    {{ layout "/my-file.vto" }}Hello <strong>world</strong>{{ /layout }}
+    `,
+    expected: "<h1>Hello <strong>world</strong></h1>",
+    options: {
+      autoescape: false,
+    },
+    includes: {
+      "/my-file.vto": "<h1>{{ content }}</h1>",
+    },
+  });
+  await test({
+    template: `
+    {{ layout "/my-file.vto" }}Hello <strong>world</strong>{{ /layout }}
+    `,
+    expected: "<h1>Hello <strong>world</strong></h1>",
+    options: {
+      autoescape: true,
+    },
+    includes: {
+      "/my-file.vto": "<h1>{{ content }}</h1>",
+    },
+  });
+});
