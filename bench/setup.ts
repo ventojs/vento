@@ -70,6 +70,15 @@ const initializers = {
     };
   },
 
+  async VentoStrict(): Promise<Renderer> {
+    const env = vento({ autoDataVarname: true, strict: true });
+    const render = await env.load(dir + "tmp.strict.vto");
+    return async (data: Record<string, unknown>) => {
+      const { content } = await render(data);
+      return content;
+    };
+  },
+
   Nunjucks(): Renderer {
     const loader = new nunjucks.FileSystemLoader(Deno.cwd());
     const env = new nunjucks.Environment(loader);
