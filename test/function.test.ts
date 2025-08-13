@@ -133,6 +133,17 @@ Deno.test("Function scope is respected", async () => {
     `,
     expected: "No name / Hello world!",
   });
+
+  await test({
+    template: `
+    {{ function hello() }}
+    Hello world
+    {{ /function }}
+
+    {{ hello() }}
+    `,
+    expected: "Hello world",
+  });
 });
 
 Deno.test("Function with filters", async () => {
@@ -189,5 +200,24 @@ Deno.test("Function with autoescape", async () => {
     options: {
       autoescape: true,
     },
+  });
+});
+
+Deno.test("Function with complex arguments", async () => {
+  await test({
+    template: `
+    {{ function greet(name) -}}
+      Hello {{ name }}
+    {{- /function }}
+    {{ function hello(
+      {suffix = ' (hi)'} = {},
+      greeting = greet('world'),
+    ) }}
+      {{ greeting }}{{ suffix }}
+    {{ /function }}
+
+    {{ hello() }}
+    `,
+    expected: "Hello world (hi)",
   });
 });
