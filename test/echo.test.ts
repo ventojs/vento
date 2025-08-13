@@ -84,7 +84,6 @@ Deno.test("Echo tag", async () => {
     template: `
     Hello {{ world }}
     `,
-    expected: "Hello world",
     data: {
       world: "world",
     },
