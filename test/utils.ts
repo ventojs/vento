@@ -21,9 +21,9 @@ export interface TestOptions {
 }
 
 export async function testThrows(
-  options: Omit<TestOptions, 'expected'>,
+  options: Omit<TestOptions, "expected">,
 ) {
-  await assertRejects(async () => await test({...options, expected: ""}));
+  await assertRejects(async () => await test({ ...options, expected: "" }));
 }
 
 export async function test(options: TestOptions) {

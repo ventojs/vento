@@ -144,18 +144,20 @@ export class Environment {
 
     const { dataVarname, autoDataVarname, strict } = this.options;
 
-    if (strict && autoDataVarname){
+    if (strict && autoDataVarname) {
       code = `
         return new Function(
           "__env",
           \`{\${Object.keys(${dataVarname}).join(",")}}\`,
-          ${JSON.stringify(`
+          ${
+        JSON.stringify(`
             const __exports = { content: "" };
             ${code}
             return __exports;
-          `)}
+          `)
+      }
         )(__env, ${dataVarname});
-      `
+      `;
     } else if (autoDataVarname) {
       const generator = iterateTopLevel(code);
       const [, , variables] = generator.next().value;
