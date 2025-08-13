@@ -21,7 +21,7 @@ function setTag(
   }
 
   const expression = code.replace(/^set\s+/, "");
-  const { dataVarname } = env.options;
+  const { dataVarname, strict } = env.options;
 
   // Value is set (e.g. {{ set foo = "bar" }})
   if (expression.includes("=")) {
@@ -34,6 +34,7 @@ function setTag(
     const [, variable, value] = match;
     const val = env.compileFilters(tokens, value);
 
+    if (strict) return `var ${variable} = ${val};`
     return `var ${variable} = ${dataVarname}["${variable}"] = ${val};`;
   }
 
@@ -45,6 +46,7 @@ function setTag(
 
   compiled.push(`${subvarName} = "";`);
   compiled.push(...env.compileTokens(tokens, subvarName, "/set"));
-  compiled.push(`var ${varName} = ${subvarName} = ${compiledFilters};`);
+  if (strict) compiled.push(`var ${varName} = ${compiledFilters};`);
+  else compiled.push(`var ${varName} = ${subvarName} = ${compiledFilters};`);
   return compiled.join("\n");
 }

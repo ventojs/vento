@@ -58,6 +58,7 @@ export interface Options {
   dataVarname: string;
   autoescape: boolean;
   autoDataVarname: boolean;
+  strict: boolean;
 }
 
 export class Environment {
@@ -141,9 +142,21 @@ export class Environment {
       throw error;
     }
 
-    const { dataVarname, autoDataVarname } = this.options;
+    const { dataVarname, autoDataVarname, strict } = this.options;
 
-    if (autoDataVarname) {
+    if (strict && autoDataVarname){
+      code = `
+        return new Function(
+          "__env",
+          \`{\${Object.keys(${dataVarname}).join(",")}}\`,
+          ${JSON.stringify(`
+            const __exports = { content: "" };
+            ${code}
+            return __exports;
+          `)}
+        )(__env, ${dataVarname});
+      `
+    } else if (autoDataVarname) {
       const generator = iterateTopLevel(code);
       const [, , variables] = generator.next().value;
       while (!generator.next().done);
