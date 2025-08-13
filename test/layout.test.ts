@@ -88,9 +88,9 @@ Deno.test("Layout with autoescape", async () => {
   });
   await test({
     template: `
-    {{ layout "/my-file.vto" }}Hello <strong>world</strong>{{ /layout }}
+    {{ layout "/my-file.vto" |> toUpperCase }}Hello <strong>world</strong>{{ /layout }}
     `,
-    expected: "<h1>Hello <strong>world</strong></h1>",
+    expected: "<h1>HELLO <STRONG>WORLD</STRONG></h1>",
     options: {
       autoescape: true,
     },
