@@ -21,7 +21,7 @@ function functionTag(
   }
 
   const match = code.match(
-    /^(export\s+)?(async\s+)?function\s+(\w+)\s*(\([^)]+\))?$/,
+    /^(export\s+)?(async\s+)?function\s+(\w+)\s*(\([^]*\))?$/,
   );
 
   if (!match) {
