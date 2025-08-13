@@ -20,8 +20,10 @@ export interface TestOptions {
   options?: Options;
 }
 
-export async function testThrows(options: TestOptions) {
-  await assertRejects(async () => await test(options));
+export async function testThrows(
+  options: Omit<TestOptions, 'expected'>,
+) {
+  await assertRejects(async () => await test({...options, expected: ""}));
 }
 
 export async function test(options: TestOptions) {
