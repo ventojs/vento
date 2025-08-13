@@ -7,6 +7,7 @@ export interface Options {
   autoDataVarname?: boolean;
   dataVarname?: string;
   autoescape?: boolean;
+  strict?: boolean;
 }
 
 export default function (options: Options = {}): Environment {
@@ -21,6 +22,7 @@ export default function (options: Options = {}): Environment {
     dataVarname: options.dataVarname || "it",
     autoescape: options.autoescape ?? false,
     autoDataVarname: options.autoDataVarname ?? true,
+    strict: options.strict ?? false,
   });
 
   // Register the default plugins
