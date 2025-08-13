@@ -63,6 +63,4 @@ Deno.test("Call tag", async () => {
     `,
     expected: "Hello world",
   });
-
-
 });
