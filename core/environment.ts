@@ -145,17 +145,16 @@ export class Environment {
     const { dataVarname, autoDataVarname, strict } = this.options;
 
     if (strict && autoDataVarname) {
+      const innerCode = JSON.stringify(`
+        const __exports = { content: "" };
+        ${code}
+        return __exports;
+      `);
       code = `
         return new Function(
           "__env",
           \`{\${Object.keys(${dataVarname}).join(",")}}\`,
-          ${
-        JSON.stringify(`
-            const __exports = { content: "" };
-            ${code}
-            return __exports;
-          `)
-      }
+          ${innerCode}
         )(__env, ${dataVarname});
       `;
     } else if (autoDataVarname) {
