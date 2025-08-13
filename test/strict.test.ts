@@ -31,7 +31,7 @@ Deno.test("Strict variables", async () => {
       Hello {{ hello }}
     {{ /if }}
     `,
-    expected: "Hello world"
+    expected: "Hello world",
   });
   await test({
     options: { strict: true },
@@ -39,7 +39,7 @@ Deno.test("Strict variables", async () => {
       {{ message }}
     `,
     data: { message: "Hello world" },
-    expected: "Hello world"
+    expected: "Hello world",
   });
   await testThrows({
     options: { strict: true },
