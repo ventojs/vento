@@ -162,8 +162,6 @@ export class Environment {
       }
     }
 
-    // console.log(code)
-
     try {
       const constructor = new Function(
         "__env",
