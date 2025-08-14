@@ -8,6 +8,9 @@ export default function (): Plugin {
   };
 }
 
+const LAYOUT_TAG = /^layout\s+([^{]+|`[^`]+`)+(?:\{([^]*)\})?$/
+const SLOT_NAME = /^[a-z_]\w*$/i
+
 function layoutTag(
   env: Environment,
   token: Token,
@@ -18,7 +21,7 @@ function layoutTag(
 
   if (code.startsWith("slot ")) {
     const name = code.slice(4).trim();
-    if (!/[a-z_]\w+/i.test(name)) {
+    if (!SLOT_NAME.test(name)) {
       throw new SourceError(`Invalid slot name "${name}"`, position);
     }
 
@@ -34,7 +37,7 @@ function layoutTag(
     return;
   }
 
-  const match = code?.match(/^layout\s+([^{]+|`[^`]+`)+(?:\{([^]*)\})?$/);
+  const match = code?.match(LAYOUT_TAG);
   if (!match) {
     throw new SourceError("Invalid layout tag", position);
   }
