@@ -17,7 +17,7 @@ function importTag(
   env: Environment,
   token: Token,
 ): string | undefined {
-  const [, code] = token;
+  const [, code, position] = token;
   if (!code.startsWith("import ")) {
     return;
   }
@@ -62,7 +62,7 @@ function importTag(
 
   const { dataVarname } = env.options;
   return `let ${variables.join(",")}; {
-    let __tmp = await __env.run(${specifier}, {...${dataVarname}}, __template.path);
+    let __tmp = await __env.run(${specifier}, {...${dataVarname}}, __template.path, ${position});
     ${compiled.join("\n")}
   }`;
 }

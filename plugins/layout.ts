@@ -14,7 +14,7 @@ function layoutTag(
   output: string,
   tokens: Token[],
 ): string | undefined {
-  const [, code] = token;
+  const [, code, position] = token;
 
   if (!code.startsWith("layout ")) {
     return;
@@ -48,7 +48,8 @@ function layoutTag(
       {...${dataVarname}${data ? `, ${data}` : ""}, content: ${
       env.compileFilters(tokens, varname)
     }},
-      __template.path
+      __template.path,
+      ${position}
     );
     ${output} += __tmp.content;`,
   );

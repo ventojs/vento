@@ -87,8 +87,9 @@ export class Environment {
     file: string,
     data?: Record<string, unknown>,
     from?: string,
+    position?: number,
   ): Promise<TemplateResult> {
-    const template = await this.load(file, from);
+    const template = await this.load(file, from, position);
     return await template(data);
   }
 
@@ -207,7 +208,11 @@ export class Environment {
     return tokens;
   }
 
-  async load(file: string, from?: string): Promise<Template> {
+  async load(
+    file: string,
+    from?: string,
+    position?: number,
+  ): Promise<Template> {
     const path = this.options.loader.resolve(from || "", file);
     let cached = this.cache.get(path);
 
@@ -221,6 +226,16 @@ export class Environment {
       .split("#")[0];
 
     cached = this.options.loader.load(cleanPath)
+      .catch((error) => {
+        throw position !== undefined
+          ? new TokenError(
+            `Error loading template "${path}": ${error.message}`,
+            position,
+            undefined,
+            from,
+          )
+          : error;
+      })
       .then((result) => {
         if (typeof result === "function") {
           return result(this);
