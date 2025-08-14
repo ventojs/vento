@@ -16,44 +16,41 @@ function layoutTag(
 ): string | undefined {
   const [, code, position] = token;
 
+  if (code.startsWith("slot ")) {
+    const name = code.slice(4).trim();
+    if (!/[a-z_]\w+/i.test(name)) {
+      throw new SourceError(`Invalid slot name "${name}"`, position);
+    }
+
+    const compiled: string[] = [];
+    const subvarName = `__slots.${name}`;
+    const compiledFilters = env.compileFilters(tokens, subvarName);
+    compiled.push(`${compiledFilters} ??= ''`);
+    compiled.push(...env.compileTokens(tokens, subvarName, "/slot"));
+    return compiled.join("\n");
+  }
+
   if (!code.startsWith("layout ")) {
     return;
   }
 
-  const match = code?.match(
-    /^layout\s+([^{]+|`[^`]+`)+(?:\{([\s|\S]*)\})?$/,
-  );
-
+  const match = code?.match(/^layout\s+([^{]+|`[^`]+`)+(?:\{([^]*)\})?$/);
   if (!match) {
     throw new SourceError("Invalid layout tag", position);
   }
 
   const [_, file, data] = match;
 
-  const varname = output.startsWith("__layout")
-    ? output + "_layout"
-    : "__layout";
-
-  const compiled: string[] = [];
-  const compiledFilters = env.compileFilters(tokens, varname);
-
-  compiled.push("{");
-  compiled.push(`let ${varname} = "";`);
-  compiled.push(...env.compileTokens(tokens, varname, "/layout"));
-  compiled.push(`${varname} = __env.utils.safeString(${compiledFilters});`);
+  const compiledFilters = env.compileFilters(tokens, "__slots.content");
   const { dataVarname } = env.options;
-
-  compiled.push(
-    `const __tmp = await __env.run(${file},
-      {...${dataVarname}${data ? `, ${data}` : ""}, content: ${
-      env.compileFilters(tokens, varname)
-    }},
-      __template.path,
-      ${position}
-    );
-    ${output} += __tmp.content;`,
-  );
-
-  compiled.push("}");
-  return compiled.join("\n");
+  return `${output} += (await (async () => {
+    const __slots = { content: "" };
+    ${env.compileTokens(tokens, "__slots.content", "/layout").join("\n")}
+    __slots.content = __env.utils.safeString(${compiledFilters});
+    return __env.run(${file}, {
+      ...${dataVarname},
+      ...__slots,
+      ${data ?? ""}
+    }, __template.path, ${position});
+  })()).content;`;
 }

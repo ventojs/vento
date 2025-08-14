@@ -99,3 +99,69 @@ Deno.test("Layout with autoescape", async () => {
     },
   });
 });
+
+Deno.test("Layouts with slots", async () => {
+  await test({
+    template: `
+    {{ layout "/my-file.vto" }}
+      {{ slot greeting }}Hello{{ /slot }}
+      {{ slot target }}world{{ /slot }}
+    {{ /layout }}
+    `,
+    expected: "Hello world",
+    options: {
+      autoescape: false,
+    },
+    includes: {
+      "/my-file.vto": "{{ greeting }} {{ target }}",
+    },
+  });
+  await test({
+    template: `
+    {{ layout "/my-file.vto" }}
+      Hello
+      {{- slot punctuation }}!{{ /slot -}}
+      {{- slot content }} world{{ /slot -}}
+    {{ /layout }}
+    `,
+    expected: "Hello world!",
+    options: {
+      autoescape: false,
+    },
+    includes: {
+      "/my-file.vto": "{{ content }}{{ punctuation }}",
+    },
+  });
+  await test({
+    template: `
+    {{ layout "/my-file.vto" }}
+      Hello
+      {{- slot punctuation }}!{{ /slot -}}
+      {{- slot content }} world{{ /slot -}}
+    {{ /layout }}
+    `,
+    expected: "Hello world!",
+    options: {
+      autoescape: false,
+    },
+    includes: {
+      "/my-file.vto": "{{ content }}{{ punctuation }}",
+    },
+  });
+  await test({
+    template: `
+    {{ set greeting = "Hi" }}
+    {{ layout "/my-file.vto" { target: "world" } }}
+      {{ slot greeting }}Hello{{ /slot }}
+      {{ slot target }}space{{ /slot }}
+    {{ /layout }}
+    `,
+    expected: "Hello world",
+    options: {
+      autoescape: false,
+    },
+    includes: {
+      "/my-file.vto": "{{ greeting }} {{ target }}",
+    },
+  });
+});
