@@ -1,4 +1,4 @@
-import { TokenError } from "../core/errors.ts";
+import { SourceError } from "../core/errors.ts";
 import type { Token } from "../core/tokenizer.ts";
 import type { Environment, Plugin } from "../core/environment.ts";
 
@@ -24,7 +24,7 @@ function importTag(
 
   const match = code.match(IMPORT_STATEMENT);
   if (!match) {
-    throw new TokenError("Invalid import tag", token);
+    throw new SourceError("Invalid import tag", position);
   }
 
   const compiled: string[] = [];
@@ -51,12 +51,12 @@ function importTag(
           variables.push(rename);
           return `${name}: ${rename}`;
         } else {
-          throw new TokenError("Invalid named import", token);
+          throw new SourceError("Invalid named import", position);
         }
       });
       compiled.push(`({${chunks.join(",")}} = __tmp);`);
     } else {
-      throw new TokenError("Invalid import tag", token);
+      throw new SourceError("Invalid import tag", position);
     }
   }
 

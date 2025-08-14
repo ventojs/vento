@@ -2,14 +2,14 @@ import type { Token } from "./tokenizer.ts";
 import type { TemplateContext } from "./environment.ts";
 
 export interface ErrorContext {
-  /* The type of error, e.g., "TokenError", "SyntaxError", etc. */
+  /* The type of error, e.g., "SourceError", "SyntaxError", etc. */
   type: string;
   /* The error message */
   message: string;
   /* The source code (.vto) where the error occurred */
   source: string;
-  /* The token that caused the error */
-  token: Token;
+  /* The token position in the source code */
+  position: number;
   /* The compiled code where the error occurred */
   code?: string;
   /* The line number in the compiled code where the error occurred */
@@ -27,41 +27,34 @@ export abstract class VentoError extends Error {
     | Promise<ErrorContext | undefined>;
 }
 
-export class TokenError extends VentoError {
-  token: Token | number;
-  tokens?: Token[];
+export class SourceError extends VentoError {
+  position: number;
   source?: string;
   file?: string;
 
   constructor(
     message: string,
-    token: Token | number,
+    position: number,
     source?: string,
     file?: string,
   ) {
     super(message);
-    this.name = "TokenError";
-    this.token = token;
+    this.name = "SourceError";
+    this.position = position;
     this.source = source;
     this.file = file;
   }
 
   getContext() {
-    if (!this.source || this.token === undefined) {
+    if (!this.source) {
       return;
     }
-
-    const token = typeof this.token === "number"
-      ? this.tokens?.find((t) => t[2] === this.token)
-      : this.token;
-
-    if (!token) return;
 
     return {
       type: this.name,
       message: this.message,
+      position: this.position,
       source: this.source,
-      token,
       file: this.file,
     };
   }
@@ -94,11 +87,10 @@ export function createError(
 ): VentoError {
   if (error instanceof RuntimeError) return error;
 
-  // If the error is a TokenError, we can enhance it with the context information
-  if (error instanceof TokenError) {
+  // If the error is a SourceError, we can fill the missing context information
+  if (error instanceof SourceError) {
     error.file ??= context.path;
     error.source ??= context.source;
-    error.tokens ??= context.tokens;
     return error;
   }
 
@@ -152,10 +144,10 @@ export function stringifyError(
   context: ErrorContext,
   format = plain,
 ): string {
-  const { type, message, source, token, code, line, column, file } = context;
+  const { type, message, source, position, code, line, column, file } = context;
 
   const sourceLines = codeToLines(source);
-  const [sourceLine, sourceColumn] = getSourceLineColumn(sourceLines, token[2]);
+  const [sourceLine, sourceColumn] = getSourceLineColumn(sourceLines, position);
 
   const pad = sourceLine.toString().length;
   const output: string[] = [];
@@ -217,7 +209,7 @@ function getErrorContext(
         type: error.name || "JavaScriptError",
         message: error.message,
         source,
-        token,
+        position: token[2],
         code,
         line: frame.line,
         column: frame.column,
@@ -251,7 +243,7 @@ async function getSyntaxErrorContext(
       type: "SyntaxError",
       message: error.message,
       source,
-      token,
+      position: token[2],
       code,
       line: frame.line,
       column: frame.column,

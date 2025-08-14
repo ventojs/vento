@@ -1,4 +1,4 @@
-import { TokenError } from "../core/errors.ts";
+import { SourceError } from "../core/errors.ts";
 import type { Token } from "../core/tokenizer.ts";
 import type { Environment, Plugin } from "../core/environment.ts";
 
@@ -25,7 +25,7 @@ function layoutTag(
   );
 
   if (!match) {
-    throw new TokenError("Invalid layout tag", token);
+    throw new SourceError("Invalid layout tag", position);
   }
 
   const [_, file, data] = match;

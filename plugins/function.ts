@@ -1,4 +1,4 @@
-import { TokenError } from "../core/errors.ts";
+import { SourceError } from "../core/errors.ts";
 import type { Token } from "../core/tokenizer.ts";
 import type { Environment, Plugin } from "../core/environment.ts";
 
@@ -14,7 +14,7 @@ function functionTag(
   _output: string,
   tokens: Token[],
 ): string | undefined {
-  const [, code] = token;
+  const [, code, position] = token;
 
   if (!code.match(/^(export\s+)?(async\s+)?function\s/)) {
     return;
@@ -25,7 +25,7 @@ function functionTag(
   );
 
   if (!match) {
-    throw new TokenError("Invalid function tag", token);
+    throw new SourceError("Invalid function tag", position);
   }
 
   const [_, exp, as, name, args] = match;

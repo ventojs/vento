@@ -1,7 +1,7 @@
 import iterateTopLevel from "./js.ts";
 import tokenize, { Token } from "./tokenizer.ts";
 
-import { createError, TokenError } from "./errors.ts";
+import { createError, SourceError } from "./errors.ts";
 
 export interface TemplateResult {
   content: string;
@@ -130,7 +130,7 @@ export class Environment {
     const lastToken = tokens.at(-1)!;
 
     if (lastToken[0] != "string") {
-      throw new TokenError("Unclosed tag", lastToken, source, path);
+      throw new SourceError("Unclosed tag", lastToken[2], source, path);
     }
 
     let code = "";
@@ -228,8 +228,8 @@ export class Environment {
     cached = this.options.loader.load(cleanPath)
       .catch((error) => {
         throw position !== undefined
-          ? new TokenError(
-            `Error loading template "${path}": ${error.message}`,
+          ? new SourceError(
+            `Error loading template: ${error.message}`,
             position,
             undefined,
             from,
@@ -260,7 +260,7 @@ export class Environment {
     tokens:
     while (tokens.length > 0) {
       const token = tokens.shift()!;
-      const [type, code, pos] = token;
+      const [type, code, position] = token;
       openToken ??= token;
 
       // We found the closing tag, so we stop compiling
@@ -280,7 +280,7 @@ export class Environment {
       }
 
       if (type === "tag") {
-        compiled.push(`/*__pos:${pos}*/`);
+        compiled.push(`/*__pos:${position}*/`);
         for (const tag of this.tags) {
           const compiledTag = tag(this, token, outputVar, tokens);
 
@@ -300,14 +300,14 @@ export class Environment {
         continue;
       }
 
-      throw new TokenError(`Unknown token type "${type}"`, token);
+      throw new SourceError(`Unknown token type "${type}"`, position);
     }
 
     // If we reach here, it means we have an open token that wasn't closed
     if (closeToken) {
-      throw new TokenError(
+      throw new SourceError(
         `Missing closing tag ("${closeToken}" tag is expected)`,
-        openToken!,
+        openToken![2],
       );
     }
 
@@ -323,7 +323,7 @@ export class Environment {
       const match = code.match(/^(await\s+)?([\w.]+)(?:\((.*)\))?$/);
 
       if (!match) {
-        throw new TokenError(`Invalid filter: ${code}`, token);
+        throw new SourceError(`Invalid filter: ${code}`, position);
       }
 
       const [_, isAsync, name, args] = match;
@@ -392,7 +392,7 @@ function callMethod(
     return thisObject[method](...args);
   }
 
-  throw new TokenError(
+  throw new SourceError(
     `Method "${method}" is not a function of ${typeof thisObject} variable`,
     position,
   );
