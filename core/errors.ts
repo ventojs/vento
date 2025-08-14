@@ -29,20 +29,20 @@ export abstract class VentoError extends Error {
 
 export class SourceError extends VentoError {
   position: number;
-  source?: string;
   file?: string;
+  source?: string;
 
   constructor(
     message: string,
     position: number,
-    source?: string,
     file?: string,
+    source?: string,
   ) {
     super(message);
     this.name = "SourceError";
     this.position = position;
-    this.source = source;
     this.file = file;
+    this.source = source;
   }
 
   getContext() {
@@ -54,8 +54,8 @@ export class SourceError extends VentoError {
       type: this.name,
       message: this.message,
       position: this.position,
-      source: this.source,
       file: this.file,
+      source: this.source,
     };
   }
 }

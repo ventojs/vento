@@ -130,7 +130,7 @@ export class Environment {
     const lastToken = tokens.at(-1)!;
 
     if (lastToken[0] != "string") {
-      throw new SourceError("Unclosed tag", lastToken[2], source, path);
+      throw new SourceError("Unclosed tag", lastToken[2], path, source);
     }
 
     let code = "";
@@ -213,6 +213,11 @@ export class Environment {
     from?: string,
     position?: number,
   ): Promise<Template> {
+    if (!file) {
+      throw position !== undefined
+        ? new SourceError(`Invalid template (${typeof file})`, position, from)
+        : new Error(`Invalid template (${typeof file})`);
+    }
     const path = this.options.loader.resolve(from || "", file);
     let cached = this.cache.get(path);
 
@@ -231,7 +236,6 @@ export class Environment {
           ? new SourceError(
             `Error loading template: ${error.message}`,
             position,
-            undefined,
             from,
           )
           : error;
