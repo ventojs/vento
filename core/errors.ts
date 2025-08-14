@@ -200,7 +200,7 @@ function getErrorContext(
   if (!tokens) return;
 
   for (const frame of parseStack(error.stack)) {
-    if (frame.file === "<anonymous>") {
+    if (frame.file === "<anonymous>" || frame.file === "Function") {
       const lines = codeToLines(code);
       const token = searchToken(frame, tokens, lines);
       if (!token) return;
