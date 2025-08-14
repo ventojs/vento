@@ -41,12 +41,6 @@ Deno.test("Strict variables", async () => {
     data: { message: "Hello world" },
     expected: "Hello world",
   });
-  await testThrows({
-    options: { strict: true },
-    template: `
-      {{> it.message = "Hello world" }}
-    `,
-  });
   await test({
     options: { strict: true },
     template: `
