@@ -215,6 +215,11 @@ export class Environment {
         ? new SourceError(`Invalid template (${typeof file})`, position, from)
         : new Error(`Invalid template (${typeof file})`);
     }
+    if (typeof file !== "string") {
+      throw new TypeError(
+        `The template filename must be a string. Got ${typeof file}`,
+      );
+    }
     const path = this.options.loader.resolve(from || "", file);
     let cached = this.cache.get(path);
 

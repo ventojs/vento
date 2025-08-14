@@ -79,7 +79,24 @@ export class RuntimeError extends VentoError {
         return;
       }
     }
-    return getErrorContext(this.cause as Error, this.#context, this.position);
+
+    const { code, source, path } = this.#context;
+
+    for (const frame of getStackFrames(this.cause)) {
+      if (frame.file !== "<anonymous>") {
+        continue;
+      }
+      return {
+        type: this.name || "JavaScriptError",
+        message: this.message,
+        source,
+        position: this.position,
+        code,
+        line: frame.line,
+        column: frame.column,
+        file: path,
+      };
+    }
   }
 }
 
@@ -196,30 +213,6 @@ export function stringifyError(
   return output.join("\n");
 }
 
-/** Extracts the content of a generic error */
-function getErrorContext(
-  error: Error,
-  context: TemplateContext,
-  position: number,
-): ErrorContext | undefined {
-  const { code, source } = context;
-
-  for (const frame of getStackFrames(error)) {
-    if (frame.file === "<anonymous>" || frame.file === "Function") {
-      return {
-        type: error.name || "JavaScriptError",
-        message: error.message,
-        source,
-        position,
-        code,
-        line: frame.line,
-        column: frame.column,
-        file: context.path,
-      };
-    }
-  }
-}
-
 /**
  * Extracts the context from a SyntaxError
  * This works on Deno, Firefox and Safari
@@ -312,12 +305,11 @@ interface StackFrame {
   column: number;
 }
 
-/** Returns every combination of file, line and column of an error */
+/** Returns every combination of file, line and column of an error stack */
 // deno-lint-ignore no-explicit-any
 function* getStackFrames(error: any): Generator<StackFrame> {
   // Firefox specific
-  const { columnNumber, lineNumber, fileName, stack, line, column, sourceURL } =
-    error;
+  const { columnNumber, lineNumber, fileName } = error;
   if (columnNumber !== undefined && lineNumber !== undefined && fileName) {
     yield {
       file: normalizeFile(fileName),
@@ -327,6 +319,7 @@ function* getStackFrames(error: any): Generator<StackFrame> {
   }
 
   // Safari specific
+  const { line, column, sourceURL } = error;
   if (line !== undefined) {
     yield {
       file: normalizeFile(sourceURL),
@@ -335,13 +328,21 @@ function* getStackFrames(error: any): Generator<StackFrame> {
     };
   }
 
-  if (!stack) return;
+  const { stack } = error;
+
+  if (!stack) {
+    return;
+  }
+
   const matches = stack.matchAll(/([^(\s,]+):(\d+):(\d+)/g);
   for (const match of matches) {
     const [_, file, line, column] = match;
-    if (file.startsWith("node:")) {
-      continue; // Skip runtimes internal files
+
+    // Skip Node & Deno internal files
+    if (file.startsWith("node:") || file.startsWith("ext:")) {
+      continue;
     }
+
     yield {
       file: normalizeFile(file),
       line: Number(line),
