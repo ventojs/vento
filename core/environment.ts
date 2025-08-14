@@ -13,7 +13,6 @@ export interface TemplateContext {
   code: string;
   path?: string;
   defaults?: Record<string, unknown>;
-  tokens?: Token[];
 }
 
 export interface Template extends TemplateContext {
@@ -125,8 +124,7 @@ export class Environment {
         `The source code of "${path}" must be a string. Got ${typeof source}`,
       );
     }
-    const allTokens = this.tokenize(source, path);
-    const tokens = [...allTokens];
+    const tokens = this.tokenize(source, path);
     const lastToken = tokens.at(-1)!;
 
     if (lastToken[0] != "string") {
@@ -137,13 +135,11 @@ export class Environment {
     try {
       code = this.compileTokens(tokens).join("\n");
     } catch (error) {
-      if (!(error instanceof Error)) throw error;
-      throw createError(error, {
-        source,
-        code,
-        tokens: allTokens,
-        path,
-      });
+      if (error instanceof SourceError) {
+        error.file ??= path;
+        error.source ??= source;
+      }
+      throw error;
     }
 
     const { dataVarname, autoDataVarname } = this.options;
@@ -166,13 +162,14 @@ export class Environment {
       const constructor = new Function(
         "__env",
         `return async function __template(${dataVarname}) {
+          let __pos=0;
           try {
             ${dataVarname} = Object.assign({}, __template.defaults, ${dataVarname});
             const __exports = { content: "" };
             ${code}
             return __exports;
           } catch (error) {
-            throw __env.utils.createError(error, __template);
+            throw __env.utils.createError(error, __template, __pos);
           }
         }`,
       );
@@ -180,17 +177,17 @@ export class Environment {
       template.path = path;
       template.code = constructor.toString();
       template.source = source;
-      template.tokens = allTokens;
       template.defaults = defaults || {};
       return template;
     } catch (error) {
-      if (!(error instanceof Error)) throw error;
-      throw createError(error, {
-        source,
-        code,
-        tokens: allTokens,
-        path,
-      });
+      if (error instanceof SyntaxError) {
+        throw createError(error, { source, code, path }, -1);
+      }
+      if (error instanceof SourceError) {
+        error.file ??= path;
+        error.source ??= source;
+      }
+      throw error;
     }
   }
 
@@ -284,7 +281,7 @@ export class Environment {
       }
 
       if (type === "tag") {
-        compiled.push(`/*__pos:${position}*/`);
+        compiled.push(`__pos=${position};`);
         for (const tag of this.tags) {
           const compiledTag = tag(this, token, outputVar, tokens);
 

@@ -1,4 +1,3 @@
-import type { Token } from "./tokenizer.ts";
 import type { TemplateContext } from "./environment.ts";
 
 export interface ErrorContext {
@@ -62,21 +61,25 @@ export class SourceError extends VentoError {
 
 export class RuntimeError extends VentoError {
   #context: TemplateContext;
+  position: number;
 
-  constructor(error: Error, context: TemplateContext) {
+  constructor(error: Error, context: TemplateContext, position: number) {
     super(error.message);
     this.name = error.name || "JavaScriptError";
     this.#context = context;
     this.cause = error;
+    this.position = position;
   }
 
   getContext() {
-    if (this.cause instanceof SyntaxError) {
-      return getSyntaxErrorContext(this.cause as SyntaxError, this.#context);
+    if (this.position === -1) {
+      try {
+        return getSyntaxErrorContext(this.cause as SyntaxError, this.#context);
+      } catch {
+        return;
+      }
     }
-    if (this.cause instanceof Error) {
-      return getErrorContext(this.cause, this.#context);
-    }
+    return getErrorContext(this.cause as Error, this.#context, this.position);
   }
 }
 
@@ -84,6 +87,7 @@ export class RuntimeError extends VentoError {
 export function createError(
   error: Error,
   context: TemplateContext,
+  position: number,
 ): VentoError {
   if (error instanceof RuntimeError) return error;
 
@@ -91,11 +95,12 @@ export function createError(
   if (error instanceof SourceError) {
     error.file ??= context.path;
     error.source ??= context.source;
+    error.position ??= position;
     return error;
   }
 
   // JavaScript syntax errors can be parsed to get accurate position
-  return new RuntimeError(error, context);
+  return new RuntimeError(error, context, position);
 }
 
 export interface ErrorFormat {
@@ -183,7 +188,7 @@ export function stringifyError(
   // Print the compiled code with the error position
   const codeLines = codeToLines(code);
   output.push(`${indent} ${" ".repeat(sourceColumn - 1)}${format.error("^")}`);
-  output.push(`${indent} ${format.dim(codeLines[line - 1].trimEnd())}`);
+  output.push(`${indent} ${format.dim(codeLines[line - 1]?.trimEnd() || "")}`);
   output.push(
     `${indent} ${" ".repeat(column)} ${format.error(`^ ${message}`)}`,
   );
@@ -195,21 +200,17 @@ export function stringifyError(
 function getErrorContext(
   error: Error,
   context: TemplateContext,
+  position: number,
 ): ErrorContext | undefined {
-  const { code, tokens, source } = context;
-  if (!tokens) return;
+  const { code, source } = context;
 
   for (const frame of getStackFrames(error)) {
     if (frame.file === "<anonymous>" || frame.file === "Function") {
-      const lines = codeToLines(code);
-      const token = searchToken(frame, tokens, lines);
-      if (!token) return;
-
       return {
         type: error.name || "JavaScriptError",
         message: error.message,
         source,
-        position: token[2],
+        position,
         code,
         line: frame.line,
         column: frame.column,
@@ -219,15 +220,19 @@ function getErrorContext(
   }
 }
 
-/** Extracts the context from a SyntaxError */
+/**
+ * Extracts the context from a SyntaxError
+ * This works on Deno, Firefox and Safari
+ * It does not work on Node.js and Chrome due to lack of position information
+ * in the stack trace of a dynamic import error.
+ *
+ * TODO: Find a way to get the position of a syntax error in Node.js and Chrome
+ */
 async function getSyntaxErrorContext(
   error: SyntaxError,
   context: TemplateContext,
 ): Promise<ErrorContext | undefined> {
-  const { tokens, source } = context;
-  if (!tokens) return;
-
-  const code = `()=>{${context.code}}`;
+  const { source, code } = context;
   const url = URL.createObjectURL(
     new Blob([code], { type: "application/javascript" }),
   );
@@ -235,15 +240,11 @@ async function getSyntaxErrorContext(
   URL.revokeObjectURL(url);
 
   for (const frame of getStackFrames(err)) {
-    const lines = codeToLines(code);
-    const token = searchToken(frame, tokens, lines);
-    if (!token) return;
-
     return {
       type: "SyntaxError",
       message: error.message,
       source,
-      position: token[2],
+      position: searchPosition(frame, code) ?? 0,
       code,
       line: frame.line,
       column: frame.column,
@@ -252,7 +253,6 @@ async function getSyntaxErrorContext(
   }
 }
 
-const POSITION_COMMENT = /^\/\*__pos:(\d+)\*\/$/;
 const LINE_TERMINATOR = /(\r\n?|[\n\u2028\u2029])/;
 
 /** Convert the source code into an array of lines */
@@ -267,19 +267,18 @@ function codeToLines(code: string): string[] {
   return lines;
 }
 
-/** Search the closest token in the position of an error */
-function searchToken(
-  frame: StackFrame,
-  tokens: Token[],
-  lines: string[],
-): Token | undefined {
-  const posLine = lines
-    .slice(0, frame.line - 1)
-    .findLast((line) => POSITION_COMMENT.test(line.trim()));
+const POSITION_VARIABLE = /^__pos=(\d+);$/;
 
+/** Search the closest token to an error */
+function searchPosition(
+  frame: StackFrame,
+  code: string,
+): number | undefined {
+  const posLine = codeToLines(code)
+    .slice(0, frame.line - 1)
+    .findLast((line) => POSITION_VARIABLE.test(line.trim()));
   if (posLine) {
-    const position = Number(posLine.trim().slice(8, -2));
-    return tokens.findLast((token) => token[2] <= position);
+    return Number(posLine.trim().slice(6, -1));
   }
 }
 
@@ -288,6 +287,9 @@ function getSourceLineColumn(
   lines: string[],
   position: number,
 ): [number, number] {
+  if (position < 0) {
+    return [1, 1]; // Position is before the start of the source
+  }
   let index = 0;
 
   for (const [line, content] of lines.entries()) {
@@ -337,6 +339,9 @@ function* getStackFrames(error: any): Generator<StackFrame> {
   const matches = stack.matchAll(/([^(\s,]+):(\d+):(\d+)/g);
   for (const match of matches) {
     const [_, file, line, column] = match;
+    if (file.startsWith("node:")) {
+      continue; // Skip runtimes internal files
+    }
     yield {
       file: normalizeFile(file),
       line: Number(line),
