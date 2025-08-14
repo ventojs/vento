@@ -153,9 +153,10 @@ export class Environment {
       code = `
         return new Function(
           "__env",
+          "${dataVarname}",
           \`{\${Object.keys(${dataVarname}).join(",")}}\`,
           ${innerCode}
-        )(__env, ${dataVarname});
+        )(__env, ${dataVarname}, ${dataVarname});
       `;
     } else if (autoDataVarname) {
       const generator = iterateTopLevel(code);
