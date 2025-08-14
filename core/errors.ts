@@ -199,7 +199,7 @@ function getErrorContext(
   const { code, tokens, source } = context;
   if (!tokens) return;
 
-  for (const frame of parseStack(error.stack)) {
+  for (const frame of getStackFrames(error)) {
     if (frame.file === "<anonymous>" || frame.file === "Function") {
       const lines = codeToLines(code);
       const token = searchToken(frame, tokens, lines);
@@ -231,10 +231,10 @@ async function getSyntaxErrorContext(
   const url = URL.createObjectURL(
     new Blob([code], { type: "application/javascript" }),
   );
-  const stack = await import(url).catch(({ stack }) => stack);
+  const err = await import(url).catch((e) => e);
   URL.revokeObjectURL(url);
 
-  for (const frame of parseStack(stack)) {
+  for (const frame of getStackFrames(err)) {
     const lines = codeToLines(code);
     const token = searchToken(frame, tokens, lines);
     if (!token) return;
@@ -310,16 +310,44 @@ interface StackFrame {
   column: number;
 }
 
-/** Returns every combination of file, line and column of an error stack */
-function* parseStack(stack?: string): Generator<StackFrame> {
+/** Returns every combination of file, line and column of an error */
+// deno-lint-ignore no-explicit-any
+function* getStackFrames(error: any): Generator<StackFrame> {
+  // Firefox specific
+  const { columnNumber, lineNumber, fileName, stack, line, column, sourceURL } =
+    error;
+  if (columnNumber !== undefined && lineNumber !== undefined && fileName) {
+    yield {
+      file: normalizeFile(fileName),
+      line: lineNumber,
+      column: columnNumber,
+    };
+  }
+
+  // Safari specific
+  if (line !== undefined) {
+    yield {
+      file: normalizeFile(sourceURL),
+      line,
+      column: column ?? 0, // Safari may not provide column
+    };
+  }
+
   if (!stack) return;
   const matches = stack.matchAll(/([^(\s,]+):(\d+):(\d+)/g);
   for (const match of matches) {
     const [_, file, line, column] = match;
     yield {
-      file,
+      file: normalizeFile(file),
       line: Number(line),
       column: Number(column),
     };
   }
+}
+
+function normalizeFile(file?: string): string {
+  if (!file) return "<anonymous>";
+  // Firefox may return "Function" for anonymous functions
+  if (file === "Function") return "<anonymous>";
+  return file;
 }
