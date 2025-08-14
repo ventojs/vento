@@ -148,7 +148,6 @@ export function stringifyError(
 
   const sourceLines = codeToLines(source);
   const [sourceLine, sourceColumn] = getSourceLineColumn(sourceLines, position);
-
   const pad = sourceLine.toString().length;
   const output: string[] = [];
 
@@ -183,6 +182,7 @@ export function stringifyError(
 
   // Print the compiled code with the error position
   const codeLines = codeToLines(code);
+  output.push(`${indent} ${" ".repeat(sourceColumn - 1)}${format.error("^")}`);
   output.push(`${indent} ${format.dim(codeLines[line - 1].trimEnd())}`);
   output.push(
     `${indent} ${" ".repeat(column)} ${format.error(`^ ${message}`)}`,
