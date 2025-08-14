@@ -46,7 +46,7 @@ function forTag(
   } else {
     const parts = tagCode.match(/(^[^\s,]+)([\s|\S]+)$/);
     if (!parts) {
-      throw new TokenError(`Invalid for loop variable: ${tagCode}`, token);
+      throw new TokenError("Invalid for loop", token);
     }
 
     var1 = parts[1].trim();
@@ -62,7 +62,7 @@ function forTag(
     } else {
       const parts = tagCode.match(/^([\w]+)\s+of\s+([\s|\S]+)$/);
       if (!parts) {
-        throw new TokenError(`Invalid for loop variable: ${tagCode}`, token);
+        throw new TokenError("Invalid for loop", token);
       }
 
       var2 = parts[1].trim();
@@ -70,6 +70,8 @@ function forTag(
     }
   } else if (tagCode.startsWith("of ")) {
     collection = tagCode.slice(3).trim();
+  } else {
+    throw new TokenError("Invalid for loop", token);
   }
 
   if (var2) {

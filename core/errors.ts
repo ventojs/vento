@@ -2,10 +2,21 @@ import type { Token } from "./tokenizer.ts";
 import type { TemplateContext } from "./environment.ts";
 
 export interface ErrorContext {
+  /* The type of error, e.g., "TokenError", "SyntaxError", etc. */
   type: string;
+  /* The error message */
   message: string;
+  /* The source code (.vto) where the error occurred */
   source: string;
-  position: number;
+  /* The token that caused the error */
+  token: Token;
+  /* The compiled code where the error occurred */
+  code?: string;
+  /* The line number in the compiled code where the error occurred */
+  line?: number;
+  /* The column number in the compiled code where the error occurred */
+  column?: number;
+  /* The file path where the error occurred */
   file?: string;
 }
 
@@ -18,6 +29,7 @@ export abstract class VentoError extends Error {
 
 export class TokenError extends VentoError {
   token: Token | number;
+  tokens?: Token[];
   source?: string;
   file?: string;
 
@@ -38,11 +50,18 @@ export class TokenError extends VentoError {
     if (!this.source || this.token === undefined) {
       return;
     }
+
+    const token = typeof this.token === "number"
+      ? this.tokens?.find((t) => t[2] === this.token)
+      : this.token;
+
+    if (!token) return;
+
     return {
       type: this.name,
       message: this.message,
       source: this.source,
-      position: typeof this.token === "number" ? this.token : this.token[2],
+      token,
       file: this.file,
     };
   }
@@ -60,21 +79,26 @@ export class RuntimeError extends VentoError {
 
   getContext() {
     if (this.cause instanceof SyntaxError) {
-      return parseSyntaxError(this.cause as SyntaxError, this.#context);
+      return getSyntaxErrorContext(this.cause as SyntaxError, this.#context);
     }
     if (this.cause instanceof Error) {
-      return parseError(this.cause, this.#context);
+      return getErrorContext(this.cause, this.#context);
     }
   }
 }
 
-export function createError(error: Error, context: TemplateContext): Error {
+/** Create or complete VentoError with extra info from the template */
+export function createError(
+  error: Error,
+  context: TemplateContext,
+): VentoError {
   if (error instanceof RuntimeError) return error;
 
   // If the error is a TokenError, we can enhance it with the context information
   if (error instanceof TokenError) {
     error.file ??= context.path;
     error.source ??= context.source;
+    error.tokens ??= context.tokens;
     return error;
   }
 
@@ -105,6 +129,7 @@ const formats: Record<string, ErrorFormat> = {
   plain,
 };
 
+/** Prints an error to the console in a formatted way. */
 export async function printError(
   error: unknown,
   format: ErrorFormat | keyof typeof formats = plain,
@@ -114,7 +139,7 @@ export async function printError(
     const fmt = typeof format === "string" ? formats[format] || plain : format;
 
     if (context) {
-      console.error(stringifyContext(context, fmt));
+      console.error(stringifyError(context, fmt));
       return;
     }
   }
@@ -122,33 +147,94 @@ export async function printError(
   console.error(error);
 }
 
-function parseError(
+/** Converts an error context into a formatted string representation. */
+export function stringifyError(
+  context: ErrorContext,
+  format = plain,
+): string {
+  const { type, message, source, token, code, line, column, file } = context;
+
+  const sourceLines = codeToLines(source);
+  const [sourceLine, sourceColumn] = getSourceLineColumn(sourceLines, token[2]);
+
+  const pad = sourceLine.toString().length;
+  const output: string[] = [];
+
+  // Print error type and message
+  output.push(`${format.error(type)}: ${message}`);
+
+  // Print file location if available
+  if (file) {
+    output.push(format.dim(`${file}:${sourceLine}:${sourceColumn}`));
+  }
+
+  // Print the latest lines of the source code before the error
+  for (let line = Math.max(sourceLine - 3, 1); line <= sourceLine; line++) {
+    const sidebar = ` ${format.number(`${line}`.padStart(pad))} ${
+      format.dim("|")
+    } `;
+    output.push(sidebar + sourceLines[line - 1].trimEnd());
+  }
+
+  // If we don't have the compiled code, return the tag position
+  const indent = ` ${" ".repeat(pad)} ${format.dim("|")}`;
+
+  // If we don't have the compiled code, print the tag position
+  if (!code || line === undefined || column === undefined) {
+    output.push(
+      `${indent} ${" ".repeat(sourceColumn - 1)}${
+        format.error(`^ ${message}`)
+      }`,
+    );
+    return output.join("\n");
+  }
+
+  // Print the compiled code with the error position
+  const codeLines = codeToLines(code);
+  output.push(`${indent} ${format.dim(codeLines[line - 1].trimEnd())}`);
+  output.push(
+    `${indent} ${" ".repeat(column)} ${format.error(`^ ${message}`)}`,
+  );
+
+  return output.join("\n");
+}
+
+/** Extracts the content of a generic error */
+function getErrorContext(
   error: Error,
   context: TemplateContext,
 ): ErrorContext | undefined {
+  const { code, tokens, source } = context;
+  if (!tokens) return;
+
   for (const frame of parseStack(error.stack)) {
     if (frame.file === "<anonymous>") {
-      const position = getAccurateErrorPosition(
-        frame.line - 1,
-        frame.column,
-        context,
-      );
-      if (position === -1) return;
+      const lines = codeToLines(code);
+      const token = searchToken(frame, tokens, lines);
+      if (!token) return;
+
       return {
         type: error.name || "JavaScriptError",
         message: error.message,
-        source: context.source,
-        position,
+        source,
+        token,
+        code,
+        line: frame.line,
+        column: frame.column,
         file: context.path,
       };
     }
   }
 }
 
-async function parseSyntaxError(
+/** Extracts the context from a SyntaxError */
+async function getSyntaxErrorContext(
   error: SyntaxError,
   context: TemplateContext,
 ): Promise<ErrorContext | undefined> {
+  const { tokens, source } = context;
+  if (!tokens) return;
+
   const code = `()=>{${context.code}}`;
   const url = URL.createObjectURL(
     new Blob([code], { type: "application/javascript" }),
@@ -157,109 +243,73 @@ async function parseSyntaxError(
   URL.revokeObjectURL(url);
 
   for (const frame of parseStack(stack)) {
-    const position = getAccurateErrorPosition(
-      frame.line - 1,
-      frame.column,
-      context,
-    );
-    if (position == -1) return;
+    const lines = codeToLines(code);
+    const token = searchToken(frame, tokens, lines);
+    if (!token) return;
 
     return {
       type: "SyntaxError",
       message: error.message,
-      source: context.source,
-      position,
+      source,
+      token,
+      code,
+      line: frame.line,
+      column: frame.column,
       file: context.path,
     };
   }
 }
 
-function getAccurateErrorPosition(
-  row: number,
-  col: number,
-  context: TemplateContext,
-): number {
-  const { code, tokens, source } = context;
-  if (!tokens) return -1;
-  const linesAndDelims = code.split(/(\r\n?|[\n\u2028\u2029])/);
-  const linesAndDelimsUntilIssue = linesAndDelims.slice(0, row * 2);
-  const issueIndex = linesAndDelimsUntilIssue.join("").length + col;
-  const posLine = linesAndDelimsUntilIssue.findLast((line) => {
-    return /^\/\*__pos:(\d+)\*\/$/.test(line);
-  });
-  if (!posLine) return -1;
-  const position = Number(posLine.slice(8, -2));
-  const token = tokens.findLast((token) => {
-    if (token[2] == undefined) return false;
-    return token[2] <= position;
-  });
-  if (!token) return -1;
-  const isJS = token[1].startsWith(">");
-  const tag = isJS ? token[1].slice(1).trimStart() : token[1];
-  const issueStartIndex = code.lastIndexOf(tag, issueIndex);
-  if (issueStartIndex == -1) return -1;
-  const sourceIssueStartIndex = source.indexOf(tag, position);
-  return sourceIssueStartIndex + issueIndex - issueStartIndex - 1;
-}
+const POSITION_COMMENT = /^\/\*__pos:(\d+)\*\/$/;
+const LINE_TERMINATOR = /(\r\n?|[\n\u2028\u2029])/;
 
-const LINE_TERMINATOR = /\r\n?|[\n\u2028\u2029]/;
+/** Convert the source code into an array of lines */
+function codeToLines(code: string): string[] {
+  const doubleLines = code.split(LINE_TERMINATOR);
+  const lines: string[] = [];
 
-export function stringifyContext(
-  context: ErrorContext,
-  format = plain,
-): string {
-  const { type, message, source, position, file } = context;
-
-  const sourceAfterIssue = source.slice(position);
-  const newlineMatch = sourceAfterIssue.match(LINE_TERMINATOR);
-  const endIndex = position + (newlineMatch?.index ?? sourceAfterIssue.length);
-  const lines = source.slice(0, endIndex).split(LINE_TERMINATOR);
-  const displayedLineEntries = [...lines.entries()].slice(-3);
-  const endLineIndex = lines.at(-1)!.length + position - endIndex;
-  const numberLength = (displayedLineEntries.at(-1)![0] + 1).toString().length;
-  const displayedCode = displayedLineEntries.map(([index, line]) => {
-    const number = `${index + 1}`.padStart(numberLength);
-    const sidebar = ` ${format.number(number)} ${format.dim("|")} `;
-    return sidebar + line;
-  }).join("\n");
-  const sidebarWidth = numberLength + 4;
-  const tooltipIndex = sidebarWidth + endLineIndex;
-  const tooltipIndent = " ".repeat(tooltipIndex);
-  const tooltip = tooltipIndent + format.error(`^ ${message}`);
-  const output: string[] = [];
-  output.push(`${format.error(type)}: ${message}`);
-  if (file) {
-    output.push(format.dim(getLocation(file, source, position)), "");
+  for (let i = 0; i < doubleLines.length; i += 2) {
+    lines.push(`${doubleLines[i]}${doubleLines[i + 1] ?? ""}`);
   }
-  output.push(displayedCode, tooltip);
-  return output.join("\n");
+
+  return lines;
 }
 
-function getLocation(
-  file: string,
-  source: string,
+/** Search the closest token in the position of an error */
+function searchToken(
+  frame: StackFrame,
+  tokens: Token[],
+  lines: string[],
+): Token | undefined {
+  const posLine = lines
+    .slice(0, frame.line - 1)
+    .findLast((line) => POSITION_COMMENT.test(line.trim()));
+
+  if (posLine) {
+    const position = Number(posLine.trim().slice(8, -2));
+    return tokens.findLast((token) => token[2] <= position);
+  }
+}
+
+/** Get the line and column number of a position in the code */
+function getSourceLineColumn(
+  lines: string[],
   position: number,
-): string {
-  let line = 1;
-  let column = 1;
+): [number, number] {
+  let index = 0;
 
-  for (let index = 0; index < position; index++) {
-    if (
-      source[index] === "\n" ||
-      (source[index] === "\r" && source[index + 1] === "\n")
-    ) {
-      line++;
-      column = 1;
+  for (const [line, content] of lines.entries()) {
+    const length = content.length;
 
-      if (source[index] === "\r") {
-        index++;
-      }
-    } else {
-      column++;
+    if (position < index + length) {
+      return [line + 1, position - index + 1];
     }
+    index += content.length;
   }
 
-  return `${file}:${line}:${column}`;
+  throw new Error(
+    `Position ${position} is out of bounds for the provided source lines.`,
+  );
 }
 
 interface StackFrame {
@@ -268,6 +318,7 @@ interface StackFrame {
   column: number;
 }
 
+/** Returns every combination of file, line and column of an error stack */
 function* parseStack(stack?: string): Generator<StackFrame> {
   if (!stack) return;
   const matches = stack.matchAll(/([^(\s,]+):(\d+):(\d+)/g);
