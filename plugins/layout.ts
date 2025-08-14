@@ -5,11 +5,12 @@ import type { Environment, Plugin } from "../core/environment.ts";
 export default function (): Plugin {
   return (env: Environment) => {
     env.tags.push(layoutTag);
+    env.tags.push(slotTag);
   };
 }
 
-const LAYOUT_TAG = /^layout\s+([^{]+|`[^`]+`)+(?:\{([^]*)\})?$/
-const SLOT_NAME = /^[a-z_]\w*$/i
+const LAYOUT_TAG = /^layout\s+([^{]+|`[^`]+`)+(?:\{([^]*)\})?$/;
+const SLOT_NAME = /^[a-z_]\w*$/i;
 
 function layoutTag(
   env: Environment,
@@ -18,20 +19,6 @@ function layoutTag(
   tokens: Token[],
 ): string | undefined {
   const [, code, position] = token;
-
-  if (code.startsWith("slot ")) {
-    const name = code.slice(4).trim();
-    if (!SLOT_NAME.test(name)) {
-      throw new SourceError(`Invalid slot name "${name}"`, position);
-    }
-
-    const compiled: string[] = [];
-    const subvarName = `__slots.${name}`;
-    const compiledFilters = env.compileFilters(tokens, subvarName);
-    compiled.push(`${compiledFilters} ??= ''`);
-    compiled.push(...env.compileTokens(tokens, subvarName, "/slot"));
-    return compiled.join("\n");
-  }
 
   if (!code.startsWith("layout ")) {
     return;
@@ -56,4 +43,29 @@ function layoutTag(
       ${data ?? ""}
     }, __template.path, ${position});
   })()).content;`;
+}
+
+function slotTag(
+  env: Environment,
+  token: Token,
+  output: string,
+  tokens: Token[],
+): string | undefined {
+  const [, code, position] = token;
+
+  if (!code.startsWith("slot ")) {
+    return;
+  }
+
+  const name = code.slice(4).trim();
+  if (!SLOT_NAME.test(name)) {
+    throw new SourceError(`Invalid slot name "${name}"`, position);
+  }
+
+  const compiled: string[] = [];
+  const subvarName = `__slots.${name}`;
+  const compiledFilters = env.compileFilters(tokens, subvarName);
+  compiled.push(`${compiledFilters} ??= ''`);
+  compiled.push(...env.compileTokens(tokens, subvarName, "/slot"));
+  return compiled.join("\n");
 }
