@@ -48,7 +48,7 @@ function layoutTag(
 function slotTag(
   env: Environment,
   token: Token,
-  output: string,
+  _output: string,
   tokens: Token[],
 ): string | undefined {
   const [, code, position] = token;
@@ -62,10 +62,12 @@ function slotTag(
     throw new SourceError(`Invalid slot name "${name}"`, position);
   }
 
-  const compiled: string[] = [];
-  const subvarName = `__slots.${name}`;
-  const compiledFilters = env.compileFilters(tokens, subvarName);
-  compiled.push(`${compiledFilters} ??= ''`);
-  compiled.push(...env.compileTokens(tokens, subvarName, "/slot"));
-  return compiled.join("\n");
+  const compiledFilters = env.compileFilters(tokens, "__tmp");
+  return `{
+    let __tmp = '';
+    ${env.compileTokens(tokens, "__tmp", "/slot").join("\n")}
+    __slots.${name} ??= '';
+    __slots.${name} += ${compiledFilters};
+    __slots.${name} = __env.utils.safeString(__slots.${name});
+  }`;
 }

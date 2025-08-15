@@ -109,9 +109,6 @@ Deno.test("Layouts with slots", async () => {
     {{ /layout }}
     `,
     expected: "Hello world",
-    options: {
-      autoescape: false,
-    },
     includes: {
       "/my-file.vto": "{{ greeting }} {{ target }}",
     },
@@ -125,9 +122,6 @@ Deno.test("Layouts with slots", async () => {
     {{ /layout }}
     `,
     expected: "Hello world!",
-    options: {
-      autoescape: false,
-    },
     includes: {
       "/my-file.vto": "{{ content }}{{ punctuation }}",
     },
@@ -141,9 +135,6 @@ Deno.test("Layouts with slots", async () => {
     {{ /layout }}
     `,
     expected: "Hello world!",
-    options: {
-      autoescape: false,
-    },
     includes: {
       "/my-file.vto": "{{ content }}{{ punctuation }}",
     },
@@ -157,11 +148,36 @@ Deno.test("Layouts with slots", async () => {
     {{ /layout }}
     `,
     expected: "Hello world",
-    options: {
-      autoescape: false,
-    },
     includes: {
       "/my-file.vto": "{{ greeting }} {{ target }}",
+    },
+  });
+  await test({
+    template: `
+    {{ layout "/my-file.vto" { target: "world" } }}
+      {{ slot message |> toLowerCase() }}HELLO {{ /slot }}
+      {{ slot message |> toUpperCase() }}world{{ /slot }}
+    {{ /layout }}
+    `,
+    expected: "hello WORLD",
+    includes: {
+      "/my-file.vto": "{{ message }}",
+    },
+  });
+  await test({
+    template: `
+    {{ layout "/my-file.vto" { target: "world" } }}
+      {{- slot greeting }}<em>Hello{{ /slot -}}
+      world
+      {{- slot greeting }}</em>{{ /slot -}}
+    {{ /layout }}
+    `,
+    expected: "<em>Hello</em> world",
+    options: {
+      autoescape: true,
+    },
+    includes: {
+      "/my-file.vto": "{{ greeting }} {{ content }}",
     },
   });
 });
