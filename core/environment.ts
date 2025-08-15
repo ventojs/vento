@@ -181,7 +181,7 @@ export class Environment {
       return template;
     } catch (error) {
       if (error instanceof SyntaxError) {
-        throw createError(error, { source, code, path }, -1);
+        throw createError(error, { source, code, path });
       }
       if (error instanceof SourceError) {
         error.file ??= path;

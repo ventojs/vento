@@ -6,9 +6,9 @@ export interface ErrorContext {
   /* The error message */
   message: string;
   /* The source code (.vto) where the error occurred */
-  source: string;
+  source?: string;
   /* The token position in the source code */
-  position: number;
+  position?: number;
   /* The compiled code where the error occurred */
   code?: string;
   /* The line number in the compiled code where the error occurred */
@@ -20,20 +20,17 @@ export interface ErrorContext {
 }
 
 export abstract class VentoError extends Error {
-  abstract getContext():
-    | ErrorContext
-    | undefined
-    | Promise<ErrorContext | undefined>;
+  abstract getContext(): ErrorContext | Promise<ErrorContext>;
 }
 
 export class SourceError extends VentoError {
-  position: number;
+  position?: number;
   file?: string;
   source?: string;
 
   constructor(
     message: string,
-    position: number,
+    position?: number,
     file?: string,
     source?: string,
   ) {
@@ -45,10 +42,6 @@ export class SourceError extends VentoError {
   }
 
   getContext() {
-    if (!this.source) {
-      return;
-    }
-
     return {
       type: this.name,
       message: this.message,
@@ -61,9 +54,9 @@ export class SourceError extends VentoError {
 
 export class RuntimeError extends VentoError {
   #context: TemplateContext;
-  position: number;
+  position?: number;
 
-  constructor(error: Error, context: TemplateContext, position: number) {
+  constructor(error: Error, context: TemplateContext, position?: number) {
     super(error.message);
     this.name = error.name || "JavaScriptError";
     this.#context = context;
@@ -71,17 +64,36 @@ export class RuntimeError extends VentoError {
     this.position = position;
   }
 
-  getContext() {
-    if (this.position === -1) {
+  async getContext() {
+    const { code, source, path } = this.#context;
+
+    // If we don't have the position, we cannot provide a context
+    // Try to get the context from a SyntaxError
+    if (this.position === undefined) {
       try {
-        return getSyntaxErrorContext(this.cause as SyntaxError, this.#context);
+        return (await getSyntaxErrorContext(
+          this.cause as SyntaxError,
+          this.#context,
+        )) ??
+          {
+            type: this.name || "JavaScriptError",
+            message: this.message,
+            source,
+            code,
+            file: path,
+          };
       } catch {
-        return;
+        return {
+          type: this.name || "JavaScriptError",
+          message: this.message,
+          source,
+          code,
+          file: path,
+        };
       }
     }
 
-    const { code, source, path } = this.#context;
-
+    // Capture the exact position of the error in the compiled code
     for (const frame of getStackFrames(this.cause)) {
       if (frame.file !== "<anonymous>") {
         continue;
@@ -97,6 +109,16 @@ export class RuntimeError extends VentoError {
         file: path,
       };
     }
+
+    // As a fallback, return the error with the available context
+    return {
+      type: this.name || "JavaScriptError",
+      message: this.message,
+      source,
+      position: this.position,
+      code,
+      file: path,
+    };
   }
 }
 
@@ -104,7 +126,7 @@ export class RuntimeError extends VentoError {
 export function createError(
   error: Error,
   context: TemplateContext,
-  position: number,
+  position?: number,
 ): VentoError {
   if (error instanceof RuntimeError) return error;
 
@@ -167,19 +189,28 @@ export function stringifyError(
   format = plain,
 ): string {
   const { type, message, source, position, code, line, column, file } = context;
-
-  const sourceLines = codeToLines(source);
-  const [sourceLine, sourceColumn] = getSourceLineColumn(sourceLines, position);
-  const pad = sourceLine.toString().length;
   const output: string[] = [];
 
   // Print error type and message
   output.push(`${format.error(type)}: ${message}`);
 
+  // If we don't know the position, we cannot print the source code
+  if (!position || !source) {
+    if (file) {
+      output.push(format.dim(file));
+    }
+    return output.join("\n");
+  }
+
+  const sourceLines = codeToLines(source);
+  const [sourceLine, sourceColumn] = getSourceLineColumn(sourceLines, position);
+
   // Print file location if available
   if (file) {
     output.push(format.dim(`${file}:${sourceLine}:${sourceColumn}`));
   }
+
+  const pad = sourceLine.toString().length;
 
   // Print the latest lines of the source code before the error
   for (let line = Math.max(sourceLine - 3, 1); line <= sourceLine; line++) {
@@ -215,11 +246,8 @@ export function stringifyError(
 
 /**
  * Extracts the context from a SyntaxError
- * This works on Deno, Firefox and Safari
- * It does not work on Node.js and Chrome due to lack of position information
+ * It does not work on Node.js and Bun due to the lack of position information
  * in the stack trace of a dynamic import error.
- *
- * TODO: Find a way to get the position of a syntax error in Node.js and Chrome
  */
 async function getSyntaxErrorContext(
   error: SyntaxError,
@@ -233,6 +261,10 @@ async function getSyntaxErrorContext(
   URL.revokeObjectURL(url);
 
   for (const frame of getStackFrames(err)) {
+    if (!frame.file.startsWith("blob:")) {
+      continue;
+    }
+
     return {
       type: "SyntaxError",
       message: error.message,
@@ -318,16 +350,6 @@ function* getStackFrames(error: any): Generator<StackFrame> {
     };
   }
 
-  // Safari specific
-  const { line, column, sourceURL } = error;
-  if (line !== undefined) {
-    yield {
-      file: normalizeFile(sourceURL),
-      line,
-      column: column ?? 0, // Safari may not provide column
-    };
-  }
-
   const { stack } = error;
 
   if (!stack) {
@@ -338,8 +360,10 @@ function* getStackFrames(error: any): Generator<StackFrame> {
   for (const match of matches) {
     const [_, file, line, column] = match;
 
-    // Skip Node & Deno internal files
-    if (file.startsWith("node:") || file.startsWith("ext:")) {
+    // Skip Node, Bun & Deno internal stack frames
+    if (
+      file.startsWith("node:") || file.startsWith("ext:") || file === "native"
+    ) {
       continue;
     }
 
