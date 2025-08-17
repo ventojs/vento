@@ -195,7 +195,7 @@ export function stringifyError(
   output.push(`${format.error(type)}: ${message}`);
 
   // If we don't know the position, we cannot print the source code
-  if (!position || !source) {
+  if (position === undefined || source === undefined) {
     if (file) {
       output.push(format.dim(file));
     }
