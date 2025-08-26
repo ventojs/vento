@@ -180,4 +180,42 @@ Deno.test("Layouts with slots", async () => {
       "/my-file.vto": "{{ greeting }} {{ content }}",
     },
   });
+  await test({
+    template: `
+    {{- layout "/file-1.vto" }}
+      {{- slot leak }}Leaked!{{ /slot -}}
+      {{- slot foo }}Foo{{ /slot -}}
+    {{ /layout -}}
+    {{- layout "/file-2.vto" }}
+      {{- slot bar }}Bar {{ /slot -}}
+    {{ /layout -}}
+    `,
+    expected: "FooBar",
+    options: {
+      autoescape: true,
+    },
+    includes: {
+      "/file-1.vto": "{{ foo }}{{ content }}",
+      "/file-2.vto": "{{- leak }}{{ bar }}",
+    },
+  });
+  await test({
+    template: `
+    {{- layout "/file-1.vto" }}
+      {{- slot leak }}Leaked!{{ /slot -}}
+      {{- slot foo }}Foo{{ /slot -}}
+      {{- layout "/file-2.vto" }}
+        {{- slot bar }}Bar{{ /slot -}}
+      {{ /layout -}}
+    {{ /layout -}}
+    `,
+    expected: "FooBar",
+    options: {
+      autoescape: true,
+    },
+    includes: {
+      "/file-1.vto": "{{ foo }}{{ content }}",
+      "/file-2.vto": "{{- leak }}{{ bar }}",
+    },
+  });
 });
