@@ -14,6 +14,7 @@ Vento 2.0 is now dependency-free and compatible with browsers without a build st
 - New filesystem loader to use File System API.
 - Better errors reporting [#131], [#137]
 - `core/errors.ts` module to format errors.
+- New `{{ slot }}` tag to pass extra variables to `{{ layout }}` [#140]
 
 ### Changed
 - Renamed `src` directory to `core`.
@@ -48,3 +49,4 @@ Vento 2.0 is now dependency-free and compatible with browsers without a build st
 [#131]: https://github.com/ventojs/vento/issues/131
 [#134]: https://github.com/ventojs/vento/issues/134
 [#137]: https://github.com/ventojs/vento/issues/137
+[#140]: https://github.com/ventojs/vento/issues/140

@@ -38,7 +38,10 @@ export default function* iterateTopLevel(
     const [stop, variable] = match;
     if (variable) {
       cursor += variable.length;
-      if (!reserved.has(variable)) variables.add(variable);
+      // Words used internally by Vento start with two underscores
+      if (!reserved.has(variable) && !variable.startsWith("__")) {
+        variables.add(variable);
+      }
       continue;
     }
 
