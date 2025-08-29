@@ -95,9 +95,14 @@ export class RuntimeError extends VentoError {
 
     // Capture the exact position of the error in the compiled code
     for (const frame of getStackFrames(this.cause)) {
-      if (frame.file !== "<anonymous>") {
+      if (
+        frame.file !== "<anonymous>" &&
+        path &&
+        ![path + ".js", path + ".mjs"].some((p) => frame.file.endsWith(p))
+      ) {
         continue;
       }
+
       return {
         type: this.name || "JavaScriptError",
         message: this.message,

@@ -34,6 +34,37 @@ export class ModuleLoader implements Loader {
 
     return join("/", file);
   }
+
+  /**
+   * Outputs a template as a string that can be used in an ES module.
+   * This is useful for precompiled templates.
+   * @returns A tuple with the path and the content of the module.
+   */
+  output(template: Template, source = false): [string, string] {
+    if (!template.source) {
+      throw new Error("Template source is not defined");
+    }
+    if (!template.path) {
+      throw new Error("Template path is not defined");
+    }
+    const content = `export default function (__env
+    ) {
+    ${template.toString()};
+
+    ${
+      source
+        ? `__template.path = ${JSON.stringify(template.path)};
+        __template.code = ${JSON.stringify(template.code)};
+        __template.source = ${JSON.stringify(template.source)};`
+        : ""
+    }
+    __template.defaults = ${JSON.stringify(template.defaults || {})};
+
+    return __template;
+  }`;
+
+    return [`${template.path}${this.#extension}`, content];
+  }
 }
 
 function join(...parts: string[]): string {
@@ -43,43 +74,4 @@ function join(...parts: string[]): string {
 function dirname(path: string): string {
   const lastSlash = path.lastIndexOf("/");
   return lastSlash === -1 ? "." : path.slice(0, lastSlash);
-}
-
-export interface ExportOptions {
-  source?: boolean;
-  extension?: ".js" | ".mjs";
-}
-
-/**
- * Exports a template as a string that can be used in an ES module.
- * This is useful for precompiled templates.
- * @returns A tuple with the path and the content of the module.
- */
-export function exportTemplate(
-  template: Template,
-  options?: ExportOptions,
-): [string, string] {
-  if (!template.source) {
-    throw new Error("Template source is not defined");
-  }
-  if (!template.path) {
-    throw new Error("Template path is not defined");
-  }
-
-  const content = `export default function (__env) {
-    ${template.toString()};
-
-    ${
-    options?.source
-      ? `__template.path = ${JSON.stringify(template.path)};
-        __template.code = ${JSON.stringify(template.code)};
-        __template.source = ${JSON.stringify(template.source)};`
-      : ""
-  }
-    __template.defaults = ${JSON.stringify(template.defaults || {})};
-
-    return __template;
-  }`;
-
-  return [`${template.path}${options?.extension ?? ".js"}`, content];
 }
