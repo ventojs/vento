@@ -1,4 +1,5 @@
 import vento from "../mod.ts";
+import vento1 from "https://deno.land/x/vento@v1.15.2/mod.ts";
 import nunjucks from "npm:nunjucks@3.2.4";
 import { Liquid } from "npm:liquidjs@10.20.1";
 import { Eta } from "https://deno.land/x/eta@v3.5.0/src/index.ts";
@@ -53,6 +54,15 @@ const initializers = {
 
   async VentoAutoescape(): Promise<Renderer> {
     const env = vento({ autoDataVarname: true, autoescape: true });
+    const render = await env.load(dir + "tmp.vto");
+    return async (data: Record<string, unknown>) => {
+      const { content } = await render(data);
+      return content;
+    };
+  },
+
+  async Vento1(): Promise<Renderer> {
+    const env = vento1({ autoDataVarname: true });
     const render = await env.load(dir + "tmp.vto");
     return async (data: Record<string, unknown>) => {
       const { content } = await render(data);
