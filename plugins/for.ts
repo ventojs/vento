@@ -1,4 +1,4 @@
-import { TokenError } from "../core/errors.ts";
+import { SourceError } from "../core/errors.ts";
 import iterateTopLevel from "../core/js.ts";
 import type { Token } from "../core/tokenizer.ts";
 import type { Environment, Plugin } from "../core/environment.ts";
@@ -16,7 +16,7 @@ function forTag(
   output: string,
   tokens: Token[],
 ): string | undefined {
-  const [, code] = token;
+  const [, code, position] = token;
 
   if (code === "break" || code === "continue") {
     return `${code};`;
@@ -33,7 +33,7 @@ function forTag(
   );
 
   if (!match) {
-    throw new TokenError("Invalid for loop", token);
+    throw new SourceError("Invalid for loop", position);
   }
 
   let [, aw, tagCode] = match;
@@ -46,7 +46,7 @@ function forTag(
   } else {
     const parts = tagCode.match(/(^[^\s,]+)([\s|\S]+)$/);
     if (!parts) {
-      throw new TokenError(`Invalid for loop variable: ${tagCode}`, token);
+      throw new SourceError("Invalid for loop", position);
     }
 
     var1 = parts[1].trim();
@@ -62,7 +62,7 @@ function forTag(
     } else {
       const parts = tagCode.match(/^([\w]+)\s+of\s+([\s|\S]+)$/);
       if (!parts) {
-        throw new TokenError(`Invalid for loop variable: ${tagCode}`, token);
+        throw new SourceError("Invalid for loop", position);
       }
 
       var2 = parts[1].trim();
@@ -70,6 +70,8 @@ function forTag(
     }
   } else if (tagCode.startsWith("of ")) {
     collection = tagCode.slice(3).trim();
+  } else {
+    throw new SourceError("Invalid for loop", position);
   }
 
   if (var2) {

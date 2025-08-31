@@ -1,4 +1,4 @@
-import { TokenError } from "../core/errors.ts";
+import { SourceError } from "../core/errors.ts";
 
 import type { Token } from "../core/tokenizer.ts";
 import type { Environment, Plugin } from "../core/environment.ts";
@@ -21,7 +21,7 @@ function exportTag(
   _output: string,
   tokens: Token[],
 ): string | undefined {
-  const [, code] = token;
+  const [, code, position] = token;
   const exportStart = code.match(EXPORT_START);
   if (!exportStart) {
     return;
@@ -72,7 +72,7 @@ function exportTag(
         const value = `${dataVarname}["${name}"] ?? ${name}`;
         compiled.push(`__exports["${rename}"] = ${value};`);
       } else {
-        throw new TokenError("Invalid export", token);
+        throw new SourceError("Invalid export", position);
       }
     }
 

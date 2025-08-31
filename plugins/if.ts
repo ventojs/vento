@@ -1,4 +1,4 @@
-import { TokenError } from "../core/errors.ts";
+import { SourceError } from "../core/errors.ts";
 import type { Token } from "../core/tokenizer.ts";
 import type { Environment, Plugin } from "../core/environment.ts";
 
@@ -33,7 +33,7 @@ function elseTag(
   _env: Environment,
   token: Token,
 ): string | undefined {
-  const [, code] = token;
+  const [, code, position] = token;
 
   if (!code.startsWith("else ") && code !== "else") {
     return;
@@ -41,7 +41,7 @@ function elseTag(
   const match = code.match(/^else(\s+if\s+(.*))?$/);
 
   if (!match) {
-    throw new TokenError("Invalid else tag", token);
+    throw new SourceError("Invalid else tag", position);
   }
 
   const [_, ifTag, condition] = match;

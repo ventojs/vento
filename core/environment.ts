@@ -1,7 +1,7 @@
 import iterateTopLevel from "./js.ts";
 import tokenize, { Token } from "./tokenizer.ts";
 
-import { createError, TokenError } from "./errors.ts";
+import { createError, SourceError } from "./errors.ts";
 
 export interface TemplateResult {
   content: string;
@@ -13,7 +13,6 @@ export interface TemplateContext {
   code: string;
   path?: string;
   defaults?: Record<string, unknown>;
-  tokens?: Token[];
 }
 
 export interface Template extends TemplateContext {
@@ -87,8 +86,9 @@ export class Environment {
     file: string,
     data?: Record<string, unknown>,
     from?: string,
+    position?: number,
   ): Promise<TemplateResult> {
-    const template = await this.load(file, from);
+    const template = await this.load(file, from, position);
     return await template(data);
   }
 
@@ -124,25 +124,22 @@ export class Environment {
         `The source code of "${path}" must be a string. Got ${typeof source}`,
       );
     }
-    const allTokens = this.tokenize(source, path);
-    const tokens = [...allTokens];
+    const tokens = this.tokenize(source, path);
     const lastToken = tokens.at(-1)!;
 
     if (lastToken[0] != "string") {
-      throw new TokenError("Unclosed tag", lastToken, source, path);
+      throw new SourceError("Unclosed tag", lastToken[2], path, source);
     }
 
     let code = "";
     try {
       code = this.compileTokens(tokens).join("\n");
     } catch (error) {
-      if (!(error instanceof Error)) throw error;
-      throw createError(error, {
-        source,
-        code,
-        tokens: allTokens,
-        path,
-      });
+      if (error instanceof SourceError) {
+        error.file ??= path;
+        error.source ??= source;
+      }
+      throw error;
     }
 
     const { dataVarname, autoDataVarname } = this.options;
@@ -165,13 +162,14 @@ export class Environment {
       const constructor = new Function(
         "__env",
         `return async function __template(${dataVarname}) {
+          let __pos=0;
           try {
             ${dataVarname} = Object.assign({}, __template.defaults, ${dataVarname});
             const __exports = { content: "" };
             ${code}
             return __exports;
           } catch (error) {
-            throw __env.utils.createError(error, __template);
+            throw __env.utils.createError(error, __template, __pos);
           }
         }`,
       );
@@ -179,17 +177,17 @@ export class Environment {
       template.path = path;
       template.code = constructor.toString();
       template.source = source;
-      template.tokens = allTokens;
       template.defaults = defaults || {};
       return template;
     } catch (error) {
-      if (!(error instanceof Error)) throw error;
-      throw createError(error, {
-        source,
-        code,
-        tokens: allTokens,
-        path,
-      });
+      if (error instanceof SyntaxError) {
+        throw createError(error, { source, code, path });
+      }
+      if (error instanceof SourceError) {
+        error.file ??= path;
+        error.source ??= source;
+      }
+      throw error;
     }
   }
 
@@ -207,7 +205,21 @@ export class Environment {
     return tokens;
   }
 
-  async load(file: string, from?: string): Promise<Template> {
+  async load(
+    file: string,
+    from?: string,
+    position?: number,
+  ): Promise<Template> {
+    if (!file) {
+      throw position !== undefined
+        ? new SourceError(`Invalid template (${typeof file})`, position, from)
+        : new Error(`Invalid template (${typeof file})`);
+    }
+    if (typeof file !== "string") {
+      throw new TypeError(
+        `The template filename must be a string. Got ${typeof file}`,
+      );
+    }
     const path = this.options.loader.resolve(from || "", file);
     let cached = this.cache.get(path);
 
@@ -221,6 +233,15 @@ export class Environment {
       .split("#")[0];
 
     cached = this.options.loader.load(cleanPath)
+      .catch((error) => {
+        throw position !== undefined
+          ? new SourceError(
+            `Error loading template: ${error.message}`,
+            position,
+            from,
+          )
+          : error;
+      })
       .then((result) => {
         if (typeof result === "function") {
           return result(this);
@@ -245,7 +266,7 @@ export class Environment {
     tokens:
     while (tokens.length > 0) {
       const token = tokens.shift()!;
-      const [type, code, pos] = token;
+      const [type, code, position] = token;
       openToken ??= token;
 
       // We found the closing tag, so we stop compiling
@@ -265,7 +286,7 @@ export class Environment {
       }
 
       if (type === "tag") {
-        compiled.push(`/*__pos:${pos}*/`);
+        compiled.push(`__pos=${position};`);
         for (const tag of this.tags) {
           const compiledTag = tag(this, token, outputVar, tokens);
 
@@ -285,14 +306,14 @@ export class Environment {
         continue;
       }
 
-      throw new TokenError(`Unknown token type "${type}"`, token);
+      throw new SourceError(`Unknown token type "${type}"`, position);
     }
 
     // If we reach here, it means we have an open token that wasn't closed
     if (closeToken) {
-      throw new TokenError(
+      throw new SourceError(
         `Missing closing tag ("${closeToken}" tag is expected)`,
-        openToken!,
+        openToken![2],
       );
     }
 
@@ -308,7 +329,7 @@ export class Environment {
       const match = code.match(/^(await\s+)?([\w.]+)(?:\((.*)\))?$/);
 
       if (!match) {
-        throw new TokenError(`Invalid filter: ${code}`, token);
+        throw new SourceError(`Invalid filter: ${code}`, position);
       }
 
       const [_, isAsync, name, args] = match;
@@ -377,7 +398,7 @@ function callMethod(
     return thisObject[method](...args);
   }
 
-  throw new TokenError(
+  throw new SourceError(
     `Method "${method}" is not a function of ${typeof thisObject} variable`,
     position,
   );

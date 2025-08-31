@@ -1,4 +1,4 @@
-import { TokenError } from "../core/errors.ts";
+import { SourceError } from "../core/errors.ts";
 import type { Token } from "../core/tokenizer.ts";
 import type { Environment, Plugin } from "../core/environment.ts";
 
@@ -14,7 +14,7 @@ function setTag(
   _output: string,
   tokens: Token[],
 ): string | undefined {
-  const [, code] = token;
+  const [, code, position] = token;
 
   if (!code.startsWith("set ")) {
     return;
@@ -28,7 +28,7 @@ function setTag(
     const match = code.match(/^set\s+([\w]+)\s*=\s*([\s\S]+)$/);
 
     if (!match) {
-      throw new TokenError("Invalid set tag", token);
+      throw new SourceError("Invalid set tag", position);
     }
 
     const [, variable, value] = match;

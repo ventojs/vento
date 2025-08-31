@@ -1,14 +1,4 @@
 const variables = new Set([
-  // Words reserved by Vento, used internally. In general, don't use variable
-  // names starting with two underscores to be future-proof and avoid clashes.
-  "__file",
-  "__template",
-  "__env",
-  "__defaults",
-  "__err",
-  "__exports",
-  "__pos",
-  "__tmp",
   // JS reserved words, and some "dangerous" words like `let`, `async`, `of` or
   // `undefined`, which aren't technically reserved but don't name your
   // variables that.
