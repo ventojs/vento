@@ -34,7 +34,7 @@ preserving your markup.
 
 For example,
 
-```vento
+```vto
 {{ if true }}
   Hello, {{ name }}!
   {{ set variable = 10 }}

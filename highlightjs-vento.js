@@ -1,7 +1,7 @@
 /** @type LanguageFn */
 export default function (hljs) {
   return {
-    name: "vento",
+    name: "vto",
     subLanguage: "xml",
     contains: [
       hljs.COMMENT("{{#", "#}}"),

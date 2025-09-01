@@ -1,4 +1,4 @@
-Prism.languages.vento = {
+Prism.languages.vto = {
   "delimiter": {
     pattern: /\{{2}[->]?|-?\}{2}/,
     alias: "punctuation",
@@ -16,11 +16,11 @@ Prism.hooks.add("before-tokenize", function (env) {
   const ventoPattern = /\{{2}[\s\S]+\}{2}/g;
   Prism.languages["markup-templating"].buildPlaceholders(
     env,
-    "vento",
+    "vto",
     ventoPattern,
   );
 });
 
 Prism.hooks.add("after-tokenize", function (env) {
-  Prism.languages["markup-templating"].tokenizePlaceholders(env, "vento");
+  Prism.languages["markup-templating"].tokenizePlaceholders(env, "vto");
 });

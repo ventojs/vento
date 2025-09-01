@@ -73,7 +73,7 @@ Some of Vento's main selling points are:
 
 First, let's take a look to the following example:
 
-```vento
+```vto
 <header>
   {{ if printName }}
   <h1>{{ (await getUser(34)).name |> toUpperCase }}</h1>
