@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.0.1] - Unreleased
+### Fixed
+- One-letter variable names are not captured.
+
 ## [2.0.0] - 2025-09-01
 Vento 2.0 is now dependency-free and compatible with browsers without a build step.
 
@@ -52,4 +56,5 @@ Vento 2.0 is now dependency-free and compatible with browsers without a build st
 [#137]: https://github.com/ventojs/vento/issues/137
 [#140]: https://github.com/ventojs/vento/issues/140
 
+[2.0.1]: https://github.com/ventojs/vento/compare/v2.0.0...HEAD
 [2.0.0]: https://github.com/ventojs/vento/releases/tag/v2.0.0

@@ -29,6 +29,20 @@ Deno.test("Print tag with variable", async () => {
     expected: "Hello world",
     data: { message: "Hello world" },
   });
+  await test({
+    template: `
+    {{ message }}
+    `,
+    expected: "Hello world",
+    data: { message: "Hello world" },
+  });
+  await test({
+    template: `
+    {{ m }}
+    `,
+    expected: "Hello world",
+    data: { m: "Hello world" },
+  });
 });
 
 Deno.test("Print tag with condition", async () => {
