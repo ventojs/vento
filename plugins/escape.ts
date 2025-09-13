@@ -32,8 +32,6 @@ export default function (): Plugin {
           case 62: // >
             html += "&gt;";
             break;
-          default:
-            throw Error("Unreachable escape");
         }
       }
 
