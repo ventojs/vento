@@ -258,6 +258,7 @@ export class Environment {
     tokens: Token[],
     outputVar = "__exports.content",
     closeToken?: string,
+    closeTokenOptional = false
   ): string[] {
     const compiled: string[] = [];
     let openToken: Token | undefined;
@@ -309,7 +310,7 @@ export class Environment {
     }
 
     // If we reach here, it means we have an open token that wasn't closed
-    if (closeToken) {
+    if (closeToken && !closeTokenOptional) {
       throw new SourceError(
         `Missing closing tag ("${closeToken}" tag is expected)`,
         openToken![2],
