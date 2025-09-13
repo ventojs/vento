@@ -9,7 +9,7 @@
   "lint": {
     "rules": {
       "exclude": ["no-import-prefix"]
-    },
+    }
   },
   "fmt": {
     "exclude": [
