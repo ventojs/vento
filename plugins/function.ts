@@ -41,8 +41,6 @@ function functionTag(
     compiled.push(...env.compileTokens(tokens, "__output", "/function"));
   }
 
-  tokens.shift();
-
   compiled.push(`return __env.utils.safeString(${result});`);
   compiled.push(`}`);
 
