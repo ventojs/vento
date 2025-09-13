@@ -35,7 +35,7 @@ function layoutTag(
   const { dataVarname } = env.options;
   return `${output} += (await (async () => {
     const __slots = { content: "" };
-    ${env.compileTokens(tokens, "__slots.content", "/layout").join("\n")}
+    ${env.compileTokens(tokens, "__slots.content", "/layout", true).join("\n")}
     __slots.content = __env.utils.safeString(${compiledFilters});
     return __env.run(${file}, {
       ...${dataVarname},

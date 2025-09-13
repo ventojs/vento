@@ -219,3 +219,39 @@ Deno.test("Layouts with slots", async () => {
     },
   });
 });
+
+Deno.test("Layouts without closing tag", async () => {
+  await test({
+    template: `
+    {{ layout "/my-file.vto" }}
+    world
+    {{ slot greeting }}Hello{{ /slot }}
+    `,
+    expected: "Hello world",
+    includes: {
+      "/my-file.vto": "{{ greeting }} {{ content |> trim }}",
+    },
+  });
+  await test({
+    template: `
+    {{ layout "/my-file.vto" }}
+    Hello {{ layout "/em.vto" }}world{{ /layout }}!
+    `,
+    expected: "<p>Hello <em>world</em>!</p>",
+    includes: {
+      "/my-file.vto": "<p>{{ content |> trim }}</p>",
+      "/em.vto": "<em>{{ content }}</em>",
+    },
+  });
+  await test({
+    template: `
+    {{ layout "/my-file.vto" -}}
+    Hello {{ layout "/em.vto" }}world
+    `,
+    expected: "<p>Hello <em>world</em></p>",
+    includes: {
+      "/my-file.vto": "<p>{{ content |> trim }}</p>",
+      "/em.vto": "<em>{{ content |> trim }}</em>",
+    },
+  });
+});
