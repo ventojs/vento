@@ -73,7 +73,7 @@ export class Environment {
 
   constructor(options: Options) {
     this.options = options;
-    this.utils.safeString = (str: string): SafeString =>
+    this.utils.safeString = (str: string) =>
       this.options.autoescape ? new SafeString(str) : str;
   }
 
