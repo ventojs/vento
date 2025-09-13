@@ -3,12 +3,12 @@ import type { Environment, Plugin } from "../core/environment.ts";
 
 const UNSAFE = /[<>"&']/g;
 const ESCAPES: Record<string, string> = {
-  '<': '&lt;',
-  '>': '&gt;',
-  '\'': '&apos;',
-  '"': '&quot;',
-  '&': '&amp;',
-}
+  "<": "&lt;",
+  ">": "&gt;",
+  "'": "&apos;",
+  '"': "&quot;",
+  "&": "&amp;",
+};
 
 export default function (): Plugin {
   return (env: Environment) => {
@@ -18,7 +18,7 @@ export default function (): Plugin {
 
       const str = value.toString();
 
-      return str.replace(UNSAFE, match => ESCAPES[match])
+      return str.replace(UNSAFE, (match) => ESCAPES[match]);
     };
   };
 }
