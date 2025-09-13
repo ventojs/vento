@@ -1,7 +1,7 @@
 import { SafeString } from "../core/environment.ts";
 import type { Environment, Plugin } from "../core/environment.ts";
 
-const UNSAFE = /[<>"&']/;
+const UNSAFE = /[<>"&']/g;
 
 export default function (): Plugin {
   return (env: Environment) => {
@@ -11,16 +11,12 @@ export default function (): Plugin {
 
       const str = value.toString();
 
-      const match = UNSAFE.exec(str);
-
-      if (match === null) {
-        return str;
-      }
-
       let html = "";
-
-      for (let i = 0; i < str.length; i++) {
-        switch (str.charCodeAt(i)) {
+      let previous = 0;
+      for (let match = UNSAFE.exec(str); match; match = UNSAFE.exec(str)) {
+        html += str.slice(previous, match.index);
+        previous = match.index + 1;
+        switch (str.charCodeAt(match.index)) {
           case 34: // "
             html += "&quot;";
             break;
@@ -37,10 +33,11 @@ export default function (): Plugin {
             html += "&gt;";
             break;
           default:
-            html += str[i];
+            throw Error("Unreachable escape");
         }
       }
 
+      html += str.slice(previous);
       return html;
     };
   };
