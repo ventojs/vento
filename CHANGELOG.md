@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.0.2] - Unreleased
+### Added
+- The closing tag `{{ /layout }}` is optional. [#145], [#151].
+
 ### Fixed
 - Static content after a function declaration is removed [#147], [#150].
 - Fix and simplify escaping of JSON (and other) [#146], [#148].
@@ -62,10 +65,12 @@ Vento 2.0 is now dependency-free and compatible with browsers without a build st
 [#134]: https://github.com/ventojs/vento/issues/134
 [#137]: https://github.com/ventojs/vento/issues/137
 [#140]: https://github.com/ventojs/vento/issues/140
+[#145]: https://github.com/ventojs/vento/issues/145
 [#146]: https://github.com/ventojs/vento/issues/146
 [#147]: https://github.com/ventojs/vento/issues/147
 [#148]: https://github.com/ventojs/vento/issues/148
 [#150]: https://github.com/ventojs/vento/issues/150
+[#151]: https://github.com/ventojs/vento/issues/151
 
 [2.0.2]: https://github.com/ventojs/vento/compare/v2.0.1...HEAD
 [2.0.1]: https://github.com/ventojs/vento/compare/v2.0.0...v2.0.1
