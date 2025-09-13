@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Static content after a function declaration is removed [#147], [#150].
 - Fix and simplify escaping of JSON (and other) [#146], [#148].
 - Improved performance for `escape` filter and `compileFilters` internal function.
+- Use `SafeString` object only if `autoescape` is `true`.
 
 ## [2.0.1] - 2025-09-05
 ### Fixed

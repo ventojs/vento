@@ -201,6 +201,32 @@ Deno.test("Function with autoescape", async () => {
       autoescape: true,
     },
   });
+  await test({
+    template: `
+    {{ typeof hello() === "string" ? "true" : "false" }}
+
+    {{ function hello }}
+      Hello
+    {{ /function }}
+    `,
+    expected: "true",
+    options: {
+      autoescape: false,
+    },
+  });
+  await test({
+    template: `
+    {{ typeof hello() === "string" ? "true" : "false" }}
+
+    {{ function hello }}
+      Hello
+    {{ /function }}
+    `,
+    expected: "false",
+    options: {
+      autoescape: true,
+    },
+  });
 });
 
 Deno.test("Function with complex arguments", async () => {

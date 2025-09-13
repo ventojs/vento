@@ -53,8 +53,6 @@ export interface Loader {
   resolve(from: string, file: string): string;
 }
 
-const FILTER_REG = /^(await\s+)?([\w.]+)(?:\((.*)\))?$/;
-
 export interface Options {
   loader: Loader;
   dataVarname: string;
@@ -71,13 +69,12 @@ export class Environment {
   utils: Record<string, unknown> = {
     callMethod,
     createError,
-    safeString(str: string): SafeString {
-      return new SafeString(str);
-    },
   };
 
   constructor(options: Options) {
     this.options = options;
+    this.utils.safeString = (str: string): SafeString =>
+      this.options.autoescape ? new SafeString(str) : str;
   }
 
   use(plugin: Plugin) {
@@ -328,7 +325,7 @@ export class Environment {
     while (tokens.length > 0 && tokens[0][0] === "filter") {
       const token = tokens.shift()!;
       const [, code, position] = token;
-      const match = code.match(FILTER_REG);
+      const match = code.match(/^(await\s+)?([\w.]+)(?:\((.*)\))?$/);
 
       if (!match) {
         throw new SourceError(`Invalid filter: ${code}`, position);
