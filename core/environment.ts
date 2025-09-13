@@ -258,7 +258,7 @@ export class Environment {
     tokens: Token[],
     outputVar = "__exports.content",
     closeToken?: string,
-    closeTokenOptional = false
+    closeTokenOptional = false,
   ): string[] {
     const compiled: string[] = [];
     let openToken: Token | undefined;
