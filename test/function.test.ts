@@ -222,7 +222,7 @@ Deno.test("Function with complex arguments", async () => {
   });
 });
 
-Deno.test('Static content after a function declaration', async () => {
+Deno.test("Static content after a function declaration", async () => {
   await test({
     template: `
     {{ function foo }}{{ /function }}
@@ -230,8 +230,8 @@ Deno.test('Static content after a function declaration', async () => {
     `,
     expected: "Hello world!",
     data: {
-      target: 'world',
-      punctuation: '!',
+      target: "world",
+      punctuation: "!",
     },
-  })
-})
+  });
+});
