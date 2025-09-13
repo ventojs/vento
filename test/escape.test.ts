@@ -38,3 +38,15 @@ Deno.test("Escape undefined", async () => {
     expected: "",
   });
 });
+
+Deno.test('Escape JSON', async () => {
+  await test({
+    template: `
+    {{ object |> JSON.stringify |> escape }}
+    `,
+    expected: "{&quot;bar&quot;:23}",
+    data: {
+      object: { bar: 23 },
+    },
+  });
+})
