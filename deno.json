@@ -6,6 +6,11 @@
     "build-npm": "deno run --allow-run --allow-read --allow-write _scripts/build_npm.ts"
   },
   "lock": false,
+  "lint": {
+    "rules": {
+      "exclude": ["no-import-prefix"]
+    },
+  },
   "fmt": {
     "exclude": [
       "CHANGELOG.md",
