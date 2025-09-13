@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.0.2] - Unreleased
+### Fixed
+- Static content after a function declaration is removed [#147], [#150].
+- Fix and simplify escaping of JSON (and other) [#146], [#148].
+- Improved performance for `escape` filter and `compileFilters` internal function.
+
 ## [2.0.1] - 2025-09-05
 ### Fixed
 - One-letter variable names are not captured.
@@ -55,6 +61,11 @@ Vento 2.0 is now dependency-free and compatible with browsers without a build st
 [#134]: https://github.com/ventojs/vento/issues/134
 [#137]: https://github.com/ventojs/vento/issues/137
 [#140]: https://github.com/ventojs/vento/issues/140
+[#146]: https://github.com/ventojs/vento/issues/146
+[#147]: https://github.com/ventojs/vento/issues/147
+[#148]: https://github.com/ventojs/vento/issues/148
+[#150]: https://github.com/ventojs/vento/issues/150
 
+[2.0.2]: https://github.com/ventojs/vento/compare/v2.0.1...HEAD
 [2.0.1]: https://github.com/ventojs/vento/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/ventojs/vento/releases/tag/v2.0.0
