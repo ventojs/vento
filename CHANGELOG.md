@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.1.0] - Unreleased
+### Added
+- New `strict` mode to fail when using an undefined variable. This mode is much more slower than normal mode, so it's intended only for testing and debug purposes. [#101], [#142]
+
 ## [2.0.2] - 2025-09-13
 ### Added
 - The closing tag `{{ /layout }}` is optional. [#145], [#151].
@@ -60,11 +64,13 @@ Vento 2.0 is now dependency-free and compatible with browsers without a build st
 - Improved escape filter performance [#134]
 
 [#95]: https://github.com/ventojs/vento/issues/95
+[#101]: https://github.com/ventojs/vento/issues/101
 [#128]: https://github.com/ventojs/vento/issues/128
 [#131]: https://github.com/ventojs/vento/issues/131
 [#134]: https://github.com/ventojs/vento/issues/134
 [#137]: https://github.com/ventojs/vento/issues/137
 [#140]: https://github.com/ventojs/vento/issues/140
+[#142]: https://github.com/ventojs/vento/issues/142
 [#145]: https://github.com/ventojs/vento/issues/145
 [#146]: https://github.com/ventojs/vento/issues/146
 [#147]: https://github.com/ventojs/vento/issues/147
@@ -72,6 +78,7 @@ Vento 2.0 is now dependency-free and compatible with browsers without a build st
 [#150]: https://github.com/ventojs/vento/issues/150
 [#151]: https://github.com/ventojs/vento/issues/151
 
+[2.1.0]: https://github.com/ventojs/vento/compare/v2.0.2...HEAD
 [2.0.2]: https://github.com/ventojs/vento/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/ventojs/vento/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/ventojs/vento/releases/tag/v2.0.0
