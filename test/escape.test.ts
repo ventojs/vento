@@ -39,7 +39,7 @@ Deno.test("Escape undefined", async () => {
   });
 });
 
-Deno.test('Escape JSON', async () => {
+Deno.test("Escape JSON", async () => {
   await test({
     template: `
     {{ object |> JSON.stringify |> escape }}
@@ -49,4 +49,4 @@ Deno.test('Escape JSON', async () => {
       object: { bar: 23 },
     },
   });
-})
+});
