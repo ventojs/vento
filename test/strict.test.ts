@@ -62,4 +62,4 @@ Deno.test("Includes still work", async () => {
       "/my-file.vto": "Hello world",
     },
   });
-})
+});
