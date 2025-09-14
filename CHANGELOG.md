@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.1.0] - Unreleased
 ### Added
-- New `strict` mode to fail when using an undefined variable. This mode is much more slower than normal mode, so it's intended only for testing and debug purposes. [#101], [#142]
+- New `strict` mode to fail when using an undefined variable. This mode has a different performance profile than normal mode; it's mostly intended for testing and debug purposes. [#101], [#142]
 
 ## [2.0.2] - 2025-09-13
 ### Added
