@@ -50,3 +50,16 @@ Deno.test("Strict variables", async () => {
     expected: "Hello world",
   });
 });
+
+Deno.test("Includes still work", async () => {
+  await test({
+    options: { strict: true },
+    template: `
+    {{ include "/my-file.vto" }}
+    `,
+    expected: "Hello world",
+    includes: {
+      "/my-file.vto": "Hello world",
+    },
+  });
+})
