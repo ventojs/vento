@@ -151,12 +151,13 @@ export class Environment {
         return __exports;
       `);
       code = `
-        return new Function(
+        return new (async function(){}).constructor(
           "__env",
+          "__template",
           "${dataVarname}",
           \`{\${Object.keys(${dataVarname}).join(",")}}\`,
           ${innerCode}
-        )(__env, ${dataVarname}, ${dataVarname});
+        )(__env, __template, ${dataVarname}, ${dataVarname});
       `;
     } else if (autoDataVarname) {
       const generator = iterateTopLevel(code);
