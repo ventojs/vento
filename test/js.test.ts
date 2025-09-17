@@ -123,4 +123,12 @@ Deno.test("> tag", async () => {
     template: "{{ `{${`${`a`}`}}` }}",
     expected: "{a}",
   });
+
+  await test({
+    template: "{{ {...foo} |> JSON.stringify }}",
+    data: {
+      foo: { bar: 23 },
+    },
+    expected: `{"bar":23}`,
+  });
 });

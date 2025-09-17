@@ -2,7 +2,7 @@ import reserved from "./reserved.ts";
 
 const TEMPLATE_PART = /[`}](?:\\?[^])*?(?:`|\${)/y;
 const REGEX_LITERAL_START = /(?<=[(=:,?&!]\s*)\//y;
-const STOPPING_POINT = /['"`{}[\]/|]|((?<!\.\??)\b[a-zA-Z_]\w*)/g;
+const STOPPING_POINT = /['"`{}[\]/|]|(((?<=\.\.\.)|(?<!\.\??))\b[a-zA-Z_]\w*)/g;
 
 /**
  * This function iterates over the top-level scope of a JavaScript source code
