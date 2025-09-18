@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.1.1] - 2025-09-18
+### Fixed
+- The tag `include` fails when it's inside a `slot`.
+
 ## [2.1.0] - 2025-09-17
 ### Added
 - New `strict` mode to fail when using an undefined variable. This mode has a different performance profile than normal mode; it's mostly intended for testing and debug purposes. [#101], [#142]
@@ -82,6 +86,7 @@ Vento 2.0 is now dependency-free and compatible with browsers without a build st
 [#151]: https://github.com/ventojs/vento/issues/151
 [#156]: https://github.com/ventojs/vento/issues/156
 
+[2.1.1]: https://github.com/ventojs/vento/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/ventojs/vento/compare/v2.0.2...v2.1.0
 [2.0.2]: https://github.com/ventojs/vento/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/ventojs/vento/compare/v2.0.0...v2.0.1
