@@ -218,6 +218,41 @@ Deno.test("Layouts with slots", async () => {
       "/file-2.vto": "{{- leak }}{{ bar }}",
     },
   });
+  await test({
+    template: `
+    {{- layout "/base.vto" }}
+      {{- slot nav -}}
+        {{- if !no_nav -}}
+          {{- include '/nav.vto' -}}
+        {{- /if -}}
+      {{- /slot -}}
+    {{- /layout -}}
+    `,
+    expected: "<p>Nav:<a>Nav</a></p>",
+    includes: {
+      "/base.vto": "<p>Nav:{{ nav || 'No nav' }}</p>",
+      "/nav.vto": "<a>Nav</a>",
+    },
+  });
+  await test({
+    template: `
+    {{- layout "/base.vto" }}
+      {{- slot nav -}}
+        {{- if !no_nav -}}
+          {{- include '/nav.vto' -}}
+        {{- /if -}}
+      {{- /slot -}}
+    {{- /layout -}}
+    `,
+    expected: "<p>Nav:No nav</p>",
+    data: {
+      no_nav: true,
+    },
+    includes: {
+      "/base.vto": "<p>Nav:{{ nav || 'No nav' }}</p>",
+      "/nav.vto": "<a>Nav</a>",
+    },
+  });
 });
 
 Deno.test("Layouts without closing tag", async () => {
