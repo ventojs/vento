@@ -25,16 +25,17 @@ function echoTag(
   }
 
   // Captured echo, e.g. {{ echo |> toUpperCase }} foo {{ /echo }}
-  const compiled = [`let __tmp = "";`];
-  const filters = env.compileFilters(tokens, "__tmp");
-  compiled.push(...env.compileTokens(tokens, "__tmp", "/echo"));
+  const tmp = env.getTempVariable()
+  const compiled = [`let ${tmp} = "";`];
+  const filters = env.compileFilters(tokens, tmp);
+  compiled.push(...env.compileTokens(tokens, tmp, "/echo"));
 
-  if (filters != "__tmp") {
-    compiled.push(`__tmp = ${filters}`);
+  if (filters != tmp) {
+    compiled.push(`${tmp} = ${filters}`);
   }
 
   return `{
     ${compiled.join("\n")}
-    ${output} += __tmp;
+    ${output} += ${tmp};
   }`;
 }
