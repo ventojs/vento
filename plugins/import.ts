@@ -32,10 +32,11 @@ function importTag(
   const [, identifiers, specifier] = match;
 
   const defaultImport = identifiers.match(DEFAULT_IMPORT);
+  const tmp = env.getTempVariable()
   if (defaultImport) {
     const [name] = defaultImport;
     variables.push(name);
-    compiled.push(`${name} = __tmp;`);
+    compiled.push(`${name} = ${tmp};`);
   } else {
     const namedImports = identifiers.match(NAMED_IMPORTS);
     if (namedImports) {
@@ -54,7 +55,7 @@ function importTag(
           throw new SourceError("Invalid named import", position);
         }
       });
-      compiled.push(`({${chunks.join(",")}} = __tmp);`);
+      compiled.push(`({${chunks.join(",")}} = ${tmp});`);
     } else {
       throw new SourceError("Invalid import tag", position);
     }
@@ -62,7 +63,7 @@ function importTag(
 
   const { dataVarname } = env.options;
   return `let ${variables.join(",")}; {
-    let __tmp = await __env.run(${specifier}, {...${dataVarname}}, __template.path, ${position});
+    let ${tmp} = await __env.run(${specifier}, {...${dataVarname}}, __template.path, ${position});
     ${compiled.join("\n")}
   }`;
 }

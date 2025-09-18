@@ -253,6 +253,21 @@ Deno.test("Layouts with slots", async () => {
       "/nav.vto": "<a>Nav</a>",
     },
   });
+  await test({
+    template: `
+    {{ layout "/base.vto" }}
+      {{ slot greeting |> toLowerCase }}
+        {{ echo |> toUpperCase }}
+          Hello world
+        {{ /echo }}
+      {{ /slot }}
+    {{ /layout }}
+    `,
+    expected: "hello world",
+    includes: {
+      "/base.vto": "{{ greeting |> trim }}",
+    },
+  })
 });
 
 Deno.test("Layouts without closing tag", async () => {

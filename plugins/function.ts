@@ -32,13 +32,14 @@ function functionTag(
 
   const compiled: string[] = [];
   compiled.push(`${as || ""} function ${name} ${args || "()"} {`);
-  compiled.push(`let __output = "";`);
-  const result = env.compileFilters(tokens, "__output");
+  const tmp = env.getTempVariable()
+  compiled.push(`let ${tmp} = "";`);
+  const result = env.compileFilters(tokens, tmp);
 
   if (exp) {
-    compiled.push(...env.compileTokens(tokens, "__output", "/export"));
+    compiled.push(...env.compileTokens(tokens, tmp, "/export"));
   } else {
-    compiled.push(...env.compileTokens(tokens, "__output", "/function"));
+    compiled.push(...env.compileTokens(tokens, tmp, "/function"));
   }
 
   compiled.push(`return __env.utils.safeString(${result});`);

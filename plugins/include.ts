@@ -38,12 +38,13 @@ function includeTag(
   }
 
   const { dataVarname } = env.options;
+  const tmp = env.getTempVariable()
   return `{
-    const __include = await __env.run(${file},
+    const ${tmp} = await __env.run(${file},
       {...${dataVarname}${data ? `, ...${data}` : ""}},
       __template.path,
       ${position}
     );
-    ${output} += ${env.compileFilters(tokens, "__include.content")};
+    ${output} += ${env.compileFilters(tokens, `${tmp}.content`)};
   }`;
 }
