@@ -267,7 +267,7 @@ Deno.test("Layouts with slots", async () => {
     includes: {
       "/base.vto": "{{ greeting |> trim }}",
     },
-  })
+  });
 });
 
 Deno.test("Layouts without closing tag", async () => {

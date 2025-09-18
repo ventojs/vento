@@ -32,7 +32,7 @@ function importTag(
   const [, identifiers, specifier] = match;
 
   const defaultImport = identifiers.match(DEFAULT_IMPORT);
-  const tmp = env.getTempVariable()
+  const tmp = env.getTempVariable();
   if (defaultImport) {
     const [name] = defaultImport;
     variables.push(name);

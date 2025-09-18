@@ -25,7 +25,7 @@ function echoTag(
   }
 
   // Captured echo, e.g. {{ echo |> toUpperCase }} foo {{ /echo }}
-  const tmp = env.getTempVariable()
+  const tmp = env.getTempVariable();
   const compiled = [`let ${tmp} = "";`];
   const filters = env.compileFilters(tokens, tmp);
   compiled.push(...env.compileTokens(tokens, tmp, "/echo"));
