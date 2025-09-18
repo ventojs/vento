@@ -67,7 +67,7 @@ export class Environment {
   tags: Tag[] = [];
   tokenPreprocessors: TokenPreprocessor[] = [];
   filters: Record<string, Filter> = {};
-  #tempVariablesCreated = 0
+  #tempVariablesCreated = 0;
   utils: Record<string, unknown> = {
     callMethod,
     createError,
@@ -387,12 +387,11 @@ export class Environment {
   }
 
   getTempVariable(): string {
-    const id = this.#tempVariablesCreated
-    const variable = `__tmp${id}`
-    this.#tempVariablesCreated++
-    return variable
+    const id = this.#tempVariablesCreated;
+    const variable = `__tmp${id}`;
+    this.#tempVariablesCreated++;
+    return variable;
   }
-
 }
 
 function isGlobal(name: string) {

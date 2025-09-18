@@ -62,7 +62,7 @@ function slotTag(
     throw new SourceError(`Invalid slot name "${name}"`, position);
   }
 
-  const tmp = env.getTempVariable()
+  const tmp = env.getTempVariable();
   const compiledFilters = env.compileFilters(tokens, tmp);
   return `{
     let ${tmp} = '';

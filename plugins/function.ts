@@ -32,7 +32,7 @@ function functionTag(
 
   const compiled: string[] = [];
   compiled.push(`${as || ""} function ${name} ${args || "()"} {`);
-  const tmp = env.getTempVariable()
+  const tmp = env.getTempVariable();
   compiled.push(`let ${tmp} = "";`);
   const result = env.compileFilters(tokens, tmp);
 

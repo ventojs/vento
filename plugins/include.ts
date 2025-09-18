@@ -38,7 +38,7 @@ function includeTag(
   }
 
   const { dataVarname } = env.options;
-  const tmp = env.getTempVariable()
+  const tmp = env.getTempVariable();
   return `{
     const ${tmp} = await __env.run(${file},
       {...${dataVarname}${data ? `, ...${data}` : ""}},
