@@ -1,5 +1,4 @@
 import { SourceError } from "../core/errors.ts";
-import iterateTopLevel from "../core/js.ts";
 import type { Token } from "../core/tokenizer.ts";
 import type { Environment, Plugin } from "../core/environment.ts";
 
@@ -26,43 +25,14 @@ function setTag(
 
   // Value is set (e.g. {{ set foo = "bar" }})
   if (expression.includes("=")) {
-    const match = code.match(/^set\s+([\w{}[\]\s,:]+)\s*=\s*([\s\S]+)$/);
+    const match = code.match(/^set\s+([\w]+)\s*=\s*([\s\S]+)$/);
 
     if (!match) {
       throw new SourceError("Invalid set tag", position);
     }
 
-    const variable = match[1].trim();
-    const value = match[2].trim();
+    const [, variable, value] = match;
     const val = env.compileFilters(tokens, value);
-
-    let open: string | undefined, close: string | undefined;
-    if (variable.startsWith("{")) {
-      open = "{";
-      close = "}";
-    } else if (variable.startsWith("[")) {
-      open = "[";
-      close = "]";
-    }
-
-    if (open && close) {
-      for (const [, reason, vars] of iterateTopLevel(variable)) {
-        if (reason === open) continue;
-        if (reason !== close) {
-          throw new SourceError("Invalid set tag, unclosed bracket", position);
-        }
-
-        const declaredVars = vars.values()
-          .toArray()
-          .map((name) => `${dataVarname}["${name}"] = ${name};`)
-          .join("\n");
-
-        return `
-          var ${variable} = ${val};
-          ${declaredVars}
-        `;
-      }
-    }
 
     return `var ${variable} = ${dataVarname}["${variable}"] = ${val};`;
   }

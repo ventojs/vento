@@ -160,37 +160,3 @@ Deno.test("Set tag in a loop", async () => {
     },
   });
 });
-
-Deno.test("Set with destructuring variables", async () => {
-  await test({
-    template: `
-    {{ set { foo, bar } = { foo: "foo", bar: "bar" } }}
-    {{ foo }} {{ bar }}
-    `,
-    expected: "foo bar",
-  });
-
-  await test({
-    template: `
-    {{ set [one, two] = ["one", "two"] }}
-    {{ one }} {{ two }}
-    `,
-    expected: "one two",
-  });
-
-  await test({
-    template: `
-    {{ set { a, b: { c, d } } = { a: "A", b: { c: "C", d: "D" } } }}
-    {{ a }} {{ c }} {{ d }}
-    `,
-    expected: "A C D",
-  });
-
-  await test({
-    template: `
-    {{ set [x, [y, z]] = ["X", ["Y", "Z"]] }}
-    {{ x }} {{ y }} {{ z }}
-    `,
-    expected: "X Y Z",
-  });
-});
