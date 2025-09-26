@@ -37,16 +37,7 @@ function setTag(
     const value = match[2].trim();
     const val = env.compileFilters(tokens, value);
 
-    let open: string | undefined, close: string | undefined;
-    if (variable.startsWith("{")) {
-      open = "{";
-      close = "}";
-    } else if (variable.startsWith("[")) {
-      open = "[";
-      close = "]";
-    }
-
-    if (open && close) {
+    if (variable.startsWith("{") || variable.startsWith("[")) {
       const code = [`var ${variable} = ${val};`];
 
       for (const [name] of variable.matchAll(DETECTED_VARS)) {
