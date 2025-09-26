@@ -8,6 +8,8 @@ export default function (): Plugin {
   };
 }
 
+const DETECTED_VARS = /([a-zA-Z_]\w*)\b(?!\s*\:)/g;
+
 function setTag(
   env: Environment,
   token: Token,
@@ -25,14 +27,25 @@ function setTag(
 
   // Value is set (e.g. {{ set foo = "bar" }})
   if (expression.includes("=")) {
-    const match = code.match(/^set\s+([\w]+)\s*=\s*([\s\S]+)$/);
+    const match = code.match(/^set\s+([\w{}[\]\s,:.]+)\s*=\s*([\s\S]+)$/);
 
     if (!match) {
       throw new SourceError("Invalid set tag", position);
     }
 
-    const [, variable, value] = match;
+    const variable = match[1].trim();
+    const value = match[2].trim();
     const val = env.compileFilters(tokens, value);
+
+    if (variable.startsWith("{") || variable.startsWith("[")) {
+      const code = [`var ${variable} = ${val};`];
+
+      for (const [name] of variable.matchAll(DETECTED_VARS)) {
+        code.push(`${dataVarname}["${name}"] = ${name};`);
+      }
+
+      return code.join("\n");
+    }
 
     return `var ${variable} = ${dataVarname}["${variable}"] = ${val};`;
   }
