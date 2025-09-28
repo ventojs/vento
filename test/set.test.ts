@@ -160,3 +160,76 @@ Deno.test("Set tag in a loop", async () => {
     },
   });
 });
+
+Deno.test("Set with destructuring variables", async () => {
+  await test({
+    template: `
+    {{ set { foo, bar } = { foo: "foo", bar: "bar" } }}
+    {{ foo }} {{ bar }}
+    `,
+    expected: "foo bar",
+  });
+
+  await test({
+    template: `
+    {{ set { one, ...other } = { one: 1, two: 2, three: 3 } }}
+    {{ one }} {{ other.two }} {{ other.three }}
+    `,
+    expected: "1 2 3",
+  });
+
+  await test({
+    template: `
+    {{ set { foo, bar: bar2 } = { foo: "foo", bar: "bar" } }}
+    {{ foo }} {{ bar2 }}
+    `,
+    expected: "foo bar",
+  });
+
+  await test({
+    template: `
+    {{ set [one, two] = ["one", "two"] }}
+    {{ one }} {{ two }}
+    `,
+    expected: "one two",
+  });
+
+  await test({
+    template: `
+    {{ set { a, b: { c, d } } = { a: "A", b: { c: "C", d: "D" } } }}
+    {{ a }} {{ c }} {{ d }}
+    `,
+    expected: "A C D",
+  });
+
+  await test({
+    template: `
+    {{ set [x, [y, z]] = ["X", ["Y", "Z"]] }}
+    {{ x }} {{ y }} {{ z }}
+    `,
+    expected: "X Y Z",
+  });
+
+  await test({
+    template: `
+    {{ set { a, b: { c, d } } = { a: "A", b: { c: "C", d: "D" } } }}
+    {{ a }} {{ c }} {{ d }}
+    `,
+    options: {
+      autoDataVarname: false,
+    },
+    expected: "A C D",
+  });
+
+  await test({
+    template: `
+      {{> const foo = 'local' }}
+      {{ set { foo: [bar] } = { foo: [23] } }}
+      {{ include "./maybe-foo.vto" }}
+    `,
+    includes: {
+      "/maybe-foo.vto": `Should not print anything: {{ foo }}`,
+    },
+    expected: "Should not print anything:",
+  });
+});
