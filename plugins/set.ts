@@ -8,6 +8,7 @@ export default function (): Plugin {
   };
 }
 
+const VARNAME = /^[a-zA-Z_]\w*$/;
 const DETECTED_VARS = /([a-zA-Z_]\w*)\b(?!\s*\:)/g;
 
 function setTag(
@@ -37,13 +38,19 @@ function setTag(
     const value = match[2].trim();
     const val = env.compileFilters(tokens, value);
 
-    if (variable.startsWith("{") || variable.startsWith("[")) {
+    if (
+      (variable.startsWith("{") && variable.endsWith("}")) ||
+      (variable.startsWith("[") && variable.endsWith("]"))
+    ) {
       const names = Array.from(variable.matchAll(DETECTED_VARS))
         .map((n) => n[1]);
       return `
         var ${variable} = ${val};
         Object.assign(${dataVarname}, { ${names.join(", ")} });
       `;
+    }
+    if (!VARNAME.test(variable)) {
+      throw new SourceError("Invalid variable name", position);
     }
 
     return `var ${variable} = ${dataVarname}["${variable}"] = ${val};`;
