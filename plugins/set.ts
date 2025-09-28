@@ -38,13 +38,12 @@ function setTag(
     const val = env.compileFilters(tokens, value);
 
     if (variable.startsWith("{") || variable.startsWith("[")) {
-      const code = [`var ${variable} = ${val};`];
-
-      for (const [name] of variable.matchAll(DETECTED_VARS)) {
-        code.push(`${dataVarname}["${name}"] = ${name};`);
-      }
-
-      return code.join("\n");
+      const names = Array.from(variable.matchAll(DETECTED_VARS))
+        .map((n) => n[1]);
+      return `
+        var ${variable} = ${val};
+        Object.assign(${dataVarname}, { ${names.join(", ")} });
+      `;
     }
 
     return `var ${variable} = ${dataVarname}["${variable}"] = ${val};`;
