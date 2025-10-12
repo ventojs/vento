@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 - Possible variables naming collision [#157].
+- `auto_trim` plugin edge cases [#159].
 
 ## [2.1.1] - 2025-09-18
 ### Fixed
@@ -95,6 +96,7 @@ Vento 2.0 is now dependency-free and compatible with browsers without a build st
 [#156]: https://github.com/ventojs/vento/issues/156
 [#157]: https://github.com/ventojs/vento/issues/157
 [#158]: https://github.com/ventojs/vento/issues/158
+[#159]: https://github.com/ventojs/vento/issues/159
 
 [2.2.0]: https://github.com/ventojs/vento/compare/v2.1.1...HEAD
 [2.1.1]: https://github.com/ventojs/vento/compare/v2.1.0...v2.1.1
