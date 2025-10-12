@@ -27,9 +27,9 @@ Deno.test("Autotrim (removes newlines correctly)", () => {
     ["tag", "if true", 21],
     ["string", "      <h2>", 34],
     ["tag", "message", 45],
-    ["string", "</h2>\n      ", 58], // Removed spaces
+    ["string", "</h2>\n      ", 58],
     ["tag", 'include "footer.vto"', 70],
-    ["string", "\n", 96], // Remove newline
+    ["string", "\n", 96],
     ["tag", "set test = 100", 103],
     ["string", "", 123],
     ["tag", '> let x = "fish"', 130],
