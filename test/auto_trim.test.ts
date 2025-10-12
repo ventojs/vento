@@ -68,7 +68,7 @@ Deno.test("Autotrim (no next tokens)", () => {
 
 Deno.test("Autotrim usage", async () => {
   await test({
-    init: env => env.use(autoTrim()),
+    init: (env) => env.use(autoTrim()),
     template: `
     Hello
     {{ set name = "world" }}
@@ -79,7 +79,7 @@ Deno.test("Autotrim usage", async () => {
     expected: "Hello\n      world!",
   });
   await test({
-    init: env => env.use(autoTrim()),
+    init: (env) => env.use(autoTrim()),
     template: `
     Hello
     {{ set name = "world" }}
@@ -89,7 +89,7 @@ Deno.test("Autotrim usage", async () => {
     expected: "Hello\n    world",
   });
   await test({
-    init: env => env.use(autoTrim()),
+    init: (env) => env.use(autoTrim()),
     template: `
     Hello
     {{# Hello world #}} {{ set name = "world" }}
@@ -98,7 +98,7 @@ Deno.test("Autotrim usage", async () => {
     expected: "Hello\n    world",
   });
   await test({
-    init: env => env.use(autoTrim()),
+    init: (env) => env.use(autoTrim()),
     template: `
     Hello
     {{ set name = "world" |> trim }}

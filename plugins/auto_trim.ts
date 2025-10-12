@@ -18,8 +18,8 @@ export const defaultTags = [
   "import",
 ];
 
-const LEADING_WHITESPACE = /(^|\n)[ \t]+$/
-const TRAILING_WHITESPACE = /^[ \t]*\r?\n/
+const LEADING_WHITESPACE = /(^|\n)[ \t]+$/;
+const TRAILING_WHITESPACE = /^[ \t]*\r?\n/;
 
 export type AutoTrimOptions = { tags: string[] };
 
@@ -36,28 +36,28 @@ export function autoTrim(tokens: Token[], options: AutoTrimOptions) {
     const token = tokens[i];
     const [type, code] = token;
 
-    let needsTrim = false
-    if(type === "comment"){
-      needsTrim = true
-    } else if(type === "tag"){
+    let needsTrim = false;
+    if (type === "comment") {
+      needsTrim = true;
+    } else if (type === "tag") {
       needsTrim = options.tags.some((tag) => {
-        if(!code.startsWith(tag)) return false
-        return /\s/.test(code[tag.length] ?? " ")
-      })
+        if (!code.startsWith(tag)) return false;
+        return /\s/.test(code[tag.length] ?? " ");
+      });
     }
 
-    if(!needsTrim) continue;
+    if (!needsTrim) continue;
 
     // Remove leading horizontal space
     const previous = tokens[i - 1];
     previous[1] = previous[1].replace(LEADING_WHITESPACE, "$1");
 
     // Skip "filter" tokens to find the next "string" token
-    for(let j = i + 1; j < tokens.length; j++){
-      if(tokens[j][0] === "filter") continue;
-      if(tokens[j][0] !== "string") break;
+    for (let j = i + 1; j < tokens.length; j++) {
+      if (tokens[j][0] === "filter") continue;
+      if (tokens[j][0] !== "string") break;
       // Remove trailing horizontal space + newline
-      const next = tokens[j]
+      const next = tokens[j];
       next[1] = next[1].replace(TRAILING_WHITESPACE, "");
     }
   }
