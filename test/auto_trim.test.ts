@@ -1,6 +1,7 @@
 import tmpl from "../mod.ts";
 import autoTrim from "../plugins/auto_trim.ts";
 import { assertEquals } from "./utils.ts";
+import { test } from "./utils.ts";
 
 Deno.test("Autotrim (removes newlines correctly)", () => {
   const code = `<h1>Hello!</h1>
@@ -26,9 +27,9 @@ Deno.test("Autotrim (removes newlines correctly)", () => {
     ["tag", "if true", 21],
     ["string", "      <h2>", 34],
     ["tag", "message", 45],
-    ["string", "</h2>\n      ", 58],
+    ["string", "</h2>\n      ", 58], // Removed spaces
     ["tag", 'include "footer.vto"', 70],
-    ["string", "\n", 96],
+    ["string", "\n", 96], // Remove newline
     ["tag", "set test = 100", 103],
     ["string", "", 123],
     ["tag", '> let x = "fish"', 130],
@@ -63,4 +64,46 @@ Deno.test("Autotrim (no next tokens)", () => {
     ["tag", "/if", 18],
     ["string", "", 27],
   ]);
+});
+
+Deno.test("Autotrim usage", async () => {
+  await test({
+    init: env => env.use(autoTrim()),
+    template: `
+    Hello
+    {{ set name = "world" }}
+    {{ if true }}
+      {{ name }}!
+    {{ /if }}
+    `,
+    expected: "Hello\n      world!",
+  });
+  await test({
+    init: env => env.use(autoTrim()),
+    template: `
+    Hello
+    {{ set name = "world" }}
+    {{ name }}
+    {{# Hello world #}}
+    `,
+    expected: "Hello\n    world",
+  });
+  await test({
+    init: env => env.use(autoTrim()),
+    template: `
+    Hello
+    {{# Hello world #}} {{ set name = "world" }}
+    {{ name }}
+    `,
+    expected: "Hello\n    world",
+  });
+  await test({
+    init: env => env.use(autoTrim()),
+    template: `
+    Hello
+    {{ set name = "world" |> trim }}
+    {{ name }}
+    `,
+    expected: "Hello\n    world",
+  });
 });

@@ -3,7 +3,6 @@ import type { Environment, Plugin } from "../core/environment.ts";
 
 export const defaultTags = [
   ">",
-  "#",
   "set",
   "/set",
   "if",
@@ -19,6 +18,9 @@ export const defaultTags = [
   "import",
 ];
 
+const LEADING_WHITESPACE = /(^|\n)[ \t]+$/
+const TRAILING_WHITESPACE = /^[ \t]*\r?\n/
+
 export type AutoTrimOptions = { tags: string[] };
 
 export default function (
@@ -31,25 +33,32 @@ export default function (
 
 export function autoTrim(tokens: Token[], options: AutoTrimOptions) {
   for (let i = 0; i < tokens.length; i++) {
-    const previous = tokens[i - 1];
     const token = tokens[i];
-    const next = tokens[i + 1];
-
     const [type, code] = token;
 
-    if (
-      type === "tag" &&
-      options.tags.find((tag) => code === tag || code.startsWith(tag + " "))
-    ) {
-      // Remove leading horizontal space
-      previous[1] = previous[1].replace(/(^|\n)[ \t]*$/, "$1");
+    let needsTrim = false
+    if(type === "comment"){
+      needsTrim = true
+    } else if(type === "tag"){
+      needsTrim = options.tags.some((tag) => {
+        if(!code.startsWith(tag)) return false
+        return /\s/.test(code[tag.length] ?? " ")
+      })
+    }
 
+    if(!needsTrim) continue;
+
+    // Remove leading horizontal space
+    const previous = tokens[i - 1];
+    previous[1] = previous[1].replace(LEADING_WHITESPACE, "$1");
+
+    // Skip "filter" tokens to find the next "string" token
+    for(let j = i + 1; j < tokens.length; j++){
+      if(tokens[j][0] === "filter") continue;
+      if(tokens[j][0] !== "string") break;
       // Remove trailing horizontal space + newline
-      if (next) {
-        next[1] = next[1].replace(/^[ \t]*(?:\r\n|\n)/, "");
-      }
-    } else if (type === "comment") {
-      previous[1] = previous[1].replace(/(?:\r\n|\n)[ \t]*$/, "");
+      const next = tokens[j]
+      next[1] = next[1].replace(TRAILING_WHITESPACE, "");
     }
   }
 }
