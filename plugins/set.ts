@@ -8,8 +8,9 @@ export default function (): Plugin {
   };
 }
 
-const VARNAME = /^[a-zA-Z_]\w*$/;
-const DETECTED_VARS = /([a-zA-Z_]\w*)\b(?!\s*\:)/g;
+const VARNAME = /^[a-zA-Z_$][\w$]*$/;
+const DETECTED_VARS = /([a-zA-Z_$][\w$]*)\b(?!\s*\:)/g;
+const VALID_TAG = /^set\s+([\w{}[\]\s,:.$]+)\s*=\s*([\s\S]+)$/;
 
 function setTag(
   env: Environment,
@@ -28,7 +29,7 @@ function setTag(
 
   // Value is set (e.g. {{ set foo = "bar" }})
   if (expression.includes("=")) {
-    const match = code.match(/^set\s+([\w{}[\]\s,:.]+)\s*=\s*([\s\S]+)$/);
+    const match = code.match(VALID_TAG);
 
     if (!match) {
       throw new SourceError("Invalid set tag", position);

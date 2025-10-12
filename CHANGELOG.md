@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - Possible variables naming collision [#157].
 - `auto_trim` plugin edge cases [#159].
+- `set`: allow `$` character in the variable name.
 
 ## [2.1.1] - 2025-09-18
 ### Fixed

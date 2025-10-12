@@ -10,6 +10,13 @@ Deno.test("Set tag", async () => {
   });
   await test({
     template: `
+    {{ set $me$sage = "Hello world" }}
+    {{ $me$sage }}
+    `,
+    expected: "Hello world",
+  });
+  await test({
+    template: `
     {{ set message }}
       Hello world
     {{ /set }}
