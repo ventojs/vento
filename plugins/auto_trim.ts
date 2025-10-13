@@ -59,6 +59,7 @@ export function autoTrim(tokens: Token[], options: AutoTrimOptions) {
       // Remove trailing horizontal space + newline
       const next = tokens[j];
       next[1] = next[1].replace(TRAILING_WHITESPACE, "");
+      break;
     }
   }
 }
