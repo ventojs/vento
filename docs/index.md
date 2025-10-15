@@ -76,7 +76,7 @@ First, let's take a look to the following example:
 ```vto
 <header>
   {{ if printName }}
-  <h1>{{ (await getUser(34)).name |> toUpperCase }}</h1>
+    <h1>{{ (await getUser(34)).name |> toUpperCase }}</h1>
   {{ /if }}
 </header>
 ```

@@ -6,9 +6,9 @@
   },
   "lock": false,
   "imports": {
-    "lume/": "https://deno.land/x/lume@v3.0.5/",
-    "wiki/": "https://deno.land/x/lume_theme_simple_wiki@v0.14.0/",
-    "lume/jsx-runtime": "https://deno.land/x/ssx@v0.1.11/jsx-runtime.ts"
+    "lume/": "https://deno.land/x/lume@v3.0.11/",
+    "wiki/": "https://deno.land/x/lume_theme_simple_wiki@v0.14.3/",
+    "lume/jsx-runtime": "https://deno.land/x/ssx@v0.1.12/jsx-runtime.ts"
   },
   "compilerOptions": {
     "types": [
@@ -23,7 +23,12 @@
   ],
   "lint": {
     "plugins": [
-      "https://deno.land/x/lume@v3.0.5/lint.ts"
-    ]
+      "https://deno.land/x/lume@v3.0.11/lint.ts"
+    ],
+    "rules": {
+      "exclude": [
+        "no-import-prefix"
+      ]
+    }
   }
 }
