@@ -6,7 +6,7 @@ menu_links:
     href: https://github.com/ventojs/vento
     icon: github-logo
   - text: Deno module
-    href: https://deno.land/x/vento
+    href: https://cdn.jsdelivr.net/gh/ventojs/vento/
     icon: package
   - text: NPM module
     href: https://www.npmjs.com/package/ventojs
