@@ -22,7 +22,6 @@ jobs:
       - name: Setup Deno
         uses: denoland/setup-deno@v2
         with:
-          deno-version: canary
           cache: true
 
       - name: Verify formatting
@@ -38,8 +37,7 @@ jobs:
         run: deno task bench
 
       - name: Build docs
-        working-directory: docs
-        run: deno task build
+        run: cd docs && deno task build
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
