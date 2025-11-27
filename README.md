@@ -3,7 +3,7 @@
 Vento
 </h1>
 
-[![Deno](https://deno.land/badge/vento/version)](https://deno.land/x/vento)
+[![Deno](https://data.jsdelivr.com/v1/package/gh/ventojs/vento/badge)](https://www.jsdelivr.com/package/gh/ventojs/vento)
 [![NPM](https://img.shields.io/npm/v/ventojs)](https://www.npmjs.com/package/ventojs)
 [![Tests](https://github.com/ventojs/vento/workflows/Tests/badge.svg?branch=main)](https://github.com/ventojs/vento/actions/workflows/deno.yml)
 [![Discord](https://img.shields.io/badge/join-chat-blue?logo=discord&logoColor=white)](https://discord.gg/YbTmpACHWB)
