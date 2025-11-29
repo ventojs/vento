@@ -16,7 +16,7 @@
   "lock": false,
   "imports": {
     "lume/": "https://cdn.jsdelivr.net/gh/lumeland/lume@3.1.2/",
-    "wiki/": "https://deno.land/x/lume_theme_simple_wiki@v0.14.3/",
+    "wiki/": "https://cdn.jsdelivr.net/gh/lumeland/theme-simple-wiki@0.14.3/",
     "lume/jsx-runtime": "https://cdn.jsdelivr.net/gh/oscarotero/ssx@0.1.12/jsx-runtime.ts"
   },
   "compilerOptions": {
