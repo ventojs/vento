@@ -25,7 +25,7 @@ Deno.test("Default tag", async () => {
     data: {
       greeting: "Hello",
       target: null,
-    }
+    },
   });
 });
 
@@ -56,6 +56,6 @@ Deno.test("Default tag in strict mode", async () => {
     data: {
       greeting: "Hello",
       target: null,
-    }
+    },
   });
 });
