@@ -4,6 +4,7 @@ import ifTag from "./if.ts";
 import forTag from "./for.ts";
 import includeTag from "./include.ts";
 import setTag from "./set.ts";
+import defaultTag from "./default.ts";
 import jsTag from "./js.ts";
 import layoutTag from "./layout.ts";
 import functionTag from "./function.ts";
@@ -21,6 +22,7 @@ export default function (): Plugin {
     env.use(jsTag());
     env.use(includeTag());
     env.use(setTag());
+    env.use(defaultTag());
     env.use(layoutTag());
     env.use(functionTag());
     env.use(importTag());
