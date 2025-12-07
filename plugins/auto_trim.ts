@@ -5,6 +5,8 @@ export const defaultTags = [
   ">",
   "set",
   "/set",
+  "default",
+  "/default",
   "if",
   "/if",
   "else",
