@@ -1,11 +1,11 @@
 import vento from "../mod.ts";
 import vento1 from "https://deno.land/x/vento@v1.15.2/mod.ts";
 import nunjucks from "npm:nunjucks@3.2.4";
-import { Liquid } from "npm:liquidjs@10.20.1";
-import { Eta } from "https://deno.land/x/eta@v3.5.0/src/index.ts";
-import { Edge } from "npm:edge.js@6.2.1";
+import { Liquid } from "npm:liquidjs@10.24.0";
+import { Eta } from "https://deno.land/x/eta@v4.4.1/src/index.ts";
+import { Edge } from "npm:edge.js@6.3.0";
 import pug from "npm:pug@3.0.3";
-import * as preact from "npm:preact-render-to-string@6.5.13";
+import * as preact from "npm:preact-render-to-string@6.6.3";
 import ejs from "npm:ejs@3.1.10";
 
 type Renderer = (data: Record<string, unknown>) => string | Promise<string>;

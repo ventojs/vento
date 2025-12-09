@@ -3,7 +3,11 @@
     "test": "deno test --allow-read test",
     "bench": "deno bench --allow-read --allow-sys=homedir --allow-env=BABEL_TYPES_8_BREAKING",
     "docs": "cd docs && deno task serve",
-    "build-npm": "deno run --allow-run --allow-read --allow-write _scripts/build_npm.ts"
+    "build-npm": "deno run --allow-run --allow-read --allow-write _scripts/build_npm.ts",
+    "update-deps": {
+      "description": "Update dependencies for bench and test",
+      "command": "deno run -A --quiet 'https://deno.land/x/nudd@v0.2.10/cli.ts' update 'bench/setup.ts' 'test/utils.ts'"
+    }
   },
   "lock": false,
   "lint": {

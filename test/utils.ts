@@ -1,6 +1,6 @@
 import tmpl from "../mod.ts";
-import { assertEquals } from "jsr:@std/assert@1.0.13/equals";
-import { assertRejects } from "jsr:@std/assert@1.0.13/rejects";
+import { assertEquals } from "jsr:@std/assert@1.0.16/equals";
+import { assertRejects } from "jsr:@std/assert@1.0.16/rejects";
 import { extract } from "jsr:@std/front-matter@1.0.9/yaml";
 import { test as fmTest } from "jsr:@std/front-matter@1.0.9/test";
 import { MemoryLoader } from "../loaders/memory.ts";
