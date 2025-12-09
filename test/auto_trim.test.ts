@@ -106,4 +106,32 @@ Deno.test("Autotrim usage", async () => {
     `,
     expected: "Hello\n    world",
   });
+  await test({
+    init: (env) => env.use(autoTrim()),
+    template: `
+    -
+    {{ for n of [1,2,3] }}
+      {{ if n }}
+        {{ continue }}
+      {{ /if }}
+      {{ n }}
+    {{ /for }}
+    -
+    `,
+    expected: "-\n    -",
+  });
+  await test({
+    init: (env) => env.use(autoTrim()),
+    template: `
+    -
+    {{ for n of [1,2,3] }}
+      {{ if n }}
+        {{ break }}
+      {{ /if }}
+      {{ n }}
+    {{ /for }}
+    -
+    `,
+    expected: "-\n    -",
+  });
 });

@@ -4,6 +4,8 @@ import type { Environment, Plugin } from "../core/environment.ts";
 export const defaultTags = [
   ">",
   "set",
+  "continue",
+  "break",
   "/set",
   "default",
   "/default",
