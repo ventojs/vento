@@ -10,7 +10,6 @@ export default function (): Plugin {
   };
 }
 
-const LAYOUT_TAG = /^layout\s+([^{]+|`[^`]+`)+(?:\{([^]*)\})?$/;
 const SLOT_NAME = /^[a-z_]\w*$/i;
 const DIRECT_DATA = /["'`\w]\s+([a-z_$][\w$]*)$/i;
 
