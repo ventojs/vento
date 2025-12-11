@@ -102,6 +102,35 @@ Deno.test("Include tag (with data)", async () => {
       name: "world",
     },
   });
+
+  await test({
+    template: `
+    {{ set data = { name } }}
+    {{ include "/my-file.vto" data }}
+    `,
+    expected: "Hello world",
+    includes: {
+      "/my-file.vto": "Hello {{ name }}",
+    },
+    data: {
+      name: "world",
+    },
+  });
+
+  await test({
+    template: `
+    {{ set data = { name } }}
+    {{ include "/my-file" + ext data }}
+    `,
+    expected: "Hello world",
+    includes: {
+      "/my-file.vto": "Hello {{ name }}",
+    },
+    data: {
+      ext: ".vto",
+      name: "world",
+    },
+  });
 });
 
 Deno.test("Include tag (with custom data)", async () => {

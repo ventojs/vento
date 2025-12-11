@@ -45,6 +45,29 @@ Deno.test("Layout tag (with extra data)", async () => {
       "/my-file.vto": "<{{ tag }}>{{ content }}</{{ tag }}>",
     },
   });
+  await test({
+    template: `
+    {{ set data = { tag: "h1" } }}
+    {{ layout "/my-file.vto" data }}Hello world{{ /layout }}
+    `,
+    expected: "<h1>Hello world</h1>",
+    includes: {
+      "/my-file.vto": "<{{ tag }}>{{ content }}</{{ tag }}>",
+    },
+  });
+  await test({
+    template: `
+    {{ set data = { tag: "h1" } }}
+    {{ layout "/my-file" + ext data }}Hello world{{ /layout }}
+    `,
+    expected: "<h1>Hello world</h1>",
+    includes: {
+      "/my-file.vto": "<{{ tag }}>{{ content }}</{{ tag }}>",
+    },
+    data: {
+      ext: ".vto",
+    },
+  });
 });
 
 Deno.test("Layout tag (with extra data and filters)", async () => {
