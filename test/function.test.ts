@@ -58,7 +58,7 @@ Deno.test("Function tag (async)", async () => {
   await test({
     template: `
     {{ async function hello }}
-    {{ > const text = await Promise.resolve("Hello world") }}
+    {{> const text = await Promise.resolve("Hello world") }}
     {{ text }}
     {{ /function }}
 
@@ -86,7 +86,7 @@ Deno.test("Function scope is respected", async () => {
   await test({
     template: `
     {{ export function hello }}
-    {{ > const message = "Hello world" }}
+    {{> const message = "Hello world" }}
     {{ /export }}
 
     {{ message }}
@@ -97,7 +97,7 @@ Deno.test("Function scope is respected", async () => {
   await test({
     template: `
     {{ function hello }}
-    {{ > const message = "I shouldn't print" }}
+    {{> const message = "I shouldn't print" }}
     {{ /function }}
 
     {{> const message = "Hello world" }}
