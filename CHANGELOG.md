@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [2.3.0] - Unreleased
 ### Added
 - New `default` tag to assign fallback content to a variable [#164], [#166].
+- `include` and `layout` tags allows direct data [#163], [#167].
+  Example: `{{ include "file.vto" data }}`
 
 ### Fixed
 - Support `break` and `continue` tags by `auto_trim` plugin.
@@ -105,8 +107,10 @@ Vento 2.0 is now dependency-free and compatible with browsers without a build st
 [#157]: https://github.com/ventojs/vento/issues/157
 [#158]: https://github.com/ventojs/vento/issues/158
 [#159]: https://github.com/ventojs/vento/issues/159
+[#163]: https://github.com/ventojs/vento/issues/163
 [#164]: https://github.com/ventojs/vento/issues/164
 [#166]: https://github.com/ventojs/vento/issues/166
+[#167]: https://github.com/ventojs/vento/issues/167
 
 [2.3.0]: https://github.com/ventojs/vento/compare/v2.2.0...HEAD
 [2.2.0]: https://github.com/ventojs/vento/compare/v2.1.1...v2.2.0
