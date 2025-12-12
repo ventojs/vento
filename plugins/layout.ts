@@ -1,4 +1,5 @@
 import { SourceError } from "../core/errors.ts";
+import iterateTopLevel from "../core/js.ts";
 import type { Token } from "../core/tokenizer.ts";
 import type { Environment, Plugin } from "../core/environment.ts";
 
@@ -9,8 +10,8 @@ export default function (): Plugin {
   };
 }
 
-const LAYOUT_TAG = /^layout\s+([^{]+|`[^`]+`)+(?:\{([^]*)\})?$/;
 const SLOT_NAME = /^[a-z_]\w*$/i;
+const DIRECT_DATA = /["'`\w]\s+([a-z_$][^\s'"`]*)$/i;
 
 function layoutTag(
   env: Environment,
@@ -24,12 +25,29 @@ function layoutTag(
     return;
   }
 
-  const match = code?.match(LAYOUT_TAG);
-  if (!match) {
-    throw new SourceError("Invalid layout tag", position);
+  const tagCode = code.slice(6).trim();
+  let file = tagCode;
+  let data = "";
+
+  // Includes { data }
+  if (tagCode.endsWith("}")) {
+    let bracketIndex = -1;
+    for (const [index, reason] of iterateTopLevel(tagCode)) {
+      if (reason == "{") bracketIndex = index;
+    }
+    if (bracketIndex == -1) {
+      throw new SourceError("Invalid layout tag", position);
+    }
+    file = tagCode.slice(0, bracketIndex).trim();
+    data = tagCode.slice(bracketIndex).trim();
   }
 
-  const [_, file, data] = match;
+  // Includes data directly (e.g. {{ layout "template.vto" data }})
+  const directDataMatch = tagCode.match(DIRECT_DATA);
+  if (directDataMatch) {
+    data = directDataMatch[1];
+    file = tagCode.slice(0, -data.length).trim();
+  }
 
   const compiledFilters = env.compileFilters(tokens, "__slots.content");
   const { dataVarname } = env.options;
@@ -40,7 +58,7 @@ function layoutTag(
     return __env.run(${file}, {
       ...${dataVarname},
       ...__slots,
-      ${data ?? ""}
+      ${data ? "..." + data : ""}
     }, __template.path, ${position});
   })()).content;`;
 }

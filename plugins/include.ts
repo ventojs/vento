@@ -9,6 +9,8 @@ export default function (): Plugin {
   };
 }
 
+const DIRECT_DATA = /["'`\w]\s+([a-z_$][^\s'"`]*)$/i;
+
 function includeTag(
   env: Environment,
   token: Token,
@@ -35,6 +37,13 @@ function includeTag(
     }
     file = tagCode.slice(0, bracketIndex).trim();
     data = tagCode.slice(bracketIndex).trim();
+  }
+
+  // Includes data directly (e.g. {{ include "template.vto" data }})
+  const directDataMatch = tagCode.match(DIRECT_DATA);
+  if (directDataMatch) {
+    data = directDataMatch[1];
+    file = tagCode.slice(0, -data.length).trim();
   }
 
   const { dataVarname } = env.options;
