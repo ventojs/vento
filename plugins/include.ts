@@ -9,7 +9,7 @@ export default function (): Plugin {
   };
 }
 
-const DIRECT_DATA = /["'`\w]\s+([a-z_$][\w$]*)$/i;
+const DIRECT_DATA = /["'`\w]\s+([a-z_$][^\s'"`]*)$/i;
 
 function includeTag(
   env: Environment,

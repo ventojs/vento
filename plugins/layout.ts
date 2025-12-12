@@ -11,7 +11,7 @@ export default function (): Plugin {
 }
 
 const SLOT_NAME = /^[a-z_]\w*$/i;
-const DIRECT_DATA = /["'`\w]\s+([a-z_$][\w$]*)$/i;
+const DIRECT_DATA = /["'`\w]\s+([a-z_$][^\s'"`]*)$/i;
 
 function layoutTag(
   env: Environment,
