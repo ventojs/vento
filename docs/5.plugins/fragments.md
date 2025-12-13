@@ -40,10 +40,10 @@ env.use(fragments());
 Add `{{ fragment }}` tags to mark sections of the template you want to render
 individually:
 
-```nunjucks
+```vto
 <html>
     {{ fragment list }}
-        {{ for user in users }}
+        {{ for user of users }}
             <li>{{ user }}</li>
         {{ /for }}
     {{ /fragment }}
