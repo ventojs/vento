@@ -43,7 +43,7 @@ individually:
 ```nunjucks
 <html>
     {{ fragment list }}
-        {{ for user in users }}
+        {{ for user of users }}
             <li>{{ user }}</li>
         {{ /for }}
     {{ /fragment }}
