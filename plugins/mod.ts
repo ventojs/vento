@@ -14,6 +14,7 @@ import echoTag from "./echo.ts";
 import escape from "./escape.ts";
 import unescape from "./unescape.ts";
 import trim from "./trim.ts";
+import empty from "./empty.ts";
 
 export default function (): Plugin {
   return (env: Environment) => {
@@ -31,5 +32,6 @@ export default function (): Plugin {
     env.use(escape());
     env.use(unescape());
     env.use(trim());
+    env.use(empty());
   };
 }
