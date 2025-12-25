@@ -4,11 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [2.3.0] - Unreleased
+## [2.3.0] - 2025-12-25
 ### Added
 - New `default` tag to assign fallback content to a variable [#164], [#166].
 - `include` and `layout` tags allows direct data [#163], [#167].
   Example: `{{ include "file.vto" data }}`
+- New `empty` filter to return true if a value is considered empty:
+  - It's falsy (`false`, empty string, `0`, `null`, `undefined`, etc)
+  - It's a string only with spaces (`val.trim() === ""`)
+  - I'ts an empty array
 
 ### Fixed
 - Support `break` and `continue` tags by `auto_trim` plugin.
@@ -112,7 +116,7 @@ Vento 2.0 is now dependency-free and compatible with browsers without a build st
 [#166]: https://github.com/ventojs/vento/issues/166
 [#167]: https://github.com/ventojs/vento/issues/167
 
-[2.3.0]: https://github.com/ventojs/vento/compare/v2.2.0...HEAD
+[2.3.0]: https://github.com/ventojs/vento/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/ventojs/vento/compare/v2.1.1...v2.2.0
 [2.1.1]: https://github.com/ventojs/vento/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/ventojs/vento/compare/v2.0.2...v2.1.0
