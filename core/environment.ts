@@ -1,5 +1,5 @@
 import iterateTopLevel from "./js.ts";
-import tokenize, { Token } from "./tokenizer.ts";
+import tokenize, { type Token } from "./tokenizer.ts";
 
 import { createError, SourceError } from "./errors.ts";
 
