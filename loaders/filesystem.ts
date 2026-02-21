@@ -1,3 +1,5 @@
+/// <reference lib="dom" />
+
 import { join } from "./utils.ts";
 import type { Loader, TemplateSource } from "../core/environment.ts";
 
