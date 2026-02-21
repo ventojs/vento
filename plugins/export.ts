@@ -1,5 +1,4 @@
 import { SourceError } from "../core/errors.ts";
-
 import type { Token } from "../core/tokenizer.ts";
 import type { Environment, Plugin } from "../core/environment.ts";
 

@@ -1,5 +1,4 @@
 import type { Environment, Plugin } from "../core/environment.ts";
-
 import ifTag from "./if.ts";
 import forTag from "./for.ts";
 import includeTag from "./include.ts";

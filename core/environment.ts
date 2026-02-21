@@ -1,6 +1,5 @@
 import iterateTopLevel from "./js.ts";
 import tokenize, { type Token } from "./tokenizer.ts";
-
 import { createError, SourceError } from "./errors.ts";
 
 export interface TemplateResult {

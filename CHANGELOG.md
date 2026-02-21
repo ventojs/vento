@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [2.3.1] - Unreleased
 ### Fixed
 - Types for Node [#174]
+- Added `strict` option to browser version.
 
 ## [2.3.0] - 2025-12-25
 ### Added
