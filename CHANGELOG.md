@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.3.1] - Unreleased
+### Fixed
+- Types for Node [#174]
+
 ## [2.3.0] - 2025-12-25
 ### Added
 - New `default` tag to assign fallback content to a variable [#164], [#166].
@@ -115,7 +119,9 @@ Vento 2.0 is now dependency-free and compatible with browsers without a build st
 [#164]: https://github.com/ventojs/vento/issues/164
 [#166]: https://github.com/ventojs/vento/issues/166
 [#167]: https://github.com/ventojs/vento/issues/167
+[#174]: https://github.com/ventojs/vento/issues/174
 
+[2.3.1]: https://github.com/ventojs/vento/compare/v2.3.0...HEAD
 [2.3.0]: https://github.com/ventojs/vento/compare/v2.2.0...v2.3.0
 [2.2.0]: https://github.com/ventojs/vento/compare/v2.1.1...v2.2.0
 [2.1.1]: https://github.com/ventojs/vento/compare/v2.1.0...v2.1.1

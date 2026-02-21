@@ -92,10 +92,26 @@ for await (const { path } of walk("_npm", { exts: [".js"] })) {
   Deno.writeTextFile(path, code.replaceAll(/\.ts";/g, '.js";'));
 }
 
+// Some fine-tuning replacements: https://github.com/ventojs/vento/issues/174
+const replacements = new Map<string, string>([
+  [
+    'import { type Token } from "./tokenizer.d.ts";',
+    'import type { Token } from "./tokenizer.d.ts";',
+  ],
+  [
+    'import { Environment, type Loader } from "./core/environment.d.ts";',
+    'import type { Environment, Loader } from "./core/environment.d.ts";',
+  ],
+]);
+
 // Replace .ts extensions with .d.ts in the imports of TypeScript files
 for await (const { path } of walk("_npm", { exts: [".ts"] })) {
-  const code = await Deno.readTextFile(path);
-  Deno.writeTextFile(path, code.replaceAll(/\.ts";/g, '.d.ts";'));
+  let code = Deno.readTextFileSync(path).replaceAll(/\.ts";/g, '.d.ts";');
+  for (const [search, replace] of replacements) {
+    code = code.replace(search, replace);
+  }
+
+  Deno.writeTextFile(path, code);
 }
 
 // Remove the TypeScript files
