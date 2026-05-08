@@ -342,13 +342,13 @@ export class Environment {
     while (tokens.length > 0 && tokens[0][0] === "filter") {
       const token = tokens.shift()!;
       const [, code, position] = token;
-      const match = code.match(/^(await\s+)?([\w.]+)(?:\((.*)\))?$/);
+      const match = code.match(/^(!)?(await\s+)?([\w.]+)(?:\((.*)\))?$/);
 
       if (!match) {
         throw new SourceError(`Invalid filter: ${code}`, position);
       }
 
-      const [_, isAsync, name, args] = match;
+      const [_, isNegative, isAsync, name, args] = match;
 
       if (!Object.hasOwn(this.filters, name)) {
         if (name === "safe") {
@@ -374,6 +374,11 @@ export class Environment {
         }__env.filters.${name}.call({data:${dataVarname},env:__env}, ${output}${
           args ? `, ${args}` : ""
         })`;
+      }
+
+      // Is negative
+      if (isNegative) {
+        output = `!${output}`
       }
     }
 

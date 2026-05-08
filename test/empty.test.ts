@@ -10,6 +10,13 @@ Deno.test("Escape filter", async () => {
 
   await test({
     template: `
+    NaN: {{ NaN |> !empty }}
+    `,
+    expected: "NaN: false",
+  });
+
+  await test({
+    template: `
     Zero: {{ 0 |> empty }}
     `,
     expected: "Zero: true",
@@ -62,6 +69,13 @@ Deno.test("Escape filter", async () => {
     Whitespace only: {{ " \n\t " |> empty }}
     `,
     expected: "Whitespace only: true",
+  });
+
+  await test({
+    template: String.raw`
+    Whitespace only: {{ " \n\t " |> !empty }}
+    `,
+    expected: "Whitespace only: false",
   });
 
   await test({
