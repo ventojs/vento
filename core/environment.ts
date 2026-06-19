@@ -378,7 +378,7 @@ export class Environment {
 
       // Is negative
       if (isNegative) {
-        output = `!${output}`
+        output = `!${output}`;
       }
     }
 
