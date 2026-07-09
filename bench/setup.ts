@@ -1,12 +1,13 @@
 import vento from "../mod.ts";
 import vento1 from "https://deno.land/x/vento@v1.15.2/mod.ts";
 import nunjucks from "npm:nunjucks@3.2.4";
-import { Liquid } from "npm:liquidjs@10.24.0";
-import { Eta } from "https://deno.land/x/eta@v4.4.1/src/index.ts";
-import { Edge } from "npm:edge.js@6.3.0";
-import pug from "npm:pug@3.0.3";
-import * as preact from "npm:preact-render-to-string@6.6.3";
-import ejs from "npm:ejs@3.1.10";
+import nunjucks4 from "npm:@11ty/nunjucks@4.0.0-alpha.3";
+import { Liquid } from "npm:liquidjs@10.27.1";
+import { Eta } from "https://deno.land/x/eta@v4.6.0/src/index.ts";
+import { Edge } from "npm:edge.js@6.5.1";
+import pug from "npm:pug@3.0.4";
+import * as preact from "npm:preact-render-to-string@6.7.0";
+import ejs from "npm:ejs@6.0.1";
 
 type Renderer = (data: Record<string, unknown>) => string | Promise<string>;
 
@@ -82,6 +83,13 @@ const initializers = {
   Nunjucks(): Renderer {
     const loader = new nunjucks.FileSystemLoader(Deno.cwd());
     const env = new nunjucks.Environment(loader);
+    const template = env.getTemplate(dir + "tmp.njk", true);
+    return template.render.bind(template);
+  },
+
+  Nunjucks4(): Renderer {
+    const loader = new nunjucks4.FileSystemLoader(Deno.cwd());
+    const env = new nunjucks4.Environment(loader);
     const template = env.getTemplate(dir + "tmp.njk", true);
     return template.render.bind(template);
   },
