@@ -1,6 +1,6 @@
 import { test } from "./utils.ts";
 
-Deno.test("Escape filter", async () => {
+Deno.test("Empty filter", async () => {
   await test({
     template: `
     NaN: {{ NaN |> empty }}
@@ -40,7 +40,7 @@ Deno.test("Escape filter", async () => {
     template: `
     Empty object: {{ {} |> empty }}
     `,
-    expected: "Empty object: false",
+    expected: "Empty object: true",
   });
 
   await test({
@@ -83,5 +83,23 @@ Deno.test("Escape filter", async () => {
     String of zero: {{ "0" |> empty }}
     `,
     expected: "String of zero: false",
+  });
+  await test({
+    template: `
+    Object 1: {{ {} |> empty }}
+    `,
+    expected: "Object 1: true",
+  });
+  await test({
+    template: `
+    Object 2: {{ { foo: "bar" } |> empty }}
+    `,
+    expected: "Object 2: false",
+  });
+  await test({
+    template: `
+    Object 3: {{ new Date() |> empty }}
+    `,
+    expected: "Object 3: false",
   });
 });

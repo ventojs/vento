@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Support for negative filters [#178].
   Example: `{{ value |> !empty }}`
 
+### Changed
+- `empty` filter returns true for empty objects.
+  Example: `{{ {} |> empty }}` returns `true`.
+
 ## [2.3.1] - 2026-02-21
 ### Fixed
 - Types for Node [#174]
