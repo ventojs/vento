@@ -61,12 +61,14 @@ export interface Options {
 }
 
 export class Environment {
+  MAX_SIMULTANEOUS_TEMPLATES: number = 10_000;
   cache: Map<string, Template | Promise<Template>> = new Map();
   options: Options;
   tags: Tag[] = [];
   tokenPreprocessors: TokenPreprocessor[] = [];
   filters: Record<string, Filter> = {};
   #tempVariablesCreated = 0;
+  #concurrentRuns = 0;
   utils: Record<string, unknown> = {
     callMethod,
     createError,
@@ -89,7 +91,20 @@ export class Environment {
     position?: number,
   ): Promise<TemplateResult> {
     const template = await this.load(file, from, position);
-    return await template(data);
+    if (this.#concurrentRuns >= this.MAX_SIMULTANEOUS_TEMPLATES) {
+      throw createError(
+        Error(
+          "Too many templates are running simultaneously.\n" +
+            "This is likely caused by an infinite loop in template nesting.",
+        ),
+        template,
+        position,
+      );
+    }
+    this.#concurrentRuns++;
+    const result = await template(data);
+    this.#concurrentRuns--;
+    return result;
   }
 
   async runString(
