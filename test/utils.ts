@@ -20,29 +20,33 @@ export interface TestOptions {
   options?: Options;
 }
 
-export async function testThrows(
-  options: Omit<TestOptions, "expected">,
+function getTest(
+  options: TestOptions,
 ) {
-  await assertRejects(async () => await test({ ...options, expected: "" }));
-}
-
-export async function test(options: TestOptions) {
   const env = tmpl({
     includes: new TestLoader(options.includes || {}),
     ...options.options,
   });
 
-  if (options.init) {
-    options.init(env);
-  }
+  options.init?.(env);
 
   if (options.filters) {
     for (const [name, filter] of Object.entries(options.filters)) {
       env.filters[name] = filter;
     }
   }
+  return async () => await env.runString(options.template, options.data);
+}
 
-  const result = await env.runString(options.template, options.data);
+export function testThrows(
+  options: Omit<TestOptions, "expected">,
+) {
+  assertRejects(getTest({ ...options, expected: "" }));
+}
+
+export async function test(options: TestOptions) {
+  const run = getTest(options);
+  const result = await run();
   assertEquals(result.content.trim(), options.expected.trim());
 }
 
