@@ -277,6 +277,24 @@ Deno.test("For tag (destructured)", async () => {
   });
 });
 
+Deno.test("For tag (classic)", async () => {
+  await test({
+    template: `
+    {{ for let i = 0; i < 10; i += 2 }}{{ i }}{{ /for }}
+    `,
+    expected: "02468",
+  });
+
+  await test({
+    template: `
+    {{ for var i = 0, j = 0; i < 10; i += 2, j += i -}}
+      {{ i }}({{ j }}) -
+    {{- /for }}
+    `,
+    expected: "0(0) -2(2) -4(6) -6(12) -8(20) -",
+  });
+});
+
 Deno.test("For tag with break and continue", async () => {
   await test({
     template: `
