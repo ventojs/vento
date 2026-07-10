@@ -1,4 +1,4 @@
-import { test } from "./utils.ts";
+import { test, testThrows } from "./utils.ts";
 
 Deno.test("Include tag", async () => {
   await test({
@@ -323,6 +323,39 @@ Deno.test("Include tag with semi-ambiguous JS objects", async () => {
     },
     data: {
       name: "Vento",
+    },
+  });
+});
+
+Deno.test("Include tag causing infinite nesting", async () => {
+  await test({
+    template: `
+    {{ include "/nest.vto" { depth: 9_999 } }}
+    `,
+    expected: "Bottom reached!",
+    includes: {
+      "/nest.vto": `
+        {{ if depth > 0 }}
+          {{ include "/nest.vto" { depth: depth - 1 } }}
+        {{ else }}
+          Bottom reached!
+        {{ /if }}
+      `,
+    },
+  });
+
+  await testThrows({
+    template: `
+    {{ include "/nest.vto" { depth: 10_000 } }}
+    `,
+    includes: {
+      "/nest.vto": `
+        {{ if depth > 0 }}
+          {{ include "/nest.vto" { depth: depth - 1 } }}
+        {{ else }}
+          Bottom reached!
+        {{ /if }}
+      `,
     },
   });
 });
