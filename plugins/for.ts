@@ -41,6 +41,14 @@ function forTag(
   let var2: string | undefined = undefined;
   let collection = "";
 
+  if (tagCode.startsWith("var ") || tagCode.startsWith("let ")) {
+    return `
+      for ${aw || ""}(${tagCode}) {
+        ${env.compileTokens(tokens, output, "/for").join("\n")}
+      }
+    `;
+  }
+
   if (tagCode.startsWith("[") || tagCode.startsWith("{")) {
     [var1, tagCode] = getDestructureContent(tagCode);
   } else {
