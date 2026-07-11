@@ -58,17 +58,17 @@ export interface Options {
   autoescape: boolean;
   autoDataVarname: boolean;
   strict: boolean;
+  maxRenderConcurrency: number;
 }
 
 export class Environment {
-  MAX_SIMULTANEOUS_TEMPLATES: number = 10_000;
   cache: Map<string, Template | Promise<Template>> = new Map();
   options: Options;
   tags: Tag[] = [];
   tokenPreprocessors: TokenPreprocessor[] = [];
   filters: Record<string, Filter> = {};
   #tempVariablesCreated = 0;
-  #concurrentRuns = 0;
+  #renderConcurrency = 0;
   utils: Record<string, unknown> = {
     callMethod,
     createError,
@@ -91,7 +91,7 @@ export class Environment {
     position?: number,
   ): Promise<TemplateResult> {
     const template = await this.load(file, from, position);
-    if (this.#concurrentRuns >= this.MAX_SIMULTANEOUS_TEMPLATES) {
+    if (this.#renderConcurrency >= this.options.maxRenderConcurrency) {
       throw createError(
         Error(
           "Too many templates are running simultaneously.\n" +
@@ -101,9 +101,9 @@ export class Environment {
         position,
       );
     }
-    this.#concurrentRuns++;
+    this.#renderConcurrency++;
     const result = await template(data);
-    this.#concurrentRuns--;
+    this.#renderConcurrency--;
     return result;
   }
 

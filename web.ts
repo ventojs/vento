@@ -8,6 +8,7 @@ export interface Options {
   dataVarname?: string;
   autoescape?: boolean;
   strict?: boolean;
+  maxRenderConcurrency?: number;
 }
 
 export default function (options: Options): Environment {
@@ -23,6 +24,7 @@ export default function (options: Options): Environment {
     autoescape: options.autoescape ?? false,
     autoDataVarname: options.autoDataVarname ?? true,
     strict: options.strict ?? false,
+    maxRenderConcurrency: options.maxRenderConcurrency ?? 10_000,
   });
 
   // Register the default plugins
