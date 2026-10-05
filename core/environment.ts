@@ -15,6 +15,15 @@ export interface TemplateContext {
 }
 
 export interface Template extends TemplateContext {
+  strictCache: Record<
+    string,
+    (
+      __env: Environment,
+      __template: Template,
+      dataVar: Record<string, unknown>,
+      data: Record<string, unknown>,
+    ) => Promise<TemplateResult>
+  >;
   (data?: Record<string, unknown>): Promise<TemplateResult>;
 }
 
@@ -166,12 +175,15 @@ export class Environment {
         return __exports;
       `);
       code = `
-        return new (async function(){}).constructor(
-          "__env",
-          "__template",
-          "${dataVarname}",
-          \`{\${Object.keys(${dataVarname}).join(",")}}\`,
-          ${innerCode}
+        const varsArg = \`{\${Object.keys(${dataVarname}).sort().join(",")}}\`
+        return (__template.strictCache[varsArg] ??=
+          new (async function(){}).constructor(
+            "__env",
+            "__template",
+            "${dataVarname}",
+            varsArg,
+            ${innerCode}
+          )
         )(__env, __template, ${dataVarname}, ${dataVarname});
       `;
     } else if (autoDataVarname) {
@@ -206,6 +218,7 @@ export class Environment {
       const template = constructor(this);
       template.path = path;
       template.code = constructor.toString();
+      template.strictCache = Object.create(null);
       template.source = source;
       template.defaults = defaults || {};
       return template;
