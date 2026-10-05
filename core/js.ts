@@ -3,6 +3,7 @@ import reserved from "./reserved.ts";
 const TEMPLATE_PART = /[`}](?:\\?[^])*?(?:`|\${)/y;
 const REGEX_LITERAL_START = /(?<=[(=:,?&!]\s*)\//y;
 const STOPPING_POINT = /['"`{}[\]/|]|(((?<=\.\.\.)|(?<!\.\??))\b[a-zA-Z_]\w*)/g;
+const SIMPLE_STOPPING_POINT = /['"`{}[\]/|]/g;
 
 /**
  * This function iterates over the top-level scope of a JavaScript source code
@@ -17,17 +18,19 @@ const STOPPING_POINT = /['"`{}[\]/|]|(((?<=\.\.\.)|(?<!\.\??))\b[a-zA-Z_]\w*)/g;
 export default function* iterateTopLevel(
   source: string,
   start: number = 0,
+  collect: boolean = false,
 ): Generator<[number, string, Set<string>]> {
   const variables = new Set<string>();
   let cursor = start;
   let depth = -1;
   const brackets = [];
   const max = source.length;
+  const STOP = collect ? STOPPING_POINT : SIMPLE_STOPPING_POINT;
 
   parsing: while (cursor < max) {
     // Search for the next stopping point (e.g., a brace, quote, or regex).
-    STOPPING_POINT.lastIndex = cursor;
-    const match = STOPPING_POINT.exec(source);
+    STOP.lastIndex = cursor;
+    const match = STOP.exec(source);
 
     // No stopping point found, stop parsing.
     if (!match) {
