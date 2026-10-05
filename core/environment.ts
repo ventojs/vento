@@ -175,7 +175,7 @@ export class Environment {
         )(__env, __template, ${dataVarname}, ${dataVarname});
       `;
     } else if (autoDataVarname) {
-      const generator = iterateTopLevel(code);
+      const generator = iterateTopLevel(code, 0, true);
       const [, , variables] = generator.next().value;
       while (!generator.next().done);
       variables.delete(dataVarname);
