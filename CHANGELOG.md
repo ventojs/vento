@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.4.1] - 2026-10-07
+### Fixed
+- A couple of performance improvements in strict mode:
+  - Don't collect variable names when unnecessary (~5%) [#188].
+  - Introduce caching for strict templates (~50%) [#189].
+
 ## [2.4.0] - 2026-07-09
 ### Added
 - Support for negative filters [#178].
@@ -135,7 +141,10 @@ Vento 2.0 is now dependency-free and compatible with browsers without a build st
 [#167]: https://github.com/ventojs/vento/issues/167
 [#174]: https://github.com/ventojs/vento/issues/174
 [#178]: https://github.com/ventojs/vento/issues/178
+[#188]: https://github.com/ventojs/vento/issues/188
+[#189]: https://github.com/ventojs/vento/issues/189
 
+[2.4.1]: https://github.com/ventojs/vento/compare/v2.4.0...v2.4.1
 [2.4.0]: https://github.com/ventojs/vento/compare/v2.3.1...v2.4.0
 [2.3.1]: https://github.com/ventojs/vento/compare/v2.3.0...v2.3.1
 [2.3.0]: https://github.com/ventojs/vento/compare/v2.2.0...v2.3.0
