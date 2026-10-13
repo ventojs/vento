@@ -30,6 +30,20 @@ Deno.test("For tag (string)", async () => {
     `,
     expected: "h(0)-e(1)-l(2)-l(3)-o(4)-",
   });
+
+  await test({
+    template: `
+    {{ for char of "a😀b" }}{{ char }}-{{ /for }}
+    `,
+    expected: "a-😀-b-",
+  });
+
+  await test({
+    template: `
+    {{ for key, char of "😀b" }}{{char}}({{key}})-{{ /for }}
+    `,
+    expected: "😀(0)-b(1)-",
+  });
 });
 
 Deno.test("For tag (array)", async () => {
