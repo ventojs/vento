@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+- `for` over a string iterates by code point, so characters outside the BMP (like emoji) are no longer split into surrogate halves.
+
 ## [2.4.1] - 2026-10-07
 ### Fixed
 - A couple of performance improvements in strict mode:

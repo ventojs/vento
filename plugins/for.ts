@@ -139,7 +139,8 @@ function toIterator(
   }
 
   if (typeof item === "string") {
-    return toIterator(item.split(""), withKeys);
+    // Iterate by code point, like `for...of`, so astral characters stay whole.
+    return toIterator(Array.from(item), withKeys);
   }
 
   if (typeof item === "number") {
