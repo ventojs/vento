@@ -4,9 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [2.4.2] - 2026-10-18
 ### Fixed
-- `for` over a string iterates by code point, so characters outside the BMP (like emoji) are no longer split into surrogate halves.
+- `for` over a string iterates by code point, so characters outside the BMP (like emoji) are no longer split into surrogate halves [#190].
+- File loader: Support `file://` urls for the root folder.
 
 ## [2.4.1] - 2026-10-07
 ### Fixed
@@ -147,7 +148,9 @@ Vento 2.0 is now dependency-free and compatible with browsers without a build st
 [#178]: https://github.com/ventojs/vento/issues/178
 [#188]: https://github.com/ventojs/vento/issues/188
 [#189]: https://github.com/ventojs/vento/issues/189
+[#190]: https://github.com/ventojs/vento/issues/190
 
+[2.4.2]: https://github.com/ventojs/vento/compare/v2.4.1...v2.4.2
 [2.4.1]: https://github.com/ventojs/vento/compare/v2.4.0...v2.4.1
 [2.4.0]: https://github.com/ventojs/vento/compare/v2.3.1...v2.4.0
 [2.3.1]: https://github.com/ventojs/vento/compare/v2.3.0...v2.3.1

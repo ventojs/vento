@@ -1,6 +1,7 @@
 import path from "node:path";
 import fs from "node:fs/promises";
 import process from "node:process";
+import { fileURLToPath } from "node:url";
 import type { Loader, TemplateSource } from "../core/environment.ts";
 
 /**
@@ -11,7 +12,7 @@ export class FileLoader implements Loader {
   #root: string;
 
   constructor(root: string = process.cwd()) {
-    this.#root = root;
+    this.#root = root.startsWith("file:") ? fileURLToPath(root) : root;
   }
 
   async load(file: string): Promise<TemplateSource> {
