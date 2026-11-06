@@ -43,7 +43,7 @@ jobs:
         run: deno task bench
 
       - name: Build docs
-        run: cd docs && npm run build
+        run: cd docs && npm ci && npm run build
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
