@@ -1,0 +1,21 @@
+{
+  "name": "docs2",
+  "private": true,
+  "type": "module",
+  "allowScripts": {
+    "esbuild": false,
+    "fsevents": false,
+    "@parcel/watcher": false
+  },
+  "scripts": {
+    "serve": "lume build -s",
+    "build": "lume build"
+  },
+  "dependencies": {
+    "@lumeland/core": "^1.0.3",
+    "@lumeland/lume": "^4.0.1",
+    "@lumeland/plugin-check-urls": "^1.0.0",
+    "@lumeland/ssx": "^0.1.16",
+    "@lumeland/theme-simple-wiki": "^1.0.1"
+  }
+}

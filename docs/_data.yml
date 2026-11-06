@@ -11,3 +11,8 @@ menu_links:
   - text: NPM module
     href: https://www.npmjs.com/package/ventojs
     icon: package
+hide_pagination: false
+hide_card_list: false
+footer: >-
+  Powered by [Lume](https://lume.land) &
+  [SimpleWiki](https://github.com/lumeland/theme-simple-wiki) theme
