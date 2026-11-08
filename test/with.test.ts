@@ -1,8 +1,8 @@
+import { describe, it } from "vitest";
 import { test } from "./utils.ts";
 
-Deno.test({
-  name: "Print key variables",
-  fn: async () => {
+describe("Key variables", () => {
+  it("Print key variables", async () => {
     await test({
       template: `{{ message[key] }}`,
       expected: "It works!",
@@ -13,25 +13,22 @@ Deno.test({
         key: "foo",
       },
     });
-  },
-});
+  });
 
-Deno.test({
-  name: "Assign key variables",
-  fn: async () => {
+  it("Assign key variables", async () => {
     await test({
       template: `{{ set foo = "It works!" }}{{ foo }}`,
       expected: "It works!",
     });
     await test({
       template: `
-      {{ function echo(message) }}
-        {{ message }}
-      {{ /function }}
-      {{ set foo = "It works!" }}
-      {{ echo(foo) }}
-      `,
+        {{ function echo(message) }}
+          {{ message }}
+        {{ /function }}
+        {{ set foo = "It works!" }}
+        {{ echo(foo) }}
+        `,
       expected: "It works!",
     });
-  },
+  });
 });

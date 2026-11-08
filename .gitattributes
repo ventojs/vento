@@ -7,5 +7,4 @@
 /bench export-ignore
 /docs export-ignore
 /test export-ignore
-/_scripts export-ignore
-/deno.json export-ignore
+

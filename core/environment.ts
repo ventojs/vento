@@ -85,8 +85,7 @@ export class Environment {
 
   constructor(options: Options) {
     this.options = options;
-    this.utils.safeString = (str: string) =>
-      this.options.autoescape ? new SafeString(str) : str;
+    this.utils.safeString = (str: string) => (this.options.autoescape ? new SafeString(str) : str);
   }
 
   use(plugin: Plugin) {
@@ -138,15 +137,9 @@ export class Environment {
     return await template(data);
   }
 
-  compile(
-    source: string,
-    path?: string,
-    defaults?: Record<string, unknown>,
-  ): Template {
+  compile(source: string, path?: string, defaults?: Record<string, unknown>): Template {
     if (typeof source !== "string") {
-      throw new TypeError(
-        `The source code of "${path}" must be a string. Got ${typeof source}`,
-      );
+      throw new TypeError(`The source code of "${path}" must be a string. Got ${typeof source}`);
     }
     const tokens = this.tokenize(source, path);
     const lastToken = tokens.at(-1)!;
@@ -248,20 +241,14 @@ export class Environment {
     return tokens;
   }
 
-  async load(
-    file: string,
-    from?: string,
-    position?: number,
-  ): Promise<Template> {
+  async load(file: string, from?: string, position?: number): Promise<Template> {
     if (!file) {
       throw position !== undefined
         ? new SourceError(`Invalid template (${typeof file})`, position, from)
         : new Error(`Invalid template (${typeof file})`);
     }
     if (typeof file !== "string") {
-      throw new TypeError(
-        `The template filename must be a string. Got ${typeof file}`,
-      );
+      throw new TypeError(`The template filename must be a string. Got ${typeof file}`);
     }
     const path = this.options.loader.resolve(from || "", file);
     let cached = this.cache.get(path);
@@ -271,18 +258,13 @@ export class Environment {
     }
 
     // Remove query and hash params from path before loading
-    const cleanPath = path
-      .split("?")[0]
-      .split("#")[0];
+    const cleanPath = path.split("?")[0].split("#")[0];
 
-    cached = this.options.loader.load(cleanPath)
+    cached = this.options.loader
+      .load(cleanPath)
       .catch((error) => {
         throw position !== undefined
-          ? new SourceError(
-            `Error loading template: ${error.message}`,
-            position,
-            from,
-          )
+          ? new SourceError(`Error loading template: ${error.message}`, position, from)
           : error;
       })
       .then((result) => {
@@ -307,8 +289,7 @@ export class Environment {
     const compiled: string[] = [];
     let openToken: Token | undefined;
 
-    tokens:
-    while (tokens.length > 0) {
+    tokens: while (tokens.length > 0) {
       const token = tokens.shift()!;
       const [type, code, position] = token;
       openToken ??= token;
@@ -341,11 +322,7 @@ export class Environment {
         }
 
         // Unknown tag, just print it
-        const expression = this.compileFilters(
-          tokens,
-          code,
-          this.options.autoescape,
-        );
+        const expression = this.compileFilters(tokens, code, this.options.autoescape);
         compiled.push(`${outputVar} += (${expression}) ?? "";`);
         continue;
       }
@@ -355,10 +332,7 @@ export class Environment {
 
     // If we reach here, it means we have an open token that wasn't closed
     if (closeToken && !closeTokenOptional) {
-      throw new SourceError(
-        `Missing closing tag ("${closeToken}" tag is expected)`,
-        openToken![2],
-      );
+      throw new SourceError(`Missing closing tag ("${closeToken}" tag is expected)`, openToken![2]);
     }
 
     return compiled;
@@ -383,22 +357,18 @@ export class Environment {
           unescaped = true;
         } else if (isGlobal(name)) {
           // If a global function
-          output = `${isAsync ? "await " : ""}${name}(${output}${
-            args ? `, ${args}` : ""
-          })`;
+          output = `${isAsync ? "await " : ""}${name}(${output}${args ? `, ${args}` : ""})`;
         } else {
           // It's a prototype's method (e.g. `String.toUpperCase()`)
           output = `${
             isAsync ? "await " : ""
-          }__env.utils.callMethod(${position}, ${output}, "${name}", ${
-            args ? args : ""
-          })`;
+          }__env.utils.callMethod(${position}, ${output}, "${name}", ${args ? args : ""})`;
         }
       } else {
         // It's a filter (e.g. filters.upper())
         const { dataVarname } = this.options;
         output = `${
-          (isAsync || checkAsync(this.filters[name])) ? "await " : ""
+          isAsync || checkAsync(this.filters[name]) ? "await " : ""
         }__env.filters.${name}.call({data:${dataVarname},env:__env}, ${output}${
           args ? `, ${args}` : ""
         })`;

@@ -1,0 +1,6 @@
+{
+  "ignorePatterns": ["docs/**", "bench", "test"],
+  "options": {
+    "typeAware": true
+  }
+}

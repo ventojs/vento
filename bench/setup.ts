@@ -1,13 +1,15 @@
 import vento from "../mod.ts";
-import vento1 from "https://deno.land/x/vento@v1.15.2/mod.ts";
-import nunjucks from "npm:nunjucks@3.2.4";
-import nunjucks4 from "npm:@11ty/nunjucks@4.0.0-alpha.3";
-import { Liquid } from "npm:liquidjs@10.27.1";
-import { Eta } from "https://deno.land/x/eta@v4.6.0/src/index.ts";
-import { Edge } from "npm:edge.js@6.5.1";
-import pug from "npm:pug@3.0.4";
-import * as preact from "npm:preact-render-to-string@6.7.0";
-import ejs from "npm:ejs@6.0.1";
+import nunjucks from "nunjucks";
+// @ts-expect-error: no types available
+import nunjucks4 from "@11ty/nunjucks";
+import { Liquid } from "liquidjs";
+import { Eta } from "eta";
+import { Edge } from "edge.js";
+import pug from "pug";
+import ejs from "ejs";
+import { Bench } from "tinybench";
+import process from "node:process";
+import { readFile } from "node:fs/promises";
 
 type Renderer = (data: Record<string, unknown>) => string | Promise<string>;
 
@@ -24,22 +26,27 @@ const data = {
 };
 
 export async function runBenchmark(
+  name: string,
   setupThenRun: (
     initializer: () => Renderer | Promise<Renderer>,
     data: Record<string, unknown>,
   ) => (() => Promise<void>) | Promise<() => Promise<void>>,
   { exclude }: { exclude: string[] } = { exclude: [] },
 ) {
+  const bench = new Bench({ name });
   for (const [name, initializer] of Object.entries(initializers)) {
     if (exclude.includes(name)) continue;
     const run = await setupThenRun(initializer, data);
-    Deno.bench(name, async () => {
+    bench.add(name, async () => {
       await run();
     });
   }
+  await bench.run();
+  console.log(bench.name);
+  console.table(bench.table());
 }
 
-const dir = Deno.cwd() + "/bench/templates/";
+const dir = process.cwd() + "/bench/templates/";
 let uniqueInt = 1;
 const getUniqueInt = () => uniqueInt++;
 
@@ -62,15 +69,6 @@ const initializers = {
     };
   },
 
-  async Vento1(): Promise<Renderer> {
-    const env = vento1({ autoDataVarname: true });
-    const render = await env.load(dir + "tmp.vto");
-    return async (data: Record<string, unknown>) => {
-      const { content } = await render(data);
-      return content;
-    };
-  },
-
   async VentoStrict(): Promise<Renderer> {
     const env = vento({ autoDataVarname: true, strict: true });
     const render = await env.load(dir + "tmp.strict.vto");
@@ -81,14 +79,14 @@ const initializers = {
   },
 
   Nunjucks(): Renderer {
-    const loader = new nunjucks.FileSystemLoader(Deno.cwd());
+    const loader = new nunjucks.FileSystemLoader(process.cwd());
     const env = new nunjucks.Environment(loader);
     const template = env.getTemplate(dir + "tmp.njk", true);
     return template.render.bind(template);
   },
 
   Nunjucks4(): Renderer {
-    const loader = new nunjucks4.FileSystemLoader(Deno.cwd());
+    const loader = new nunjucks4.FileSystemLoader(process.cwd());
     const env = new nunjucks4.Environment(loader);
     const template = env.getTemplate(dir + "tmp.njk", true);
     return template.render.bind(template);
@@ -110,16 +108,8 @@ const initializers = {
     return pug.compileFile(dir + "tmp.pug");
   },
 
-  async Preact(): Promise<Renderer> {
-    const hash = "#" + getUniqueInt();
-    const { default: render } = await import(dir + "tmp.jsx" + hash);
-    return (data: Record<string, unknown>) => {
-      return preact.render(render(data));
-    };
-  },
-
   async EJS(): Promise<Renderer> {
-    const source = await Deno.readTextFile(dir + "tmp.ejs");
+    const source = await readFile(dir + "tmp.ejs", "utf-8");
     return ejs.compile(source, { async: true });
   },
 

@@ -66,7 +66,8 @@ export default function* iterateTopLevel(
         let escapes = 0;
         do {
           cursor = source.indexOf(stop, cursor + 1);
-          if (cursor == -1) { // No closing quote found
+          if (cursor == -1) {
+            // No closing quote found
             break parsing;
           }
           escapes = 0;

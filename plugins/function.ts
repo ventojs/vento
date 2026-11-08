@@ -20,9 +20,7 @@ function functionTag(
     return;
   }
 
-  const match = code.match(
-    /^(export\s+)?(async\s+)?function\s+(\w+)\s*(\([^]*\))?$/,
-  );
+  const match = code.match(/^(export\s+)?(async\s+)?function\s+(\w+)\s*(\([^]*\))?$/);
 
   if (!match) {
     throw new SourceError("Invalid function tag", position);

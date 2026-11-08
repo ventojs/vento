@@ -1,325 +1,323 @@
+import { describe, it } from "vitest";
 import { test } from "./utils.ts";
 
-Deno.test("For tag (number)", async () => {
-  await test({
-    template: `
-    {{ for number of 3 }}{{ number }}{{ /for }}
-    `,
-    expected: "123",
+describe("for tag", () => {
+  it("For tag (number)", async () => {
+    await test({
+      template: `
+      {{ for number of 3 }}{{ number }}{{ /for }}
+      `,
+      expected: "123",
+    });
+
+    await test({
+      template: `
+      {{ for key, number of 3 }}{{number}}({{key}}) - {{ /for }}
+      `,
+      expected: "1(0) - 2(1) - 3(2) -",
+    });
   });
 
-  await test({
-    template: `
-    {{ for key, number of 3 }}{{number}}({{key}}) - {{ /for }}
-    `,
-    expected: "1(0) - 2(1) - 3(2) -",
-  });
-});
+  it("For tag (string)", async () => {
+    await test({
+      template: `
+      {{ for name of "hello" }}{{ name }}-{{ /for }}
+      `,
+      expected: "h-e-l-l-o-",
+    });
 
-Deno.test("For tag (string)", async () => {
-  await test({
-    template: `
-    {{ for name of "hello" }}{{ name }}-{{ /for }}
-    `,
-    expected: "h-e-l-l-o-",
-  });
+    await test({
+      template: `
+      {{ for key, name of "hello" }}{{name}}({{key}})-{{ /for }}
+      `,
+      expected: "h(0)-e(1)-l(2)-l(3)-o(4)-",
+    });
 
-  await test({
-    template: `
-    {{ for key, name of "hello" }}{{name}}({{key}})-{{ /for }}
-    `,
-    expected: "h(0)-e(1)-l(2)-l(3)-o(4)-",
-  });
+    await test({
+      template: `
+      {{ for char of "a😀b" }}{{ char }}-{{ /for }}
+      `,
+      expected: "a-😀-b-",
+    });
 
-  await test({
-    template: `
-    {{ for char of "a😀b" }}{{ char }}-{{ /for }}
-    `,
-    expected: "a-😀-b-",
-  });
-
-  await test({
-    template: `
-    {{ for key, char of "😀b" }}{{char}}({{key}})-{{ /for }}
-    `,
-    expected: "😀(0)-b(1)-",
-  });
-});
-
-Deno.test("For tag (array)", async () => {
-  await test({
-    template: `
-    {{ for name of [1, 2, 3] }}{{ name }}-{{ /for }}
-    `,
-    expected: "1-2-3-",
+    await test({
+      template: `
+      {{ for key, char of "😀b" }}{{char}}({{key}})-{{ /for }}
+      `,
+      expected: "😀(0)-b(1)-",
+    });
   });
 
-  await test({
-    template: `
-    {{ for key, name of [1, 2, 3, 4] }}{{name}}({{key}})-{{ /for }}
-    `,
-    expected: "1(0)-2(1)-3(2)-4(3)-",
-  });
-  // Fix for issue https://github.com/ventojs/vento/issues/83
-  await test({
-    template: `
-    {{ for key, name of [0, 1, 2, 3] }}{{key == name}}{{key === name}}{{ /for }}
-    `,
-    expected: "truetruetruetruetruetruetruetrue",
-  });
-});
+  it("For tag (array)", async () => {
+    await test({
+      template: `
+      {{ for name of [1, 2, 3] }}{{ name }}-{{ /for }}
+      `,
+      expected: "1-2-3-",
+    });
 
-Deno.test("For tag (object)", async () => {
-  await test({
-    template: `
-    {{ for name of { one: "1", two: "2" } }}{{ name }}-{{ /for }}
-    `,
-    expected: "1-2-",
-  });
-
-  await test({
-    template: `
-    {{ for name of {
-      one: "1",
-      two: "2"
-    } }}{{ name }}-{{ /for }}
-    `,
-    expected: "1-2-",
+    await test({
+      template: `
+      {{ for key, name of [1, 2, 3, 4] }}{{name}}({{key}})-{{ /for }}
+      `,
+      expected: "1(0)-2(1)-3(2)-4(3)-",
+    });
+    // Fix for issue https://github.com/ventojs/vento/issues/83
+    await test({
+      template: `
+      {{ for key, name of [0, 1, 2, 3] }}{{key == name}}{{key === name}}{{ /for }}
+      `,
+      expected: "truetruetruetruetruetruetruetrue",
+    });
   });
 
-  await test({
-    template: `
-    {{ for key, name of { one: "1", two: "2" } }}{{name}}({{key}})-{{ /for }}
-    `,
-    expected: "1(one)-2(two)-",
-  });
+  it("For tag (object)", async () => {
+    await test({
+      template: `
+      {{ for name of { one: "1", two: "2" } }}{{ name }}-{{ /for }}
+      `,
+      expected: "1-2-",
+    });
 
-  await test({
-    template: `
-    {{ for name of names }}{{people[name].surname}}{{ /for }}
-    `,
-    expected: "OteroRubio",
-    data: {
-      names: [
-        "Óscar",
-        "Laura",
-      ],
-      people: {
-        "Óscar": {
-          surname: "Otero",
+    await test({
+      template: `
+      {{ for name of {
+        one: "1",
+        two: "2"
+      } }}{{ name }}-{{ /for }}
+      `,
+      expected: "1-2-",
+    });
+
+    await test({
+      template: `
+      {{ for key, name of { one: "1", two: "2" } }}{{name}}({{key}})-{{ /for }}
+      `,
+      expected: "1(one)-2(two)-",
+    });
+
+    await test({
+      template: `
+      {{ for name of names }}{{people[name].surname}}{{ /for }}
+      `,
+      expected: "OteroRubio",
+      data: {
+        names: ["Óscar", "Laura"],
+        people: {
+          Óscar: {
+            surname: "Otero",
+          },
+          Laura: {
+            surname: "Rubio",
+          },
         },
-        "Laura": {
-          surname: "Rubio",
+      },
+    });
+  });
+
+  it("For tag (function)", async () => {
+    await test({
+      template: `
+      {{ for name of items }}{{ name }}-{{ /for }}
+      `,
+      expected: "1-2-",
+      data: {
+        items: () => ({ one: "1", two: "2" }),
+      },
+    });
+
+    await test({
+      template: `
+      {{ for key, name of items }}{{name}}({{key}})-{{ /for }}
+      `,
+      expected: "1(one)-2(two)-",
+      data: {
+        items: () => ({ one: "1", two: "2" }),
+      },
+    });
+    await test({
+      template: `
+      {{ for key, name of iterator }}{{key}}/{{name}}-{{ /for }}
+      `,
+      expected: "0/one-1/two-",
+      data: {
+        *iterator() {
+          yield "one";
+          yield "two";
         },
       },
-    },
-  });
-});
-
-Deno.test("For tag (function)", async () => {
-  await test({
-    template: `
-    {{ for name of items }}{{ name }}-{{ /for }}
-    `,
-    expected: "1-2-",
-    data: {
-      items: () => ({ one: "1", two: "2" }),
-    },
-  });
-
-  await test({
-    template: `
-    {{ for key, name of items }}{{name}}({{key}})-{{ /for }}
-    `,
-    expected: "1(one)-2(two)-",
-    data: {
-      items: () => ({ one: "1", two: "2" }),
-    },
-  });
-  await test({
-    template: `
-    {{ for key, name of iterator }}{{key}}/{{name}}-{{ /for }}
-    `,
-    expected: "0/one-1/two-",
-    data: {
-      *iterator() {
-        yield "one";
-        yield "two";
+    });
+    await test({
+      template: `
+      {{ for await key, name of iterator }}{{key}}/{{name}}-{{ /for }}
+      `,
+      expected: "0/one-1/two-",
+      data: {
+        async *iterator() {
+          yield "one";
+          yield "two";
+        },
       },
-    },
+    });
   });
-  await test({
-    template: `
-    {{ for await key, name of iterator }}{{key}}/{{name}}-{{ /for }}
-    `,
-    expected: "0/one-1/two-",
-    data: {
-      async *iterator() {
-        yield "one";
-        yield "two";
+
+  it("For tag (empty)", async () => {
+    await test({
+      template: `
+      {{ for name of null }}{{ name }}-{{ /for }}
+      `,
+      expected: "",
+    });
+
+    await test({
+      template: `
+      {{ for key, name of null }}{{name}}({{key}})-{{ /for }}
+      `,
+      expected: "",
+    });
+
+    await test({
+      template: `
+      {{ for name of undefined }}{{ name }}-{{ /for }}
+      `,
+      expected: "",
+    });
+
+    await test({
+      template: `
+      {{ for key, name of undefined }}{{name}}({{key}})-{{ /for }}
+      `,
+      expected: "",
+    });
+  });
+
+  it("For tag (with filters)", async () => {
+    await test({
+      template: `
+      {{ for name of [1, 2, 3] |> double }}{{ name }}-{{ /for }}
+      `,
+      expected: "2-4-6-",
+      init(env) {
+        env.filters.double = (values: number[]) => values.map((value) => value * 2);
       },
-    },
-  });
-});
-
-Deno.test("For tag (empty)", async () => {
-  await test({
-    template: `
-    {{ for name of null }}{{ name }}-{{ /for }}
-    `,
-    expected: "",
-  });
-
-  await test({
-    template: `
-    {{ for key, name of null }}{{name}}({{key}})-{{ /for }}
-    `,
-    expected: "",
+    });
+    await test({
+      template: `
+      {{ for name of [1, 2, 3] |> filter(n => n === 2) }}{{ name }}-{{ /for }}
+      `,
+      expected: "2-",
+      init(env) {
+        env.filters.double = (values: number[]) => values.map((value) => value * 2);
+      },
+    });
   });
 
-  await test({
-    template: `
-    {{ for name of undefined }}{{ name }}-{{ /for }}
-    `,
-    expected: "",
+  it("For tag (destructured)", async () => {
+    await test({
+      template: `
+      {{ for {name, value} of items }}{{ name }}:{{ value }}-{{ /for }}
+      `,
+      expected: "one:2-two:4-three:6-",
+      data: {
+        items: [
+          { name: "one", value: 2 },
+          { name: "two", value: 4 },
+          { name: "three", value: 6 },
+        ],
+      },
+    });
+
+    await test({
+      template: `
+      {{ for index, {name, value} of items }}{{ index }}{{ name }}:{{ value }}-{{ /for }}
+      `,
+      expected: "0one:2-1two:4-2three:6-",
+      data: {
+        items: [
+          { name: "one", value: 2 },
+          { name: "two", value: 4 },
+          { name: "three", value: 6 },
+        ],
+      },
+    });
+
+    await test({
+      template: `
+      {{ for [name, value] of items }}{{ name }}:{{ value }}-{{ /for }}
+      `,
+      expected: "one:2-two:4-three:6-",
+      data: {
+        items: [
+          ["one", 2],
+          ["two", 4],
+          ["three", 6],
+        ],
+      },
+    });
+
+    await test({
+      template: `
+      {{ for index, [name, value] of items }}{{ index }}{{ name }}:{{ value }}-{{ /for }}
+      `,
+      expected: "0one:2-1two:4-2three:6-",
+      data: {
+        items: [
+          ["one", 2],
+          ["two", 4],
+          ["three", 6],
+        ],
+      },
+    });
+    await test({
+      template: `
+      {{ for [[n]] of [[[1]], [[2]]] }}{{ n }}{{ /for }}
+      `,
+      expected: "12",
+    });
+    await test({
+      template: `
+      {{ for i, [[n]] of [[[1]], [[2]]] }}{{ i }}{{ n }}{{ /for }}
+      `,
+      expected: "0112",
+    });
+    await test({
+      template: `
+      {{ for [{foo: faa}] of [[{foo: 2}]] }}{{ faa }}{{ /for }}
+      `,
+      expected: "2",
+    });
   });
 
-  await test({
-    template: `
-    {{ for key, name of undefined }}{{name}}({{key}})-{{ /for }}
-    `,
-    expected: "",
-  });
-});
+  it("For tag (classic)", async () => {
+    await test({
+      template: `
+      {{ for let i = 0; i < 10; i += 2 }}{{ i }}{{ /for }}
+      `,
+      expected: "02468",
+    });
 
-Deno.test("For tag (with filters)", async () => {
-  await test({
-    template: `
-    {{ for name of [1, 2, 3] |> double }}{{ name }}-{{ /for }}
-    `,
-    expected: "2-4-6-",
-    init(env) {
-      env.filters.double = (values: number[]) =>
-        values.map((value) => value * 2);
-    },
-  });
-  await test({
-    template: `
-    {{ for name of [1, 2, 3] |> filter(n => n === 2) }}{{ name }}-{{ /for }}
-    `,
-    expected: "2-",
-    init(env) {
-      env.filters.double = (values: number[]) =>
-        values.map((value) => value * 2);
-    },
-  });
-});
-
-Deno.test("For tag (destructured)", async () => {
-  await test({
-    template: `
-    {{ for {name, value} of items }}{{ name }}:{{ value }}-{{ /for }}
-    `,
-    expected: "one:2-two:4-three:6-",
-    data: {
-      items: [
-        { name: "one", value: 2 },
-        { name: "two", value: 4 },
-        { name: "three", value: 6 },
-      ],
-    },
+    await test({
+      template: `
+      {{ for var i = 0, j = 0; i < 10; i += 2, j += i -}}
+        {{ i }}({{ j }}) -
+      {{- /for }}
+      `,
+      expected: "0(0) -2(2) -4(6) -6(12) -8(20) -",
+    });
   });
 
-  await test({
-    template: `
-    {{ for index, {name, value} of items }}{{ index }}{{ name }}:{{ value }}-{{ /for }}
-    `,
-    expected: "0one:2-1two:4-2three:6-",
-    data: {
-      items: [
-        { name: "one", value: 2 },
-        { name: "two", value: 4 },
-        { name: "three", value: 6 },
-      ],
-    },
-  });
-
-  await test({
-    template: `
-    {{ for [name, value] of items }}{{ name }}:{{ value }}-{{ /for }}
-    `,
-    expected: "one:2-two:4-three:6-",
-    data: {
-      items: [
-        ["one", 2],
-        ["two", 4],
-        ["three", 6],
-      ],
-    },
-  });
-
-  await test({
-    template: `
-    {{ for index, [name, value] of items }}{{ index }}{{ name }}:{{ value }}-{{ /for }}
-    `,
-    expected: "0one:2-1two:4-2three:6-",
-    data: {
-      items: [
-        ["one", 2],
-        ["two", 4],
-        ["three", 6],
-      ],
-    },
-  });
-  await test({
-    template: `
-    {{ for [[n]] of [[[1]], [[2]]] }}{{ n }}{{ /for }}
-    `,
-    expected: "12",
-  });
-  await test({
-    template: `
-    {{ for i, [[n]] of [[[1]], [[2]]] }}{{ i }}{{ n }}{{ /for }}
-    `,
-    expected: "0112",
-  });
-  await test({
-    template: `
-    {{ for [{foo: faa}] of [[{foo: 2}]] }}{{ faa }}{{ /for }}
-    `,
-    expected: "2",
-  });
-});
-
-Deno.test("For tag (classic)", async () => {
-  await test({
-    template: `
-    {{ for let i = 0; i < 10; i += 2 }}{{ i }}{{ /for }}
-    `,
-    expected: "02468",
-  });
-
-  await test({
-    template: `
-    {{ for var i = 0, j = 0; i < 10; i += 2, j += i -}}
-      {{ i }}({{ j }}) -
-    {{- /for }}
-    `,
-    expected: "0(0) -2(2) -4(6) -6(12) -8(20) -",
-  });
-});
-
-Deno.test("For tag with break and continue", async () => {
-  await test({
-    template: `
-    {{ for n of [1, 2, 3, 4] }}{{ if n == 3 }}{{ continue }}{{ /if }}{{ n }}{{ /for }}
-    `,
-    expected: "124",
-  });
-  await test({
-    template: `
-    {{ for n of [1, 2, 3, 4] }}{{ if n == 3 }}{{ break }}{{ /if }}{{ n }}{{ /for }}
-    `,
-    expected: "12",
+  it("For tag with break and continue", async () => {
+    await test({
+      template: `
+      {{ for n of [1, 2, 3, 4] }}{{ if n == 3 }}{{ continue }}{{ /if }}{{ n }}{{ /for }}
+      `,
+      expected: "124",
+    });
+    await test({
+      template: `
+      {{ for n of [1, 2, 3, 4] }}{{ if n == 3 }}{{ break }}{{ /if }}{{ n }}{{ /for }}
+      `,
+      expected: "12",
+    });
   });
 });

@@ -28,9 +28,7 @@ function forTag(
 
   const compiled: string[] = [];
 
-  const match = code.match(
-    /^for\s+(await\s+)?([\s\S]*)$/,
-  );
+  const match = code.match(/^for\s+(await\s+)?([\s\S]*)$/);
 
   if (!match) {
     throw new SourceError("Invalid for loop", position);
@@ -84,15 +82,17 @@ function forTag(
 
   if (var2) {
     compiled.push(
-      `for ${aw || ""}(let [${var1}, ${var2}] of __env.utils.toIterator(${
-        env.compileFilters(tokens, collection)
-      }, true)) {`,
+      `for ${aw || ""}(let [${var1}, ${var2}] of __env.utils.toIterator(${env.compileFilters(
+        tokens,
+        collection,
+      )}, true)) {`,
     );
   } else {
     compiled.push(
-      `for ${aw || ""}(let ${var1} of __env.utils.toIterator(${
-        env.compileFilters(tokens, collection)
-      })) {`,
+      `for ${aw || ""}(let ${var1} of __env.utils.toIterator(${env.compileFilters(
+        tokens,
+        collection,
+      )})) {`,
     );
   }
 
@@ -144,15 +144,18 @@ function toIterator(
   }
 
   if (typeof item === "number") {
-    return toIterator(new Array(item).fill(0).map((_, i) => i + 1), withKeys);
+    return toIterator(
+      Array.from({ length: item })
+        .fill(0)
+        .map((_, i) => i + 1),
+      withKeys,
+    );
   }
 
   return toIterator([item], withKeys);
 }
 
-function* iterableToEntries(
-  iterator: Iterable<unknown>,
-): Generator<[number, unknown]> {
+function* iterableToEntries(iterator: Iterable<unknown>): Generator<[number, unknown]> {
   let i = 0;
   for (const value of iterator) {
     yield [i++, value];
@@ -172,8 +175,5 @@ function getDestructureContent(code: string): [string, string] {
   const generator = iterateTopLevel(code);
   generator.next();
   const [position] = generator.next().value;
-  return [
-    code.slice(0, position + 1).trim(),
-    code.slice(position + 1).trim(),
-  ];
+  return [code.slice(0, position + 1).trim(), code.slice(position + 1).trim()];
 }

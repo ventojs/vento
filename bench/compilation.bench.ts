@@ -1,5 +1,9 @@
 import { runBenchmark } from "./setup.ts";
 
-runBenchmark((initializer) => async () => {
-  await initializer();
-}, { exclude: ["Edge"] });
+runBenchmark(
+  "Compilation",
+  (initializer) => async () => {
+    await initializer();
+  },
+  { exclude: ["Edge"] },
+);

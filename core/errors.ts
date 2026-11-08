@@ -28,12 +28,7 @@ export class SourceError extends VentoError {
   file?: string;
   source?: string;
 
-  constructor(
-    message: string,
-    position?: number,
-    file?: string,
-    source?: string,
-  ) {
+  constructor(message: string, position?: number, file?: string, source?: string) {
     super(message);
     this.name = "SourceError";
     this.position = position;
@@ -71,17 +66,15 @@ export class RuntimeError extends VentoError {
     // Try to get the context from a SyntaxError
     if (this.position === undefined) {
       try {
-        return (await getSyntaxErrorContext(
-          this.cause as SyntaxError,
-          this.#context,
-        )) ??
-          {
+        return (
+          (await getSyntaxErrorContext(this.cause as SyntaxError, this.#context)) ?? {
             type: this.name || "JavaScriptError",
             message: this.message,
             source,
             code,
             file: path,
-          };
+          }
+        );
       } catch {
         return {
           type: this.name || "JavaScriptError",
@@ -128,11 +121,7 @@ export class RuntimeError extends VentoError {
 }
 
 /** Create or complete VentoError with extra info from the template */
-export function createError(
-  error: Error,
-  context: TemplateContext,
-  position?: number,
-): VentoError {
+export function createError(error: Error, context: TemplateContext, position?: number): VentoError {
   if (error instanceof RuntimeError) return error;
 
   // If the error is a SourceError, we can fill the missing context information
@@ -189,10 +178,7 @@ export async function printError(
 }
 
 /** Converts an error context into a formatted string representation. */
-export function stringifyError(
-  context: ErrorContext,
-  format = plain,
-): string {
+export function stringifyError(context: ErrorContext, format = plain): string {
   const { type, message, source, position, code, line, column, file } = context;
   const output: string[] = [];
 
@@ -219,9 +205,7 @@ export function stringifyError(
 
   // Print the latest lines of the source code before the error
   for (let line = Math.max(sourceLine - 3, 1); line <= sourceLine; line++) {
-    const sidebar = ` ${format.number(`${line}`.padStart(pad))} ${
-      format.dim("|")
-    } `;
+    const sidebar = ` ${format.number(`${line}`.padStart(pad))} ${format.dim("|")} `;
     output.push(sidebar + sourceLines[line - 1].trimEnd());
   }
 
@@ -230,11 +214,7 @@ export function stringifyError(
 
   // If we don't have the compiled code, print the tag position
   if (!code || line === undefined || column === undefined) {
-    output.push(
-      `${indent} ${" ".repeat(sourceColumn - 1)}${
-        format.error(`^ ${message}`)
-      }`,
-    );
+    output.push(`${indent} ${" ".repeat(sourceColumn - 1)}${format.error(`^ ${message}`)}`);
     return output.join("\n");
   }
 
@@ -242,9 +222,7 @@ export function stringifyError(
   const codeLines = codeToLines(code);
   output.push(`${indent} ${" ".repeat(sourceColumn - 1)}${format.error("^")}`);
   output.push(`${indent} ${format.dim(codeLines[line - 1]?.trimEnd() || "")}`);
-  output.push(
-    `${indent} ${" ".repeat(column)} ${format.error(`^ ${message}`)}`,
-  );
+  output.push(`${indent} ${" ".repeat(column)} ${format.error(`^ ${message}`)}`);
 
   return output.join("\n");
 }
@@ -259,9 +237,7 @@ async function getSyntaxErrorContext(
   context: TemplateContext,
 ): Promise<ErrorContext | undefined> {
   const { source, code } = context;
-  const url = URL.createObjectURL(
-    new Blob([code], { type: "application/javascript" }),
-  );
+  const url = URL.createObjectURL(new Blob([code], { type: "application/javascript" }));
   const err = await import(url).catch((e) => e);
   URL.revokeObjectURL(url);
 
@@ -300,10 +276,7 @@ function codeToLines(code: string): string[] {
 const POSITION_VARIABLE = /^__pos=(\d+);$/;
 
 /** Search the closest token to an error */
-function searchPosition(
-  frame: StackFrame,
-  code: string,
-): number | undefined {
+function searchPosition(frame: StackFrame, code: string): number | undefined {
   const posLine = codeToLines(code)
     .slice(0, frame.line - 1)
     .findLast((line) => POSITION_VARIABLE.test(line.trim()));
@@ -313,10 +286,7 @@ function searchPosition(
 }
 
 /** Get the line and column number of a position in the code */
-function getSourceLineColumn(
-  lines: string[],
-  position: number,
-): [number, number] {
+function getSourceLineColumn(lines: string[], position: number): [number, number] {
   if (position < 0) {
     return [1, 1]; // Position is before the start of the source
   }
@@ -331,9 +301,7 @@ function getSourceLineColumn(
     index += content.length;
   }
 
-  throw new Error(
-    `Position ${position} is out of bounds for the provided source lines.`,
-  );
+  throw new Error(`Position ${position} is out of bounds for the provided source lines.`);
 }
 
 interface StackFrame {
@@ -366,9 +334,7 @@ function* getStackFrames(error: any): Generator<StackFrame> {
     const [_, file, line, column] = match;
 
     // Skip Node, Bun & Deno internal stack frames
-    if (
-      file.startsWith("node:") || file.startsWith("ext:") || file === "native"
-    ) {
+    if (file.startsWith("node:") || file.startsWith("ext:") || file === "native") {
       continue;
     }
 

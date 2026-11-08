@@ -13,10 +13,7 @@ const DEFAULT_IMPORT = /^\b[a-zA-Z_]\w*\b$/i;
 const NAMED_IMPORTS = /^{[^]*?}$/;
 const AS = /\s+\bas\b\s+/;
 
-function importTag(
-  env: Environment,
-  token: Token,
-): string | undefined {
+function importTag(env: Environment, token: Token): string | undefined {
   const [, code, position] = token;
   if (!code.startsWith("import ")) {
     return;
@@ -41,20 +38,23 @@ function importTag(
     const namedImports = identifiers.match(NAMED_IMPORTS);
     if (namedImports) {
       const [full] = namedImports;
-      const chunks = full.slice(1, -1).split(",").map((chunk) => {
-        const names = chunk.trim().split(AS);
-        if (names.length == 1) {
-          const [name] = names;
-          variables.push(name);
-          return name;
-        } else if (names.length == 2) {
-          const [name, rename] = names;
-          variables.push(rename);
-          return `${name}: ${rename}`;
-        } else {
-          throw new SourceError("Invalid named import", position);
-        }
-      });
+      const chunks = full
+        .slice(1, -1)
+        .split(",")
+        .map((chunk) => {
+          const names = chunk.trim().split(AS);
+          if (names.length == 1) {
+            const [name] = names;
+            variables.push(name);
+            return name;
+          } else if (names.length == 2) {
+            const [name, rename] = names;
+            variables.push(rename);
+            return `${name}: ${rename}`;
+          } else {
+            throw new SourceError("Invalid named import", position);
+          }
+        });
       compiled.push(`({${chunks.join(",")}} = ${tmp});`);
     } else {
       throw new SourceError("Invalid import tag", position);
