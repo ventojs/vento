@@ -194,6 +194,7 @@ export class Environment {
     }
 
     try {
+      // oxlint-disable-next-line typescript/no-implied-eval
       const constructor = new Function(
         "__env",
         `return async function __template(${dataVarname}) {
