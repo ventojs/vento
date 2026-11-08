@@ -26,6 +26,7 @@
   },
   "scripts": {
     "build": "rm -rf build && tsc -p . && cp *-vento.js build",
+    "bench": "pnpm bench:render && pnpm bench:full && pnpm bench:compilation",
     "bench:render": "node bench/render.bench.ts",
     "bench:full": "node bench/full.bench.ts",
     "bench:compilation": "node bench/compilation.bench.ts",
