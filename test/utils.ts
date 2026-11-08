@@ -32,8 +32,8 @@ function getTest(options: TestOptions) {
   return async () => await env.runString(options.template, options.data);
 }
 
-export function testThrows(options: Omit<TestOptions, "expected">) {
-  expect(getTest({ ...options, expected: "" })).toThrow();
+export async function testThrows(options: Omit<TestOptions, "expected">) {
+  await expect(getTest({ ...options, expected: "" })).rejects.toThrow();
 }
 
 export async function test(options: TestOptions) {

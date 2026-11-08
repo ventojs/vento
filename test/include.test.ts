@@ -207,8 +207,8 @@ describe("Include tag", () => {
       expected: "Hello from include",
       includes: {
         "/my-file.vto": `---
-  salute: Hello from front matter
-  ---
+salute: Hello from front matter
+---
         {{ salute }}
         `,
       },
@@ -221,8 +221,8 @@ describe("Include tag", () => {
       expected: "Hello from front matter",
       includes: {
         "/my-file.vto": `---
-  salute: Hello from front matter
-  ---
+salute: Hello from front matter
+---
         {{ salute }}
         `,
       },

@@ -15,20 +15,14 @@
     "type": "git",
     "url": "git+https://github.com/ventojs/vento.git"
   },
+  "files": [
+    "build",
+    "CHANGELOG.md"
+  ],
   "type": "module",
   "exports": {
-    ".": {
-      "types": "./types/mod.d.ts",
-      "import": "./mod.js"
-    },
-    "./*.js": {
-      "types": "./*.d.ts",
-      "import": "./*.js"
-    },
-    "./*.ts": {
-      "types": "./*.d.ts",
-      "import": "./*.js"
-    }
+    ".": "./mod.ts",
+    "./*.ts": "./*.ts"
   },
   "scripts": {
     "build": "rm -rf build && tsc -p . && cp *-vento.js build",
@@ -47,6 +41,7 @@
     "@types/node": "^26.6.6",
     "@types/nunjucks": "^3.2.6",
     "@types/pug": "^2.0.10",
+    "dedent": "^1.7.2",
     "edge.js": "^6.5.1",
     "ejs": "^7.0.2",
     "eta": "^4.6.0",

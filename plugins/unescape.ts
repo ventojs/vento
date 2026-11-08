@@ -15,7 +15,7 @@ export default function (): Plugin {
   return (env: Environment) => {
     env.filters.unescape = (value: unknown) => {
       if (!value) return "";
-      return value
+      return (value as string)
         .toString()
         .replace(NAMED_ENTITIES, (_, name) => {
           return entities[name];

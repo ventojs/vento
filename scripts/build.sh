@@ -1,11 +1,8 @@
 #!/bin/bash
 set -e
 
-filter=${1:-"@lumeland/*"}
-dist="./dist"
-
-rm -rf "$dist"
-mkdir -p "$dist"
+rm -rf dist
+mkdir -p dist
 
 # Test, lint and build
 pnpm test
@@ -13,12 +10,12 @@ pnpm lint
 pnpm build
 
 # Generate tarballs files
-pnpm pack --out "$dist/%s.tgz"
+pnpm pack --out dist.tgz
 rm -rf build
 
 # Extract tarballs
-tar -xzf "$tgz" -C "$out" --strip-components=1
-rm "$dist/%s.tgz"
+tar -xzf "dist.tgz" -C dist --strip-components=1
+rm dist.tgz
 
 # Final tweaks
 node scripts/build.ts

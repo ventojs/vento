@@ -9,7 +9,7 @@ export default function (): Plugin {
       if (!value) return "";
       if (value instanceof SafeString) return value.toString();
 
-      const str = value.toString();
+      const str = (value as string).toString();
 
       let html = "";
       let previous = 0;

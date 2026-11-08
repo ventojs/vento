@@ -12,5 +12,5 @@
     "rootDir": ".",
     "declaration": true
   },
-  "exclude": ["test", "build", "demo", "bench", "docs", "scripts"]
+  "include": ["core", "loaders", "plugins", "mod.ts"]
 }
