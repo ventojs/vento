@@ -13,9 +13,8 @@ export interface Options {
 
 export default function (options: Options = {}): Environment {
   // Determine the loader based on the includes option
-  const loader = typeof options.includes === "object"
-    ? options.includes
-    : new FileLoader(options.includes);
+  const loader =
+    typeof options.includes === "object" ? options.includes : new FileLoader(options.includes);
 
   // Create a new Environment instance with the provided options
   const env = new Environment({

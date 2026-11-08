@@ -1,134 +1,137 @@
+import { describe, it } from "vitest";
 import { test } from "./utils.ts";
 
-Deno.test("> tag", async () => {
-  await test({
-    template: `
-    {{> const message = "Hello world" }}
-    {{ message }}
-    `,
-    expected: "Hello world",
-  });
+describe("JavaScript tag", () => {
+  it("> tag", async () => {
+    await test({
+      template: `
+      {{> const message = "Hello world" }}
+      {{ message }}
+      `,
+      expected: "Hello world",
+    });
 
-  await test({
-    template: `
-    {{>
-      const message = "Hello world"
-    }}
-    {{ message }}
-    `,
-    expected: "Hello world",
-  });
+    await test({
+      template: `
+      {{>
+        const message = "Hello world"
+      }}
+      {{ message }}
+      `,
+      expected: "Hello world",
+    });
 
-  await test({
-    template: `
-    {{>
-      // This is a {{ comment
-      const message = "Hello world"
-    }}
-    {{ message }}
-    `,
-    expected: "Hello world",
-  });
-  await test({
-    template: `
-    {{> // This is a comment }}
-      const message = "Hello world"
-    }}
-    {{ message }}
-    `,
-    expected: "Hello world",
-  });
+    await test({
+      template: `
+      {{>
+        // This is a {{ comment
+        const message = "Hello world"
+      }}
+      {{ message }}
+      `,
+      expected: "Hello world",
+    });
+    await test({
+      template: `
+      {{> // This is a comment }}
+        const message = "Hello world"
+      }}
+      {{ message }}
+      `,
+      expected: "Hello world",
+    });
 
-  await test({
-    template: `
-    {{> const message = "{{Hello world}}" }}
-    {{ message }}
-    `,
-    expected: "{{Hello world}}",
-  });
+    await test({
+      template: `
+      {{> const message = "{{Hello world}}" }}
+      {{ message }}
+      `,
+      expected: "{{Hello world}}",
+    });
 
-  await test({
-    template: `
-    {{> const message = "Hello's" }}
-    {{ message }}
-    `,
-    expected: "Hello's",
-  });
+    await test({
+      template: `
+      {{> const message = "Hello's" }}
+      {{ message }}
+      `,
+      expected: "Hello's",
+    });
 
-  await test({
-    template: `
-    {{> const message = "Hello" /* Comment */ }}
-    {{ message }}
-    `,
-    expected: "Hello",
-  });
-  await test({
-    template: `
-    {{> const message = "Hello" /* Comment /* other */ }}
-    {{ message }}
-    `,
-    expected: "Hello",
-  });
+    await test({
+      template: `
+      {{> const message = "Hello" /* Comment */ }}
+      {{ message }}
+      `,
+      expected: "Hello",
+    });
+    await test({
+      template: `
+      {{> const message = "Hello" /* Comment /* other */ }}
+      {{ message }}
+      `,
+      expected: "Hello",
+    });
 
-  await test({
-    template: `
-    {{> const message = "Hello's".replace(/['"]/, " ") }}
-    {{ message }}
-    `,
-    expected: "Hello s",
-  });
+    await test({
+      template: `
+      {{> const message = "Hello's".replace(/['"]/, " ") }}
+      {{ message }}
+      `,
+      expected: "Hello s",
+    });
 
-  await test({
-    template: `
-    {{> const message = "Hello's".replace(
-      /['"]/,
-      " "
-    ) }}
-    {{ message }}
-    `,
-    expected: "Hello s",
-  });
+    await test({
+      template: `
+      {{> const message = "Hello's".replace(
+        /['"]/,
+        " "
+      ) }}
+      {{ message }}
+      `,
+      expected: "Hello s",
+    });
 
-  await test({
-    template: `
-    {{> const { a = 2 } = {}; }}
-    {{ JSON.stringify(a) }}
-    `,
-    expected: "2",
-  });
+    await test({
+      template: `
+      {{> const { a = 2 } = {}; }}
+      {{ JSON.stringify(a) }}
+      `,
+      expected: "2",
+    });
 
-  await test({
-    template: `
-    {{> const message = 'Hello\\'s' }}
-    {{ message }}
-    `,
-    expected: "Hello's",
-  });
+    await test({
+      template: `
+      {{> const message = 'Hello\\'s' }}
+      {{ message }}
+      `,
+      expected: "Hello's",
+    });
 
-  await test({
-    template: `
-    {{ "\\\\o/".replace(/\\\\[a-z/]\\//, "Hello") }}
-    `,
-    expected: "Hello",
-  });
+    await test({
+      template: `
+      {{ "\\\\o/".replace(/\\\\[a-z/]\\//, "Hello") }}
+      `,
+      expected: "Hello",
+    });
 
-  await test({
-    template: `
-    {{ \`\\\\\${"\`"}\` }}
-    `,
-    expected: "\\`",
-  });
+    await test({
+      template: `
+      {{ \`\\\\\${"\`"}\` }}
+      `,
+      expected: "\\`",
+    });
 
-  await test({
-    template: "{{ `{${`${`a`}`}}` }}",
-    expected: "{a}",
-  });
+    await test({
+      template: "{{ `{${`${`a`}`}}` }}",
+      expected: "{a}",
+    });
 
-  await test({
-    template: "{{ {...foo} |> JSON.stringify }}",
-    data: {
-      foo: { bar: 23 },
-    },
-    expected: `{"bar":23}`,
+    await test({
+      template: "{{ {...foo} |> JSON.stringify }}",
+      data: {
+        foo: { bar: 23 },
+      },
+      expected: `{"bar":23}`,
+    });
   });
 });

@@ -20,6 +20,9 @@ const objectConstructor = {}.constructor;
 
 /** Check if the argument passed is a plain object */
 export function isPlainObject(obj: unknown): obj is Record<string, unknown> {
-  return typeof obj === "object" && obj !== null &&
-    (obj.constructor === objectConstructor || obj.constructor === undefined);
+  return (
+    typeof obj === "object" &&
+    obj !== null &&
+    (obj.constructor === objectConstructor || obj.constructor === undefined)
+  );
 }

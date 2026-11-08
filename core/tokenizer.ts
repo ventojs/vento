@@ -69,8 +69,8 @@ export default function tokenize(source: string): Token[] {
       type = "string";
 
       // Search the closing echo tag {{ /echo }}
-      if (tag?.[1].match(/^\-?\s*echo\s*\-?$/)) {
-        const end = /{{\-?\s*\/echo\s*\-?}}/.exec(source);
+      if (tag?.[1].match(/^-?\s*echo\s*-?$/)) {
+        const end = /{{-?\s*\/echo\s*-?}}/.exec(source);
 
         if (!end) {
           tokens.push(["string", source, position]);

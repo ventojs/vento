@@ -7,10 +7,7 @@ export default function (): Plugin {
   };
 }
 
-function jsTag(
-  _env: Environment,
-  [, code]: Token,
-): string | undefined {
+function jsTag(_env: Environment, [, code]: Token): string | undefined {
   if (!code.startsWith(">")) {
     return;
   }

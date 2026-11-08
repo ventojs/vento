@@ -9,7 +9,7 @@ export default function (): Plugin {
 }
 
 const VARNAME = /^[a-zA-Z_$][\w$]*$/;
-const DETECTED_VARS = /([a-zA-Z_$][\w$]*)\b(?!\s*\:)/g;
+const DETECTED_VARS = /([a-zA-Z_$][\w$]*)\b(?!\s*:)/g;
 const VALID_TAG = /^set\s+([\w{}[\]\s,:.$]+)\s*=\s*([\s\S]+)$/;
 
 function setTag(
@@ -43,8 +43,7 @@ function setTag(
       (variable.startsWith("{") && variable.endsWith("}")) ||
       (variable.startsWith("[") && variable.endsWith("]"))
     ) {
-      const names = Array.from(variable.matchAll(DETECTED_VARS))
-        .map((n) => n[1]);
+      const names = Array.from(variable.matchAll(DETECTED_VARS)).map((n) => n[1]);
       return `
         var ${variable} = ${val};
         Object.assign(${dataVarname}, { ${names.join(", ")} });

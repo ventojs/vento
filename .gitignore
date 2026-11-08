@@ -1,7 +1,4 @@
-_bin
-_site
-_cache
-_npm
-_browser
+node_modules
 demo
 TODO
+build

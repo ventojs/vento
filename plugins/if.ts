@@ -29,10 +29,7 @@ function ifTag(
   return compiled.join("\n");
 }
 
-function elseTag(
-  _env: Environment,
-  token: Token,
-): string | undefined {
+function elseTag(_env: Environment, token: Token): string | undefined {
   const [, code, position] = token;
 
   if (!code.startsWith("else ") && code !== "else") {

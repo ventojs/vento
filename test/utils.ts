@@ -1,14 +1,10 @@
 import tmpl from "../mod.ts";
-import { assertEquals } from "jsr:@std/assert@1.0.19/equals";
-import { assertRejects } from "jsr:@std/assert@1.0.19/rejects";
-import { extract } from "jsr:@std/front-matter@1.0.9/yaml";
-import { test as fmTest } from "jsr:@std/front-matter@1.0.9/test";
+import matter from "@11ty/gray-matter";
 import { MemoryLoader } from "../loaders/memory.ts";
+import { expect } from "vitest";
 
 import type { Options } from "../mod.ts";
 import type { Environment, Filter } from "../core/environment.ts";
-
-export { assertEquals };
 
 export interface TestOptions {
   template: string;
@@ -20,9 +16,7 @@ export interface TestOptions {
   options?: Options;
 }
 
-function getTest(
-  options: TestOptions,
-) {
+function getTest(options: TestOptions) {
   const env = tmpl({
     includes: new TestLoader(options.includes || {}),
     ...options.options,
@@ -38,16 +32,14 @@ function getTest(
   return async () => await env.runString(options.template, options.data);
 }
 
-export function testThrows(
-  options: Omit<TestOptions, "expected">,
-) {
-  assertRejects(getTest({ ...options, expected: "" }));
+export function testThrows(options: Omit<TestOptions, "expected">) {
+  expect(getTest({ ...options, expected: "" })).toThrow();
 }
 
 export async function test(options: TestOptions) {
   const run = getTest(options);
   const result = await run();
-  assertEquals(result.content.trim(), options.expected.trim());
+  expect(result.content.trim()).toBe(options.expected.trim());
 }
 
 export class TestLoader extends MemoryLoader {
@@ -55,12 +47,12 @@ export class TestLoader extends MemoryLoader {
     const template = await super.load(file);
 
     // Extract the YAML front matter if present
-    if (fmTest(template.source, ["yaml"])) {
-      const { body, attrs } = extract<Record<string, unknown>>(template.source);
+    if (matter.test(template.source)) {
+      const { content, data } = matter(template.source);
 
       return {
-        source: body,
-        data: { ...template.data, ...attrs },
+        source: content,
+        data: { ...template.data, ...data },
       };
     }
 

@@ -27,9 +27,7 @@ const TRAILING_WHITESPACE = /^[ \t]*\r?\n/;
 
 export type AutoTrimOptions = { tags: string[] };
 
-export default function (
-  options: AutoTrimOptions = { tags: defaultTags },
-): Plugin {
+export default function (options: AutoTrimOptions = { tags: defaultTags }): Plugin {
   return (env: Environment) => {
     env.tokenPreprocessors.push((_, tokens) => autoTrim(tokens, options));
   };

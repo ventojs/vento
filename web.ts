@@ -13,9 +13,8 @@ export interface Options {
 
 export default function (options: Options): Environment {
   // Determine the loader based on the includes option
-  const loader = options.includes instanceof URL
-    ? new UrlLoader(options.includes)
-    : options.includes;
+  const loader =
+    options.includes instanceof URL ? new UrlLoader(options.includes) : options.includes;
 
   // Create a new Environment instance with the provided options
   const env = new Environment({

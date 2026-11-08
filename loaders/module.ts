@@ -1,8 +1,4 @@
-import type {
-  Loader,
-  PrecompiledTemplate,
-  Template,
-} from "../core/environment.ts";
+import type { Loader, PrecompiledTemplate, Template } from "../core/environment.ts";
 
 /**
  * Vento loader for loading templates from a ES modules.
@@ -18,10 +14,7 @@ export class ModuleLoader implements Loader {
   }
 
   async load(file: string): Promise<PrecompiledTemplate> {
-    const url = new URL(
-      join(this.#root.pathname, file + this.#extension),
-      this.#root,
-    );
+    const url = new URL(join(this.#root.pathname, file + this.#extension), this.#root);
     const module = await import(url.toString());
 
     return module.default as PrecompiledTemplate;
