@@ -9,20 +9,20 @@ importers:
   .:
     dependencies:
       '@lumeland/core':
-        specifier: ^1.0.3
-        version: 1.0.3
+        specifier: ^1.0.4
+        version: 1.0.4
       '@lumeland/lume':
-        specifier: ^4.0.1
-        version: 4.0.1(@lumeland/ssx@0.1.16)
+        specifier: ^4.0.2
+        version: 4.0.2(@lumeland/ssx@0.1.16)
       '@lumeland/plugin-check-urls':
         specifier: ^1.0.0
-        version: 1.0.0(@lumeland/core@1.0.3)
+        version: 1.0.0(@lumeland/core@1.0.4)
       '@lumeland/ssx':
         specifier: ^0.1.16
         version: 0.1.16
       '@lumeland/theme-simple-wiki':
-        specifier: ^1.0.1
-        version: 1.0.1(@lumeland/core@1.0.3)(markdown-it@15.0.3)
+        specifier: ^1.0.3
+        version: 1.0.3(@lumeland/core@1.0.4)(markdown-it@15.0.3)
 
 packages:
 
@@ -350,14 +350,14 @@ packages:
   '@lumeland/cms@1.0.3':
     resolution: {integrity: sha512-Kz1s+z4nfoAdPLEUvt9FWNOffRiVWLzDY5HuTkQ0enOQD2UOxhAc73CX+uPFELFtxoAdnE3UTaPIlVPoMfkgGA==}
 
-  '@lumeland/core@1.0.3':
-    resolution: {integrity: sha512-dPEhYEag5QhbCqyXZPoStjGi22YPpQfMHHbILa03QxA8FJPAz6zP6EZYTOSVjAAXG2hnW2L/WtaKJ1rrexU+1w==}
+  '@lumeland/core@1.0.4':
+    resolution: {integrity: sha512-wcBZav2tQaRpqisM3r9W5hpPUmPMoinSuJ3G7X/dPTENj9+vhKK07wddEbbZwz/8k5672N+ASQT6W+VYSGXYjQ==}
 
   '@lumeland/dom@0.1.56':
     resolution: {integrity: sha512-PLCpkKfRYqRuG87uU8dHnX3g80ljC/5yw7+xJ/HzbnhiiayhglDdLWXO4rV/fwbO/asH91QBDdZWY8dOGsX5lQ==}
 
-  '@lumeland/lume@4.0.1':
-    resolution: {integrity: sha512-Tb76+NXzbJv3BobdVzZnY+x/fHXPc8nfmL4EXTPmEHkCBHakE4BNuLRkzEXrYtR+eX58kxsoLacDUJgxrFdj8Q==}
+  '@lumeland/lume@4.0.2':
+    resolution: {integrity: sha512-VjWUAaw3/jZREVt3jk+iFxLbT+HJPRw1fHVNernJbbKbLCqR2yCLEUMFuUWHH6g5I4wBJUclg++nVnnYq4cjUA==}
     hasBin: true
     peerDependencies:
       '@lumeland/ssx': ^0.1.16
@@ -512,13 +512,13 @@ packages:
   '@lumeland/ssx@0.1.16':
     resolution: {integrity: sha512-zk22w7DxAXWd/LyUJ8Hh26/JHduOz/+lEIFJ/5YwZUb6qVLyPVtSEsj0DpBizHXw2ryLtBniIEnjPiJRreEENg==}
 
-  '@lumeland/theme-simple-wiki@1.0.1':
-    resolution: {integrity: sha512-LyOsBIqQJ0lVU6xfivoNZlaQXCPci3frYzdhstzqwxyNvC54Erexb5pvkY/OI6HVkdky+vu31AuouEBJfPw4XQ==}
+  '@lumeland/theme-simple-wiki@1.0.3':
+    resolution: {integrity: sha512-YIN3psmotCWFRB1JT4olvwJ4t+XHqaTUHWFTiwCKRkQWw5FAR7Bb7TVvhSO6rwWIWi9lurz+rM8nRIQ0ihPhjg==}
     peerDependencies:
       '@lumeland/core': ^1.0.2
 
-  '@mdit/helper@1.2.0':
-    resolution: {integrity: sha512-+Lh3nitlVclyxjD0LnOKPCyogVqL1W416FKOYjJSGDVlVKq9/jasQNOsUbjAvRwc+imgnFq1lsnat4q69UibIg==}
+  '@mdit/helper@1.2.1':
+    resolution: {integrity: sha512-OS++ECXryTqYD3IQFngmYI5Eag8ZftewAmsFnZ8EqBV+YpoTNVFubb9fFgQDkxdNdDT/oh5wtEzcj1Tu1/BLSQ==}
     engines: {node: '>=22'}
     peerDependencies:
       markdown-it: ^15.0.3
@@ -526,8 +526,8 @@ packages:
       markdown-it:
         optional: true
 
-  '@mdit/plugin-alert@2.1.0':
-    resolution: {integrity: sha512-BIuY6uaYNt/n3TnYNGUlqLB7dsr0ka2012MO2/QokDYLTFjeh3/M7DZswzcN8l+IcojFabljQzVxGtcMa75TSw==}
+  '@mdit/plugin-alert@2.2.0':
+    resolution: {integrity: sha512-EHZy2aSJ5MUUhARQyidDRDHFXzvuQGWWY0IeT2Fibp01XqXgs/4jqXXbog69zGBT99hnRONFVzpXY6KiHVuhdA==}
     engines: {node: '>=22'}
     peerDependencies:
       markdown-it: ^15.0.3
@@ -848,8 +848,8 @@ packages:
   ventojs@2.4.2:
     resolution: {integrity: sha512-8s/OVgVTiw8njyJRd98qVVcLKmZ7VHLw8zeBDji8TiC6k+myEBHok2QvZcRnKEmlF6BbFlc2887XAWaBY5Ep7Q==}
 
-  ws@8.22.1:
-    resolution: {integrity: sha512-oyL6OPYme/CmiFvNuGzeoxCJ4nOrZE2O1FwM9MWM1AsGri6nLXB2pg+lNA8aLeXMSav0J6eIVS1j6vUPzUtK9g==}
+  ws@8.23.0:
+    resolution: {integrity: sha512-wCkmX8QMOrKjgO8HW2WyDbTSGeqkocxgDzS9iR79rEAexty6/2qzilx3Ag8Tqf9ykop3irLKle0MtVn5qjVnoQ==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -1060,32 +1060,32 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@lumeland/core@1.0.3':
+  '@lumeland/core@1.0.4':
     dependencies:
       '@lumeland/dom': 0.1.56
       deno-std: 1.6.0
       remove-markdown: 0.8.0
       temporal-polyfill: 1.0.8
-      ws: 8.22.1
+      ws: 8.23.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
   '@lumeland/dom@0.1.56': {}
 
-  '@lumeland/lume@4.0.1(@lumeland/ssx@0.1.16)':
+  '@lumeland/lume@4.0.2(@lumeland/ssx@0.1.16)':
     dependencies:
-      '@lumeland/core': 1.0.3
-      '@lumeland/plugin-dev': 1.0.0(@lumeland/core@1.0.3)
-      '@lumeland/plugin-json': 1.0.0(@lumeland/core@1.0.3)
-      '@lumeland/plugin-markdown': 1.0.0(@lumeland/core@1.0.3)
-      '@lumeland/plugin-modules': 1.0.0(@lumeland/core@1.0.3)
-      '@lumeland/plugin-paginate': 1.0.0(@lumeland/core@1.0.3)
-      '@lumeland/plugin-search': 1.0.0(@lumeland/core@1.0.3)
-      '@lumeland/plugin-toml': 1.0.0(@lumeland/core@1.0.3)
-      '@lumeland/plugin-url': 1.0.0(@lumeland/core@1.0.3)
-      '@lumeland/plugin-vento': 1.0.0(@lumeland/core@1.0.3)
-      '@lumeland/plugin-yaml': 1.0.0(@lumeland/core@1.0.3)
+      '@lumeland/core': 1.0.4
+      '@lumeland/plugin-dev': 1.0.0(@lumeland/core@1.0.4)
+      '@lumeland/plugin-json': 1.0.0(@lumeland/core@1.0.4)
+      '@lumeland/plugin-markdown': 1.0.0(@lumeland/core@1.0.4)
+      '@lumeland/plugin-modules': 1.0.0(@lumeland/core@1.0.4)
+      '@lumeland/plugin-paginate': 1.0.0(@lumeland/core@1.0.4)
+      '@lumeland/plugin-search': 1.0.0(@lumeland/core@1.0.4)
+      '@lumeland/plugin-toml': 1.0.0(@lumeland/core@1.0.4)
+      '@lumeland/plugin-url': 1.0.0(@lumeland/core@1.0.4)
+      '@lumeland/plugin-vento': 1.0.0(@lumeland/core@1.0.4)
+      '@lumeland/plugin-yaml': 1.0.0(@lumeland/core@1.0.4)
       '@lumeland/ssx': 0.1.16
       cac: 7.1.0
       deno-std: 1.6.0
@@ -1094,177 +1094,177 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@lumeland/plugin-base-path@1.0.0(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-base-path@1.0.0(@lumeland/core@1.0.4)':
     dependencies:
-      '@lumeland/core': 1.0.3
-      '@lumeland/plugin-modify-urls': 1.0.0(@lumeland/core@1.0.3)
+      '@lumeland/core': 1.0.4
+      '@lumeland/plugin-modify-urls': 1.0.0(@lumeland/core@1.0.4)
 
-  '@lumeland/plugin-check-urls@1.0.0(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-check-urls@1.0.0(@lumeland/core@1.0.4)':
     dependencies:
-      '@lumeland/core': 1.0.3
+      '@lumeland/core': 1.0.4
 
-  '@lumeland/plugin-cms@1.0.1(@lumeland/cms@1.0.3)(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-cms@1.0.1(@lumeland/cms@1.0.3)(@lumeland/core@1.0.4)':
     dependencies:
       '@lumeland/cms': 1.0.3
-      '@lumeland/core': 1.0.3
+      '@lumeland/core': 1.0.4
 
-  '@lumeland/plugin-date@1.0.0(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-date@1.0.0(@lumeland/core@1.0.4)':
     dependencies:
-      '@lumeland/core': 1.0.3
+      '@lumeland/core': 1.0.4
       date-fns: 4.4.0
 
-  '@lumeland/plugin-dev@1.0.0(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-dev@1.0.0(@lumeland/core@1.0.4)':
     dependencies:
-      '@lumeland/core': 1.0.3
-      '@lumeland/plugin-not-found': 1.0.0(@lumeland/core@1.0.3)
+      '@lumeland/core': 1.0.4
+      '@lumeland/plugin-not-found': 1.0.0(@lumeland/core@1.0.4)
 
-  '@lumeland/plugin-extract-order@1.0.0(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-extract-order@1.0.0(@lumeland/core@1.0.4)':
     dependencies:
-      '@lumeland/core': 1.0.3
+      '@lumeland/core': 1.0.4
 
-  '@lumeland/plugin-favicon@1.0.0(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-favicon@1.0.0(@lumeland/core@1.0.4)':
     dependencies:
-      '@lumeland/core': 1.0.3
+      '@lumeland/core': 1.0.4
       '@resvg/resvg-js': 2.6.2
       ico-endec: 0.1.6
       sharp: 0.35.5
     transitivePeerDependencies:
       - '@types/node'
 
-  '@lumeland/plugin-icons@1.0.0(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-icons@1.0.0(@lumeland/core@1.0.4)':
     dependencies:
-      '@lumeland/core': 1.0.3
+      '@lumeland/core': 1.0.4
 
-  '@lumeland/plugin-inline@1.0.0(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-inline@1.0.0(@lumeland/core@1.0.4)':
     dependencies:
-      '@lumeland/core': 1.0.3
+      '@lumeland/core': 1.0.4
       deno-std: 1.6.0
 
-  '@lumeland/plugin-json@1.0.0(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-json@1.0.0(@lumeland/core@1.0.4)':
     dependencies:
-      '@lumeland/core': 1.0.3
+      '@lumeland/core': 1.0.4
 
-  '@lumeland/plugin-lightningcss@1.0.0(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-lightningcss@1.0.0(@lumeland/core@1.0.4)':
     dependencies:
-      '@lumeland/core': 1.0.3
-      '@lumeland/plugin-source-maps': 1.0.0(@lumeland/core@1.0.3)
+      '@lumeland/core': 1.0.4
+      '@lumeland/plugin-source-maps': 1.0.0(@lumeland/core@1.0.4)
       lightningcss: 1.33.0
 
-  '@lumeland/plugin-markdown-footnotes@1.0.1(@lumeland/core@1.0.3)(markdown-it@15.0.3)':
+  '@lumeland/plugin-markdown-footnotes@1.0.1(@lumeland/core@1.0.4)(markdown-it@15.0.3)':
     dependencies:
-      '@lumeland/core': 1.0.3
+      '@lumeland/core': 1.0.4
       markdown-it: 15.0.3
 
-  '@lumeland/plugin-markdown@1.0.0(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-markdown@1.0.0(@lumeland/core@1.0.4)':
     dependencies:
-      '@lumeland/core': 1.0.3
+      '@lumeland/core': 1.0.4
       markdown-it: 15.0.3
       markdown-it-attrs: 5.0.1(markdown-it@15.0.3)
       markdown-it-deflist: 4.0.0
 
-  '@lumeland/plugin-modify-urls@1.0.0(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-modify-urls@1.0.0(@lumeland/core@1.0.4)':
     dependencies:
-      '@lumeland/core': 1.0.3
+      '@lumeland/core': 1.0.4
 
-  '@lumeland/plugin-modules@1.0.0(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-modules@1.0.0(@lumeland/core@1.0.4)':
     dependencies:
-      '@lumeland/core': 1.0.3
+      '@lumeland/core': 1.0.4
 
-  '@lumeland/plugin-multilanguage@1.0.0(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-multilanguage@1.0.0(@lumeland/core@1.0.4)':
     dependencies:
-      '@lumeland/core': 1.0.3
+      '@lumeland/core': 1.0.4
 
-  '@lumeland/plugin-nav@1.0.0(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-nav@1.0.0(@lumeland/core@1.0.4)':
     dependencies:
-      '@lumeland/core': 1.0.3
+      '@lumeland/core': 1.0.4
 
-  '@lumeland/plugin-not-found@1.0.0(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-not-found@1.0.0(@lumeland/core@1.0.4)':
     dependencies:
-      '@lumeland/core': 1.0.3
+      '@lumeland/core': 1.0.4
 
-  '@lumeland/plugin-pagefind@1.0.0(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-pagefind@1.0.0(@lumeland/core@1.0.4)':
     dependencies:
-      '@lumeland/core': 1.0.3
+      '@lumeland/core': 1.0.4
       '@pagefind/component-ui': 1.5.2
       pagefind: 1.5.2
 
-  '@lumeland/plugin-paginate@1.0.0(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-paginate@1.0.0(@lumeland/core@1.0.4)':
     dependencies:
-      '@lumeland/core': 1.0.3
+      '@lumeland/core': 1.0.4
 
-  '@lumeland/plugin-prism@1.0.0(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-prism@1.0.0(@lumeland/core@1.0.4)':
     dependencies:
-      '@lumeland/core': 1.0.3
+      '@lumeland/core': 1.0.4
       prismjs: 1.30.0
       ventojs: 2.4.2
 
-  '@lumeland/plugin-resolve-urls@1.0.0(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-resolve-urls@1.0.0(@lumeland/core@1.0.4)':
     dependencies:
-      '@lumeland/core': 1.0.3
-      '@lumeland/plugin-modify-urls': 1.0.0(@lumeland/core@1.0.3)
+      '@lumeland/core': 1.0.4
+      '@lumeland/plugin-modify-urls': 1.0.0(@lumeland/core@1.0.4)
 
-  '@lumeland/plugin-search@1.0.0(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-search@1.0.0(@lumeland/core@1.0.4)':
     dependencies:
-      '@lumeland/core': 1.0.3
+      '@lumeland/core': 1.0.4
 
-  '@lumeland/plugin-source-maps@1.0.0(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-source-maps@1.0.0(@lumeland/core@1.0.4)':
     dependencies:
-      '@lumeland/core': 1.0.3
+      '@lumeland/core': 1.0.4
 
-  '@lumeland/plugin-toc@1.0.0(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-toc@1.0.0(@lumeland/core@1.0.4)':
     dependencies:
-      '@lumeland/core': 1.0.3
+      '@lumeland/core': 1.0.4
 
-  '@lumeland/plugin-toml@1.0.0(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-toml@1.0.0(@lumeland/core@1.0.4)':
     dependencies:
-      '@lumeland/core': 1.0.3
+      '@lumeland/core': 1.0.4
 
-  '@lumeland/plugin-url@1.0.0(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-url@1.0.0(@lumeland/core@1.0.4)':
     dependencies:
-      '@lumeland/core': 1.0.3
+      '@lumeland/core': 1.0.4
 
-  '@lumeland/plugin-vento@1.0.0(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-vento@1.0.0(@lumeland/core@1.0.4)':
     dependencies:
-      '@lumeland/core': 1.0.3
+      '@lumeland/core': 1.0.4
       ventojs: 2.4.2
 
-  '@lumeland/plugin-yaml@1.0.0(@lumeland/core@1.0.3)':
+  '@lumeland/plugin-yaml@1.0.0(@lumeland/core@1.0.4)':
     dependencies:
-      '@lumeland/core': 1.0.3
+      '@lumeland/core': 1.0.4
 
   '@lumeland/ssx@0.1.16': {}
 
-  '@lumeland/theme-simple-wiki@1.0.1(@lumeland/core@1.0.3)(markdown-it@15.0.3)':
+  '@lumeland/theme-simple-wiki@1.0.3(@lumeland/core@1.0.4)(markdown-it@15.0.3)':
     dependencies:
       '@lumeland/cms': 1.0.3
-      '@lumeland/core': 1.0.3
-      '@lumeland/plugin-base-path': 1.0.0(@lumeland/core@1.0.3)
-      '@lumeland/plugin-cms': 1.0.1(@lumeland/cms@1.0.3)(@lumeland/core@1.0.3)
-      '@lumeland/plugin-date': 1.0.0(@lumeland/core@1.0.3)
-      '@lumeland/plugin-extract-order': 1.0.0(@lumeland/core@1.0.3)
-      '@lumeland/plugin-favicon': 1.0.0(@lumeland/core@1.0.3)
-      '@lumeland/plugin-icons': 1.0.0(@lumeland/core@1.0.3)
-      '@lumeland/plugin-inline': 1.0.0(@lumeland/core@1.0.3)
-      '@lumeland/plugin-lightningcss': 1.0.0(@lumeland/core@1.0.3)
-      '@lumeland/plugin-markdown-footnotes': 1.0.1(@lumeland/core@1.0.3)(markdown-it@15.0.3)
-      '@lumeland/plugin-multilanguage': 1.0.0(@lumeland/core@1.0.3)
-      '@lumeland/plugin-nav': 1.0.0(@lumeland/core@1.0.3)
-      '@lumeland/plugin-pagefind': 1.0.0(@lumeland/core@1.0.3)
-      '@lumeland/plugin-prism': 1.0.0(@lumeland/core@1.0.3)
-      '@lumeland/plugin-resolve-urls': 1.0.0(@lumeland/core@1.0.3)
-      '@lumeland/plugin-toc': 1.0.0(@lumeland/core@1.0.3)
-      '@mdit/plugin-alert': 2.1.0(markdown-it@15.0.3)
+      '@lumeland/core': 1.0.4
+      '@lumeland/plugin-base-path': 1.0.0(@lumeland/core@1.0.4)
+      '@lumeland/plugin-cms': 1.0.1(@lumeland/cms@1.0.3)(@lumeland/core@1.0.4)
+      '@lumeland/plugin-date': 1.0.0(@lumeland/core@1.0.4)
+      '@lumeland/plugin-extract-order': 1.0.0(@lumeland/core@1.0.4)
+      '@lumeland/plugin-favicon': 1.0.0(@lumeland/core@1.0.4)
+      '@lumeland/plugin-icons': 1.0.0(@lumeland/core@1.0.4)
+      '@lumeland/plugin-inline': 1.0.0(@lumeland/core@1.0.4)
+      '@lumeland/plugin-lightningcss': 1.0.0(@lumeland/core@1.0.4)
+      '@lumeland/plugin-markdown-footnotes': 1.0.1(@lumeland/core@1.0.4)(markdown-it@15.0.3)
+      '@lumeland/plugin-multilanguage': 1.0.0(@lumeland/core@1.0.4)
+      '@lumeland/plugin-nav': 1.0.0(@lumeland/core@1.0.4)
+      '@lumeland/plugin-pagefind': 1.0.0(@lumeland/core@1.0.4)
+      '@lumeland/plugin-prism': 1.0.0(@lumeland/core@1.0.4)
+      '@lumeland/plugin-resolve-urls': 1.0.0(@lumeland/core@1.0.4)
+      '@lumeland/plugin-toc': 1.0.0(@lumeland/core@1.0.4)
+      '@mdit/plugin-alert': 2.2.0(markdown-it@15.0.3)
     transitivePeerDependencies:
       - '@types/node'
       - markdown-it
 
-  '@mdit/helper@1.2.0(markdown-it@15.0.3)':
+  '@mdit/helper@1.2.1(markdown-it@15.0.3)':
     optionalDependencies:
       markdown-it: 15.0.3
 
-  '@mdit/plugin-alert@2.1.0(markdown-it@15.0.3)':
+  '@mdit/plugin-alert@2.2.0(markdown-it@15.0.3)':
     dependencies:
-      '@mdit/helper': 1.2.0(markdown-it@15.0.3)
+      '@mdit/helper': 1.2.1(markdown-it@15.0.3)
     optionalDependencies:
       markdown-it: 15.0.3
 
@@ -1550,4 +1550,4 @@ snapshots:
 
   ventojs@2.4.2: {}
 
-  ws@8.22.1: {}
+  ws@8.23.0: {}

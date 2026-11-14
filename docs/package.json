@@ -12,10 +12,10 @@
     "build": "lume build"
   },
   "dependencies": {
-    "@lumeland/core": "^1.0.3",
-    "@lumeland/lume": "^4.0.1",
+    "@lumeland/core": "^1.0.4",
+    "@lumeland/lume": "^4.0.2",
     "@lumeland/plugin-check-urls": "^1.0.0",
     "@lumeland/ssx": "^0.1.16",
-    "@lumeland/theme-simple-wiki": "^1.0.1"
+    "@lumeland/theme-simple-wiki": "^1.0.3"
   }
 }
